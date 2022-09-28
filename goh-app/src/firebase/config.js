@@ -13,9 +13,14 @@ const firebaseConfig = {
     measurementId: "G-57SPP298SQ"
 };
 
+//initialize firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore();
 
+//initialize firestore
+const firedb = getFirestore();
 const auth = getAuth();
 
-export {db, auth}
+//timestamp
+const timestamp = firebase.firestore.Timestamp
+
+export {firedb, auth, timestamp}
