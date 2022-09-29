@@ -1,7 +1,7 @@
 //import react-router
 
 //TODO: update the react router package
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { version } from 'react';
 
 
@@ -24,25 +24,27 @@ function App() {
       <BrowserRouter>
         <div className="App Container">
           <Navbar />
-          <Switch>
+          <Routes>
             {/* Redirect to Home page */}
-            <Route exact path = '/'>
+            {/* <Route exact path = '/'>
               <Home />
-            </Route>
+            </Route> */}
 
             {/* Redirect to Home page */}
 
-            <Route path = '/login'>
+            {/* <Route path = '/login'>
               <Login />
-            </Route>
+            </Route> */}
 
             {/* Redirect to Home page */}
 
-            <Route path = '/signup'>
+            {/* <Route path = '/signup'>
               <Signup />
-            </Route>
+            </Route> */}
+            <Route path = '/signup' element={<Signup />} />
 
-          </Switch>
+
+          </Routes>
         </div>
       </BrowserRouter>
     </div>
