@@ -19,11 +19,13 @@ export default function Signup() {
     }
 
   return (
-        <form onSubmit={handleSubmit} className={styles['signup-form']}>        <h2>Signup</h2>
+    <form onSubmit={handleSubmit} className={styles['signup-form']}>        
+        <h2>Welcome to the Goh App</h2>
+        <p>Register your account</p>
 
         {/* Email field */}
         <label> 
-            <span>Email:</span>
+            <span>Email</span>
                 <input type = "email"
                         onChange={(e)=>setEmail(e.target.value)}
                         value={email}
@@ -32,7 +34,7 @@ export default function Signup() {
 
         {/* userid field */}
         <label> 
-            <span>Username:</span>
+            <span>Username</span>
                 <input type = "username"
                         onChange={(e)=>setUserid(e.target.value)}
                         value={userid}
@@ -41,14 +43,14 @@ export default function Signup() {
 
         {/* Password field */}
         <label> 
-            <span>Password:</span>
+            <span>Password</span>
                 <input type = "Password"
                         onChange={(e)=>setPassword(e.target.value)}
                         value={password}
                 />
         </label>
     
-        {!isPending && <button className="btn" >Signup</button>}
+        {!isPending && <button className="btn" >Create account</button>}
         {isPending && <button className="btn" disabled>loading</button>}
         {error && <p> {error} </p>}
     </form>

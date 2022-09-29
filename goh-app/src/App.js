@@ -26,21 +26,12 @@ function App() {
           <Navbar />
           <Routes>
             {/* Redirect to Home page */}
-            {/* <Route exact path = '/'>
-              <Home />
-            </Route> */}
+            <Route path = '/' element={<Home />} />
 
             {/* Redirect to Home page */}
-
-            {/* <Route path = '/login'>
-              <Login />
-            </Route> */}
+            <Route path = '/login' element={<Login />} />
 
             {/* Redirect to Home page */}
-
-            {/* <Route path = '/signup'>
-              <Signup />
-            </Route> */}
             <Route path = '/signup' element={<Signup />} />
 
 

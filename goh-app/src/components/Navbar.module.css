@@ -1,26 +1,31 @@
 /* navbar styles */
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
 .navbar {
-    width: 100%;
-    background: #effaf0;
-    padding: 18px 10px;
-    box-sizing: border-box;
-  }
-  .navbar ul {
-    display: flex;
-    margin: 0 auto;
-    max-width: 960px;
-    align-items: center;
-  }
-  .title {
-    margin-right: auto;
-    font-weight: bold;
-    letter-spacing: 1px;
-    font-size: 1.2em;
-  }
-  .navbar button, .navbar a {
-    margin-left: 56px;
-  }
-  .navbar a {
-    color: #333;
-    text-decoration: none;
-  }
+  width: 100%;
+  color: white;
+  padding: 18px 10px;
+  box-sizing: border-box;
+  background: linear-gradient(to right, #00072D, #0E6BA8);
+  font-family: 'Cabin', sans-serif;
+}
+.navbar ul {
+  list-style-type: none;
+  display: flex;
+  margin: 0 auto;
+  max-width: 960px;
+  align-items: center;
+}
+.title {
+  margin-right: auto;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 25px;
+  font-style: italic;
+}
+.navbar button, .navbar a {
+  margin-left: 40px;
+}
+.navbar a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
