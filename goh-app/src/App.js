@@ -1,5 +1,7 @@
 //import react-router
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { version } from 'react';
+
 
 //import basic styles
 import './App.css'
@@ -9,6 +11,8 @@ import Home from './pages/home/Home'
 import Login from './pages/login/Login'
 import Signup from './pages/signup/Signup'
 import Navbar from './components/Navbar'
+
+console.log(version);
 
 function App() {
 
