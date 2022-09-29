@@ -21,6 +21,6 @@ const firedb = getFirestore();
 const auth = getAuth();
 
 //timestamp
-const timestamp = firebase.firestore.Timestamp
+//const timestamp = firebase.firestore.Timestamp
 
-export {firedb, auth, timestamp}
+export {firedb, auth}
