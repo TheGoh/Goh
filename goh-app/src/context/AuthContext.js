@@ -5,20 +5,25 @@ export const AuthContext = createContext()
 export const authReducer = (state, action) => {
     switch (action.type) {
         //login or logout
+        case 'LOGIN':
+            return{...state, user: action.payload}
+        case 'LOGOUT':
+                return { ...state, user: null }
+        /*
+        case 'AUTH_IS_READY':
+                return { user: action.payload, authIsReady: true }
+        */
 
-
-        //for now we only keep default
         default: 
             return state
     }
 }
 
 export const AuthContextProvider = ({children}) => {
-
     const [state, dispatch] = userReducer(authReducer, {
         user: null
     })
-
+    console.log('AuthContext state:', state)
 
 
     return (
