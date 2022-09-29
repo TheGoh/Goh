@@ -1,14 +1,17 @@
 import { useState } from 'react'
+import { useAuthContext } from './useAuthContext'
+
+//firebase imports
 import { auth } from '../firebase/config'
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useAuthContext } from './useAuthContext'
+
 
 export const useSignup = () => {
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     const { dispatch } = useAuthContext()
   
-    const signup = async (email, password, userid) => {
+    const signup = (email, password, userid) => {
       setError(null)
       setIsPending(true)
     
@@ -22,9 +25,8 @@ export const useSignup = () => {
         })
         .catch((error) => {
             //TODO add console log for printing error
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // ..
+            setError(error.message)
+
         });
     }
   

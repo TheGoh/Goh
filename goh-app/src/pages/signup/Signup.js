@@ -1,4 +1,4 @@
-//import { useAuthContext } from '../../hooks/useAuthContext'
+import { useAuthContext } from '../../hooks/useAuthContext'
 import { useState } from 'react'
 import { useSignup } from '../../hooks/useSignup'
 // styles
