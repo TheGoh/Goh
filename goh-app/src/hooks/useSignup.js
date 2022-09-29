@@ -20,8 +20,7 @@ export const useSignup = () => {
             // Signed in 
             const user = userCredential.user;
             // dispatch login function
-            dispatch({ type: 'LOGIN', payload: user})
-      
+            dispatch({ type: 'LOGIN', payload: user})      
         })
         .catch((error) => {
             //TODO add console log for printing error

@@ -1,5 +1,5 @@
 import { createContext, useReducer } from 'react' 
-import { auth } from '../firebase/config'
+//import { auth } from '../firebase/config'
 
 export const AuthContext = createContext() 
 
@@ -9,11 +9,9 @@ export const authReducer = (state, action) => {
         case 'LOGIN':
             return{...state, user: action.payload}
         case 'LOGOUT':
-                return { ...state, user: null }
-        /*
+                return { ...state, user: null }       
         case 'AUTH_IS_READY':
                 return { user: action.payload, authIsReady: true }
-        */
 
         default: 
             return state
@@ -21,9 +19,11 @@ export const authReducer = (state, action) => {
 }
 
 export const AuthContextProvider = ({children}) => {
-    const [state, dispatch] = useReducer(authReducer, {
-        user: null
-    })
+    const [state, dispatch] = useReducer(authReducer, { 
+        user: null,
+        authIsReady: false
+      })
+
     console.log('AuthContext state:', state)
 
 
