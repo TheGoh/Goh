@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+
+.signup-form {
+  max-width: 360px;
+  margin: 60px auto;
+  padding: 40px;
+  font-family: 'Cabin', sans-serif;
+  border: 1px solid rgb(223, 223, 223);
+  border-radius: 20px;
+  box-shadow: 10px 10px 10px 0.01px rgb(196, 196, 196);
+}
+.signup-form label {
+  display: block;
+  margin: 30px auto;
+}
+.signup-form span {
+  display: block;
+  margin-bottom: 6px;
+  text-align: left;
+}
+.signup-form input {
+  padding: 8px 0px 8px 5px;
+  font-size: 1em;
+  color: #777;
+  width: 100%;
+  border: 2px solid rgb(157, 157, 157);
+  border-radius: 5px;
+}
+.signup-form button {
+  font-family: 'Cabin', sans-serif;
+  font-weight: normal;
+  font-size: 20px;
+  color: white;
+  background-color: #0E6BA8;
+  height: 50px;
+  width: 200px;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.4s ease-in-out;
+}
+
+.signup-form button:hover {
+  background-color: #2060d7;
+}
