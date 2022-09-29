@@ -1,4 +1,3 @@
-import { useAuthContext } from '../../hooks/useAuthContext'
 import { useState } from 'react'
 import { useSignup } from '../../hooks/useSignup'
 // styles
@@ -10,12 +9,12 @@ export default function Signup() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [userid, setUserid] = useState('')
-    const {signup, isPending, error} = useSignup()
+    const {signup,  error ,isPending} = useSignup()
 
   //const { user } = useAuthContext()
     const handleSubmit = (e) => {
-        e.preventDefault()
-        signup(email, password, userid)
+      e.preventDefault()
+      signup(email, password, userid)
     }
 
   return (

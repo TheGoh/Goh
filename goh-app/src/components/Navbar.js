@@ -1,14 +1,14 @@
+
 //dependencies
 import { Link } from "react-router-dom"
-//import { useAuthContext } from "../hooks/useAuthContext"
-//import { useLogout } from '../hooks/useLogout'
+import { useLogout } from '../hooks/useLogout'
 
 //styles
 import styles from './Navbar.module.css'
 
 export default function Nav() {
-    //const { logout } = useLogout()
-    //const { user } = useAuthContext()
+    const { logout } = useLogout()
+    
 
     return (
         <nav className={styles.navbar}>
