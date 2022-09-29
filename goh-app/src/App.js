@@ -13,6 +13,7 @@ import Home from './pages/home/Home'
 import Login from './pages/login/Login'
 import Signup from './pages/signup/Signup'
 import Navbar from './components/Navbar'
+import AccountInfo from './pages/accountInfo/AccountInfo'
 
 console.log(version);
 
@@ -34,6 +35,7 @@ function App() {
             {/* Redirect to Home page */}
             <Route path = '/signup' element={<Signup />} />
 
+            <Route path = '/accountInfo' element={<AccountInfo />} />
 
           </Routes>
         </div>

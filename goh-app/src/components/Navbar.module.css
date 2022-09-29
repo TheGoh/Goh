@@ -29,3 +29,6 @@
   color: rgb(255, 255, 255);
   text-decoration: none;
 }
+.navbar a:hover {
+  text-decoration: underline;
+}
