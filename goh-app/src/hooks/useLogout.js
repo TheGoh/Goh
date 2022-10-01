@@ -6,11 +6,12 @@ import { signOut } from 'firebase/auth'
 import { useAuthContext } from './useAuthContext'
 
 export const useLogout = () => {
-
+    const { dispatch } = useAuthContext()
     //function for user to logout only they already logged in
     const logout = () => {    
         signOut(auth)
             .then(() => {
+                dispatch({type: 'LOGOUT'})
                 console.log('user logged out')
             })
             .catch((error) => {

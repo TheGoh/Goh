@@ -9,6 +9,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 export const useLogin = () => {
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
+    const { dispatch } = useAuthContext()
     
     const login = (email, password) => {
       setError(null)
@@ -19,10 +20,12 @@ export const useLogin = () => {
             // Signed in 
             const user = userCredential.user;
             // dispatch login function
-            console.log('login function is working!')  
+            dispatch({ type: 'LOGIN', payload: user})
+            //console.log('login function is working!')  
         })
         .catch((error) => {
             //TODO add console log for printing error
+            setIsPending(false)
             setError(error.message)
 
         });
