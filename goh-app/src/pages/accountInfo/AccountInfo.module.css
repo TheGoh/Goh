@@ -38,3 +38,16 @@
   border-radius: 10px;
   transition: all 0.4s ease-in-out;
 }
+
+.passwd {
+    margin: 0px;
+    font-family: 'Cabin', sans-serif;
+}
+.passwd button {
+    border: none;
+    background: none;
+    padding: 0;
+}
+.passwd button:hover {
+    text-decoration: underline;
+}
