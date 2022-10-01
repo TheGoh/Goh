@@ -1,16 +1,23 @@
 import { getAuth } from "firebase/auth";
+import styles from './AccountInfo.module.css'
+
+
 
 export default function AccountInfo() {
     const auth = getAuth();
     const user = auth.currentUser;
 
-    if (user !== null) {
+    function getUser() {
+      if (user !== null) {
         console.log(user.email);
+        console.log(user.displayName);
+      }
     }
     
     return (
         <div>
-          Account Info
+          <h1>Account Info</h1>
+          <button onClick={getUser}>User</button>
         </div>
       )
 }
