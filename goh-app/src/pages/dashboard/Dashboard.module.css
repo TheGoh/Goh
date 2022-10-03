@@ -1,0 +1,30 @@
+.dashboard {
+    max-width: 360px;
+    margin: 60px auto;
+    padding: 40px;
+    font-family: 'Cabin', sans-serif;
+    border: 1px solid rgb(223, 223, 223);
+    border-radius: 20px;
+    box-shadow: 10px 10px 10px 0.01px rgb(196, 196, 196);
+  }
+  .dashboard label {
+    display: block;
+    margin: 30px auto;
+  }
+  .dashboard input {
+    padding: 8px 0px 8px 5px;
+    font-size: 1em;
+    color: #777;
+    width: 100%;
+    border: 2px solid rgb(157, 157, 157);
+    border-radius: 5px;
+  }
+.dashboard button {
+    width: 100%;
+    color: white;
+    padding: 18px 10px;
+    box-sizing: border-box;
+    background: linear-gradient(to right, #00072D, #0E6BA8);
+    font-family: 'Cabin', sans-serif;
+    width: 2750px
+  }
