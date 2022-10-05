@@ -24,16 +24,15 @@ export default function AccountInfo() {
         if (user.displayName !== newDisplayName) {
           updateProfile(user, {displayName: newDisplayName}).then(() => {}).catch((error) => {console.log(error.message);});
         }
+
+        //TODO: update more attributes in account
+
         user.reload();
       }
     }
 
-    function seeSomething() {
-      console.log(user.displayName);
-      console.log(user.email);
-    }
-
     function resetPassword() {
+      //TODO OPTIONAL: update password reset page UI
       sendPasswordResetEmail(auth, user.email).then(() => {}).catch((error) => {console.log(error.message);})
     }
     
