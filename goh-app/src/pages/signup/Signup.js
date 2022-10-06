@@ -2,19 +2,22 @@ import { useState } from 'react'
 import { useSignup } from '../../hooks/useSignup'
 // styles
 import styles from './Signup.module.css'
+import { 
+auth, 
+firedb, 
+createUserDocumentFromAuth,
+signInWithGooglePopup
+} from '../../firebase/config';
 
 // components
-
 export default function Signup() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [userid, setUserid] = useState('')
     const {signup,  error ,isPending} = useSignup()
-
-  //const { user } = useAuthContext()
     const handleSubmit = (e) => {
-      e.preventDefault()
-      signup(email, password, userid)
+      e.preventDefault();
+      signup(email,password,userid);
     }
 
   return (
@@ -47,8 +50,7 @@ export default function Signup() {
                         onChange={(e)=>setPassword(e.target.value)}
                         value={password}
                 />
-        </label>
-    
+        </label>    
         {!isPending && <button className="btn" >Create account</button>}
         {isPending && <button className="btn" disabled>loading</button>}
         {error && <p> {error} </p>}

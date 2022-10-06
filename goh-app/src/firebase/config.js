@@ -1,6 +1,16 @@
 import firebase from "firebase/app"
-import { getFirestore } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
+import { 
+getFirestore,
+doc,
+getDoc,
+setDoc
+} from "firebase/firestore"
+import {
+getAuth,
+signInWithRedirect,
+signInWithPopup,
+GoogleAuthProvider,
+} from "firebase/auth"
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
@@ -13,6 +23,13 @@ const firebaseConfig = {
     measurementId: "G-57SPP298SQ"
 };
 
+//Login with google
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+    prompt: "select_account"
+});
+
+
 //initialize firebase
 const app = initializeApp(firebaseConfig);
 
@@ -20,7 +37,35 @@ const app = initializeApp(firebaseConfig);
 const firedb = getFirestore();
 const auth = getAuth();
 
+export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
+
+
+
 //timestamp
 //const timestamp = firebase.firestore.Timestamp
 
 export {firedb, auth}
+export const createUserDocumentFromAuth = async (userAuth) => {
+    const userDocRef = doc(firedb, 'users', userAuth.uid);
+    console.log(userDocRef);
+    const userSnapshot = await getDoc(userDocRef);
+    console.log(userSnapshot);
+    console.log(userSnapshot.exists());
+    if (!userSnapshot.exists()) {
+        const { displayName, email } = userAuth;
+        const createdAt = new Date();
+
+        try {
+            await setDoc(userDocRef, {
+                displayName,
+                email,
+                createdAt
+            });
+        } catch (error) {
+            console.log('error creating the user', error.message);
+        }
+    }
+
+    return userDocRef;
+};

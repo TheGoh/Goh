@@ -2,8 +2,14 @@ import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
 
 //firebase imports
-import { auth } from '../firebase/config'
+import { auth, firedb, createUserDocumentFromAuth } from '../firebase/config'
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { 
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc
+  } from "firebase/firestore"
 
 
 export const useSignup = () => {
@@ -19,6 +25,7 @@ export const useSignup = () => {
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
+            createUserDocumentFromAuth(user);
             // dispatch login function
             dispatch({ type: 'LOGIN', payload: user})      
         })
