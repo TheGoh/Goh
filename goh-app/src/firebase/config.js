@@ -7,6 +7,7 @@ getDoc,
 setDoc
 } from "firebase/firestore"
 /* Sign-in with Google Functionality */
+
 import {
 getAuth,
 signInWithRedirect,
@@ -14,7 +15,7 @@ signInWithPopup,
 GoogleAuthProvider,
 } from "firebase/auth"
 /* uniqueid functionality */
-import { v4 as uuid } from 'uuid';
+
 /* Initialize firebase */
 import { initializeApp } from "firebase/app";
 
@@ -51,8 +52,8 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 //const timestamp = firebase.firestore.Timestamp
 
 export {firedb, auth}
-
 /* *** FUNCTION TO ADD NEW UID TO FIRESTORE *** */
+
 export const createUserDocumentFromAuth = async (userAuth) => {
     const userDocRef = doc(firedb, 'users', userAuth.uid);
     console.log(userDocRef);
@@ -76,4 +77,3 @@ export const createUserDocumentFromAuth = async (userAuth) => {
 
     return userDocRef;
 };
-

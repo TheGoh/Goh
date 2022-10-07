@@ -25,7 +25,10 @@ export default function Nav() {
                 
                 {user && (
                     <>
+                        <li><Link to="/projectcreate">Add Project</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
+                       
+
                         {/*<li><Link to="/accountInfo">Account</Link></li>*/}
                     </>
                 )}

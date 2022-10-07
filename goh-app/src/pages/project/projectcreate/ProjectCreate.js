@@ -1,18 +1,25 @@
 //create project
-export default function project() {
+import { useState } from 'react';
+import { useProject } from '../../../hooks/useProject';
+import { getAuth } from 'firebase/auth'
+export default function Project() {
    const [ownerid, setOwnerID] = useState('');
    const [projName, setProjName] = useState('');
    const [projDescr, setProjDescr] = useState('');
+   const [createProject, error, isPending] = useProject();
+
     //Form submit handler that calls createProj, will store proj in firebase
    const handleSubmit = (event) => {
     event.preventDefault();
-    const user = firebase.auth().currentUser;
+    const auth = getAuth();
+    const user = auth.currentUser;
     setOwnerID(user.uid);
-    createProj(ownerid, projName, projDescr);
+
+    createProject(ownerid, projName, projDescr);
    }
    //Project information form
    const addProj = (e) => {
-    <form onSubmit={handleSubmit} className={styles['project-info form']}><h2>Project Info</h2>
+    <form onSubmit={handleSubmit}><h2>Project Info</h2>
         <label>
            <span>Project Name</span>
             <input type = "projName"
@@ -32,7 +39,7 @@ export default function project() {
     <div className="Project">
         {/* Add Project Button*/}
         <h1 className="projects">Projects</h1>
-        <button onClick={addProj}>Add</button>
+                <button onClick={addProj}>Add</button>
         
     </div>
     

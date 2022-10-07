@@ -1,12 +1,21 @@
 import React, { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
+import { 
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc
+    } from "firebase/firestore"
+   
+import { firedb } from '../firebase/config';
+import { v4 as uuid } from 'uuid';
 //create project hook
 export const useProject = () => {
-    const [error, setError] = useState(null)
-    const [isPending, setIsPending] = useState(false)
+    const [error, setError] = useState('')
+    const [isPending, setIsPending] = useState('')
     const { dispatch } = useAuthContext();
     //takes fields and creates a firebase document for a project
-    const createProj = async (ownerid, projName, projDescr) => {
+    const createProject = async (ownerid, projName, projDescr) => {
         setError(null)
         setIsPending(true);
         const projid = uuid();
@@ -27,5 +36,5 @@ export const useProject = () => {
         }
     }
 
-    return {createProj, error, isPending}
+    return {createProject, error, isPending}
 }

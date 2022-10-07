@@ -11,6 +11,7 @@ import Login from './pages/login/Login'
 import Signup from './pages/signup/Signup'
 import Navbar from './components/Navbar'
 import AccountInfo from './pages/accountInfo/AccountInfo'
+import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 
 //console.log(version);
 
@@ -43,6 +44,11 @@ function App() {
               <Route 
               path = '/accountInfo' 
               element={ user ? <AccountInfo/> : <Navigate to = "/login"/> } 
+              />
+              {/* Redirect to add project */}
+              <Route
+              path = '/project/projectcreate'
+              element={ user ? <ProjectCreate/> : <Navigate to = "projectcreate"/>} 
               />
 
             </Routes>
