@@ -25,6 +25,7 @@ export const useSignup = () => {
         })
         .catch((error) => {
             //TODO add console log for printing error
+            setIsPending(false);
             setError(error.message)
 
         });
