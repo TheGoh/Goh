@@ -32,6 +32,7 @@ export const useProject = () => {
                 });
             } catch (error) {
                 console.log('error creating the project', error.message);
+                setIsPending(false);
             }
         }
     }
