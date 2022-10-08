@@ -4,7 +4,10 @@ import {
     getFirestore,
     doc,
     getDoc,
-    setDoc
+    setDoc,
+    collection,
+    query,
+    where
     } from "firebase/firestore"
    
 import { firedb } from '../firebase/config';
@@ -19,8 +22,10 @@ export const useProject = () => {
         setError(null)
         setIsPending(true);
         const projid = uuid();
-        const projDocRef = doc(firedb, 'projects', projid);
+        const projDocRef = doc(firedb, `projects`, projid);
+        const userProjRef = doc(firedb, `users/${ownerid}/projTokens`, projid);
         const projSnapshot = await getDoc(projDocRef);
+        const userSnapshot = await getDoc(userProjRef);
         if (!projSnapshot.exists()) {
             const createdAt = new Date();
             try {
@@ -32,6 +37,18 @@ export const useProject = () => {
                 });
             } catch (error) {
                 console.log('error creating the project', error.message);
+                setIsPending(false);
+            }
+        }
+        if (!userSnapshot.exists()) {
+            const createdAt = new Date();
+            try {
+                await setDoc(userProjRef, {
+                    projid
+                });
+
+            } catch (error) {
+                console.log('error adding the project', error.message);
                 setIsPending(false);
             }
         }
