@@ -48,7 +48,7 @@ function App() {
               {/* Redirect to add project */}
               <Route
               path = '/project/projectcreate'
-              element={ user ? <ProjectCreate/> : <Navigate to = "projectcreate"/>} 
+              element={ user ? <ProjectCreate/> : <Navigate to = "/login"/>} 
               />
 
             </Routes>

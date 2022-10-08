@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useProject } from '../../../hooks/useProject';
 import { getAuth } from 'firebase/auth'
+
 export default function Project() {
    const [ownerid, setOwnerID] = useState('');
    const [projName, setProjName] = useState('');
@@ -17,31 +18,36 @@ export default function Project() {
 
     createProject(ownerid, projName, projDescr);
    }
-   //Project information form
-   const addProj = (e) => {
-    <form onSubmit={handleSubmit}><h2>Project Info</h2>
-        <label>
-           <span>Project Name</span>
-            <input type = "projName"
-                    onChange = {(e)=>setProjName(e.target.value)}
-                    value = {projName}></input>
-       </label>
-       <label>
-           <span>Project Description</span>
-            <input type = "projDescr"
-                    onChange = {(e)=>setProjDescr(e.target.value)}
-                    value = {projDescr}></input>
-       </label></form>
-   }
 
 
    return (
-    <div className="Project">
-        {/* Add Project Button*/}
-        <h1 className="projects">Projects</h1>
-                <button onClick={addProj}>Add</button>
-        
-    </div>
+
+    <form onSubmit={handleSubmit}>
+        <h2>Project Info</h2>
+
+            {/* Project Name field */}
+            <label>
+            <span>Project Name</span>
+                <input type = "projName"
+                        onChange = {(e)=>setProjName(e.target.value)}
+                        value = {projName}>
+
+                        </input>
+            </label>
+
+            {/* Project Description */}
+            <label>
+            <span>Project Description</span>
+                <textarea type = "projDescr"
+                        onChange = {(e)=>setProjDescr(e.target.value)}
+                        value = {projDescr}>
+
+                        </textarea>
+             </label>
+            {!isPending && <button className="btn" >Create Project</button>}
+            {isPending && <button className="btn" disabled>loading</button>}
+            {error && <p> {error} </p>}
+       </form>
     
    )
 }
