@@ -6,7 +6,7 @@ export default function Project() {
    const [ownerid, setOwnerID] = useState('');
    const [projName, setProjName] = useState('');
    const [projDescr, setProjDescr] = useState('');
-   const [createProject, error, isPending] = useProject();
+   const {createProject, error, isPending} = useProject();
 
     //Form submit handler that calls createProj, will store proj in firebase
    const handleSubmit = (event) => {
