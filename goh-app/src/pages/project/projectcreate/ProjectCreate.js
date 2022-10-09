@@ -9,11 +9,17 @@ export default function Project() {
    const [projName, setProjName] = useState('');
    const [projDescr, setProjDescr] = useState('');
    const { addDoc, error } = useAddDoc();
-   const { documents: projects } = useCollection('projects');
+   const user = getAuth().currentUser;
+
+   //query error
+   const { documents: projects } = useCollection('projects',
+        ['projid','==',`users/${user.uid}/tokens/projid`] 
+   );
+
+   const { documents: lists } = useCollection(`users/${user.uid}/tokens`, null);
 
     const handleSubmit = (event) => {
     event.preventDefault();
-    const user = getAuth().currentUser;
     
     //generate date and unique id for project
     const projid = uuid();
@@ -21,6 +27,7 @@ export default function Project() {
 
     //create new collection structure
     const project = {
+        projectid: projid,
         ownerid : user.uid,
         projName,
         projDescr,
@@ -30,7 +37,7 @@ export default function Project() {
     addDoc(`projects`, projid, project)
     addDoc( `users/${user.uid}/tokens`, projid, projid)
 
-    console.log(projects)
+    console.log('project list:' , projects)
    }
 
 
