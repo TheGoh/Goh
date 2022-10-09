@@ -29,7 +29,7 @@ export default function Signup() {
       signup(email,password,userid);
     }
     return (
-      <Box sx={{border: '1px dashed grey'}} height="100vh" display="flex" className={styles['fulfill']}>
+      <Box height="100vh" display="flex" className={styles['fulfill']}>
         <Grid container sx={{margin: '100px auto', width: '1000px'}} className={styles['container']}>
           
           <Box sx={{ width:'50%'}} className={styles['intro']}>
