@@ -7,8 +7,7 @@ import {
   sendPasswordResetEmail
 } from "firebase/auth";
 import { useState } from "react";
-import styles from './AccountInfo.module.css'
-
+import styles from './AccountInfo.module.css';
 
 
 export default function AccountInfo() {

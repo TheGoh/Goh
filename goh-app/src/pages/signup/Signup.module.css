@@ -26,7 +26,7 @@
   border: 2px solid rgb(157, 157, 157);
   border-radius: 5px;
 }
-.signup-form button {
+/* .signup-form button {
   font-family: 'Cabin', sans-serif;
   font-weight: normal;
   font-size: 20px;
@@ -41,4 +41,4 @@
 
 .signup-form button:hover {
   background-color: #2060d7;
-}
+} */
