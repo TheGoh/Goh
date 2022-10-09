@@ -14,40 +14,41 @@ export default function Project() {
     event.preventDefault();
     const auth = getAuth();
     const user = auth.currentUser;
-    setOwnerID(user.uid);
-
-    createProject(ownerid, projName, projDescr);
+    createProject(user.uid, projName, projDescr);
    }
 
 
    return (
-
+    <div> 
     <form onSubmit={handleSubmit}>
         <h2>Project Info</h2>
-
+            
             {/* Project Name field */}
             <label>
-            <span>Project Name</span>
-                <input type = "projName"
+                <span>Project Name</span>
+                    <input type = "projName"
                         onChange = {(e)=>setProjName(e.target.value)}
                         value = {projName}>
-
-                        </input>
+                    </input>
             </label>
 
+            
             {/* Project Description */}
             <label>
-            <span>Project Description</span>
-                <textarea type = "projDescr"
+                <span>Project Description</span>
+                    <textarea type = "projDescr"
                         onChange = {(e)=>setProjDescr(e.target.value)}
                         value = {projDescr}>
+                    </textarea>
+            </label>
 
-                        </textarea>
-             </label>
             {!isPending && <button className="btn" >Create Project</button>}
             {isPending && <button className="btn" disabled>loading</button>}
             {error && <p> {error} </p>}
-       </form>
+        </form>
+    </div>
+
+    
     
    )
 }
