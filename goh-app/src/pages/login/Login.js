@@ -35,7 +35,7 @@ export default function Login() {
         <Grid container sx={{margin: 'auto', width: '100%', marginTop: '75px'}} columns={3}>
           <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
           <Grid item className={styles['links']} xs={1}>
-            <Link to="/signup" className={styles['links']}>Already have an account?</Link>
+            <Link to="/signup" className={styles['links']}>Register an account</Link>
           </Grid>
         </Grid>
       </Box>
