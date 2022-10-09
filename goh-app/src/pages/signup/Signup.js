@@ -84,6 +84,7 @@ export default function Signup() {
                     value={password}
                     label="Password"
                     onChange={(e => setPassword(e.target.value))}
+                    type="password"
                   />
               </FormControl>
             </Grid>
