@@ -28,53 +28,68 @@ export default function Login() {
 
 
   return (
-    <Grid container sx={{margin: '100px auto', width: '1000px'}} className={styles['container']}>
+
+
+    <Box sx={{border: '1px dashed grey'}} height="100vh" display="flex" className={styles['fulfill']}>
+      <Grid container sx={{margin: '100px auto', width: '1000px'}} className={styles['container']}>
       
+<<<<<<< HEAD
       <Box sx={{ width:'50%'}} className={styles['intro']}>
         <img src={logo}></img>
         <Grid container sx={{margin: 'auto', width: '100%', marginTop: '75px'}} columns={3}>
           <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
           <Grid item className={styles['links']} xs={1}>
             <Link to="/signup" className={styles['links']}>Register an account</Link>
+=======
+        <Box sx={{ width:'50%'}} className={styles['intro']}>
+          <img src={logo}></img>
+          <Grid container sx={{margin: 'auto', width: '100%', marginTop: '75px'}} columns={3}>
+            <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
+            <Grid item className={styles['links']} xs={1}>
+              <Link to="/signup" className={styles['links']}>Already have an account?</Link>
+            </Grid>
+>>>>>>> 1a6bea9cd6e0b4c52383ac6c9d3fa04beae10f45
           </Grid>
-        </Grid>
-      </Box>
-      
-      <Grid component="form" onSubmit={handleSubmit}
-        sx={{p: 2}}
-        className={styles['login-form']}
-      >
-        <h1>Welcome back!</h1>
-        <h3>Login to your account</h3>
-        <Grid sx={{width: '90%', margin: '20px auto'}}>
-          <FormControl sx={{width: "100%"}}>
-            <InputLabel htmlFor="component-outlined">Email</InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              value={email}
-              label="Email"
-              onChange={(e)=> setEmail(e.target.value)}
-            />
-          </FormControl>
-        </Grid>
+        </Box>
         
-        <Grid sx={{width: '90%', margin: '20px auto'}}>
-          <FormControl sx={{width: "100%"}}>
-              <InputLabel htmlFor="component-outlined">Password</InputLabel>
+        <Grid component="form" onSubmit={handleSubmit}
+          sx={{p: 2}}
+          className={styles['login-form']}
+        >
+          <h1>Welcome back!</h1>
+          <h3>Login to your account</h3>
+          <Grid sx={{width: '90%', margin: '20px auto'}}>
+            <FormControl sx={{width: "100%"}}>
+              <InputLabel htmlFor="component-outlined">Email</InputLabel>
               <OutlinedInput
                 id="component-outlined"
-                value={password}
-                label="Password"
-                onChange={(e => setPassword(e.target.value))}
+                value={email}
+                label="Email"
+                onChange={(e)=> setEmail(e.target.value)}
+                type="email"
               />
-          </FormControl>
-        </Grid>
+            </FormControl>
+          </Grid>
+          
+          <Grid sx={{width: '90%', margin: '20px auto'}}>
+            <FormControl sx={{width: "100%"}}>
+                <InputLabel htmlFor="component-outlined">Password</InputLabel>
+                <OutlinedInput
+                  id="component-outlined"
+                  value={password}
+                  label="Password"
+                  onChange={(e => setPassword(e.target.value))}
+                  type="password"
+                />
+            </FormControl>
+          </Grid>
 
-        <Grid sx={{width: '90%', margin: '20px auto'}}>
-          <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>         
+          <Grid sx={{width: '90%', margin: '20px auto'}}>
+            <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>         
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </Box>
     
   )
 }
