@@ -7,6 +7,7 @@ export default function Project() {
    const [ownerid, setOwnerID] = useState('');
    const [projName, setProjName] = useState('');
    const [projDescr, setProjDescr] = useState('');
+   const [projCapcity, setProjCapcity] = useState('');
    const {createProject, error, isPending} = useProject();
 
     //Form submit handler that calls createProj, will store proj in firebase
@@ -14,7 +15,7 @@ export default function Project() {
     event.preventDefault();
     const auth = getAuth();
     const user = auth.currentUser;
-    createProject(user.uid, projName, projDescr);
+    createProject(user.uid, projName, projDescr,projCapcity);
    }
 
 
@@ -42,6 +43,14 @@ export default function Project() {
                     </textarea>
             </label>
 
+            {/* Project user capcity*/}
+            <label>
+                <span>Limitations on the number of people</span>
+                    <textarea type = "projCapcity">
+                        onChange = {(e)=>setProjCapcity(e.target.value)} 
+                        value = {projCapcity}
+                    </textarea>
+            </label>
             {!isPending && <button className="btn" >Create Project</button>}
             {isPending && <button className="btn" disabled>loading</button>}
             {error && <p> {error} </p>}
