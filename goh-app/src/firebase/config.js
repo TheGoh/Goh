@@ -1,18 +1,18 @@
 import firebase from "firebase/app"
 /* Firestore documentation functionality */
 import { 
-getFirestore,
-doc,
-getDoc,
-setDoc
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc
 } from "firebase/firestore"
 /* Sign-in with Google Functionality */
 
 import {
-getAuth,
-signInWithRedirect,
-signInWithPopup,
-GoogleAuthProvider,
+    getAuth,
+    signInWithRedirect,
+    signInWithPopup,
+    GoogleAuthProvider,
 } from "firebase/auth"
 /* uniqueid functionality */
 

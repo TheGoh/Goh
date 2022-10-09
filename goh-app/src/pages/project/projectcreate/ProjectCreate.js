@@ -1,20 +1,36 @@
 //create project
 import { useState } from 'react';
-import { useProject } from '../../../hooks/useProject';
 import { getAuth } from 'firebase/auth'
+import { useCollection } from '../../../hooks/useCollection';
+import { useAddDoc } from '../../../hooks/useAddDoc'
+import { v4 as uuid } from 'uuid';
 
 export default function Project() {
-   const [ownerid, setOwnerID] = useState('');
    const [projName, setProjName] = useState('');
    const [projDescr, setProjDescr] = useState('');
-   const {createProject, error, isPending} = useProject();
+   const { addDoc, error } = useAddDoc();
+   const { documents: projects } = useCollection('projects');
 
-    //Form submit handler that calls createProj, will store proj in firebase
-   const handleSubmit = (event) => {
+    const handleSubmit = (event) => {
     event.preventDefault();
-    const auth = getAuth();
-    const user = auth.currentUser;
-    createProject(user.uid, projName, projDescr);
+    const user = getAuth().currentUser;
+    
+    //generate date and unique id for project
+    const projid = uuid();
+    const createdAt = new Date();
+
+    //create new collection structure
+    const project = {
+        ownerid : user.uid,
+        projName,
+        projDescr,
+        createdAt
+    }
+    
+    addDoc(`projects`, projid, project)
+    addDoc( `users/${user.uid}/tokens`, projid, projid)
+
+    console.log(projects)
    }
 
 
@@ -42,13 +58,12 @@ export default function Project() {
                     </textarea>
             </label>
 
-            {!isPending && <button className="btn" >Create Project</button>}
-            {isPending && <button className="btn" disabled>loading</button>}
+            {/* Project Lists */}
+
+
+            <button className="btn" >Create Project</button>
             {error && <p> {error} </p>}
         </form>
-    </div>
-
-    
-    
+    </div>   
    )
 }
