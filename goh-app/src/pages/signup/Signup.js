@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import { useSignup } from '../../hooks/useSignup'
-<<<<<<< HEAD
-=======
+import { useSignup } from '../../hooks/useSignup';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -10,7 +8,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import logo from '../../imgs/GohLogo.png'
 
->>>>>>> 1fd82a955a0144114596220a3924fe6128fa7519
 // styles
 import styles from './Signup.module.css'
 import { 
