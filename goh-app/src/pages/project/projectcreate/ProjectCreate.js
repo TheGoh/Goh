@@ -16,7 +16,6 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -54,51 +53,24 @@ export default function Project() {
     });
 
     /* Form control */
-    const handleClickOpen = () => {
+    const handleClickOpen = () => { //popup form
         console.log(projOwned);
         setOpen(true);
     };
-    const handleClose = () => {
+    const handleClose = () => { //close form and clear inputs
+        setProjName('');
+        setProjDescr('');
         setOpen(false);
     }
-    const handleSubmit = (event) => {
+    const handleSubmit = (event) => { //close form and save project
         event.preventDefault();
         createProject(user.uid, projName, projDescr);
+        setProjName('');
+        setProjDescr('');
         setOpen(false);
     };
    
-    return (
-        // <div> 
-        // <form onSubmit={handleSubmit}>
-        //     <h2>Project Info</h2>
-                
-        //         {/* Project Name field */}
-        //         <label>
-        //             <span>Project Name</span>
-        //                 <input type = "projName"
-        //                     onChange = {(e)=>setProjName(e.target.value)}
-        //                     value = {projName}>
-        //                 </input>
-        //         </label>
-
-                
-        //         {/* Project Description */}
-        //         <label>
-        //             <span>Project Description</span>
-        //                 <textarea type = "projDescr"
-        //                     onChange = {(e)=>setProjDescr(e.target.value)}
-        //                     value = {projDescr}>
-        //                 </textarea>
-        //         </label>
-
-        //         {/* Project Lists */}
-
-
-        //         <button className="btn" >Create Project</button>
-        //         {error && <p> {error} </p>}
-        //     </form>
-        //     <button onClick={test}>Test</button>
-        // </div> 
+    return ( 
         <Box sx={{ p: 2, border: '1px dashed grey' }}>
             <Grid container spacing={5} 
                   className={styles['project-grid']} 
@@ -108,50 +80,50 @@ export default function Project() {
                     <Button variant="outlined" className={styles['project-grid-button']} onClick={handleClickOpen}>
                         <AddIcon fontSize="large"/>
                     </Button>
-                    
-                    <Dialog open={open} onClose={handleClose}>
-                        <DialogTitle>Create Project</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText sx={{textIndent:'0px'}}>
-                                    To create a project, please enter your project details. We
-                                    will send updates occasionally.
-                                </DialogContentText>
-
-                                <Grid container sx={{marginTop: '20px'}} columns={1}>
-                                    <Grid xs={1} sx={{marginBottom: '20px'}}>
-                                        <FormControl sx={{width: "100%"}}>
-                                            <InputLabel htmlFor="component-outlined">Project Name</InputLabel>
-                                            <OutlinedInput
-                                            id="component-outlined"
-                                            value={projName}
-                                            label="ProjectName"
-                                            onChange = {(e)=>setProjName(e.target.value)}
-                                            type="text"
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid xs={1}>
-                                        <FormControl sx={{width: "100%"}}>
-                                            <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
-                                            <OutlinedInput
-                                            id="component-outlined"
-                                            value={projDescr}
-                                            label="ProjectDescription"
-                                            onChange = {(e)=>setProjDescr(e.target.value)}
-                                            type="text"
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-
-                            </DialogContent>
-                        <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleSubmit}>Create</Button>
-                        </DialogActions>
-                    </Dialog>
                 </Grid>              
             </Grid>
+
+            {/* Popup form */}
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Create Project</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            To create a project, please enter your project details. We
+                            will send updates occasionally.
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                            <Grid xs={1} sx={{marginBottom: '20px'}}>
+                                <FormControl sx={{width: "100%"}}>
+                                    <InputLabel htmlFor="component-outlined">Project Name</InputLabel>
+                                    <OutlinedInput
+                                    id="component-outlined"
+                                    value={projName}
+                                    label="ProjectName"
+                                    onChange = {(e)=>setProjName(e.target.value)}
+                                    type="text"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid xs={1}>
+                                <FormControl sx={{width: "100%"}}>
+                                    <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
+                                    <OutlinedInput
+                                    id="component-outlined"
+                                    value={projDescr}
+                                    label="ProjectDescription"
+                                    onChange = {(e)=>setProjDescr(e.target.value)}
+                                    type="text"
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSubmit}>Create</Button> 
+                </DialogActions>
+            </Dialog>
         </Box>
 
    )
