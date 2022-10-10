@@ -68,7 +68,7 @@ export default function Signup() {
                 <InputLabel htmlFor="component-outlined">Username</InputLabel>
                 <OutlinedInput
                   id="component-outlined"
-                  value={email}
+                  value={userid}
                   label="Username"
                   onChange={(e)=> setUserid(e.target.value)}
                 />

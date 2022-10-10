@@ -2,51 +2,42 @@
 import { useState } from 'react';
 import { getAuth } from 'firebase/auth'
 import { useCollection } from '../../../hooks/useCollection';
-import { useAddDoc } from '../../../hooks/useAddDoc'
 import { useProject } from '../../../hooks/useProject';
-import { v4 as uuid } from 'uuid';
+
+import { 
+    doc,
+    getDoc,
+} from "firebase/firestore"
+   
+import { firedb } from '../../../firebase/config';
 
 export default function Project() {
    const [projName, setProjName] = useState('');
    const [projDescr, setProjDescr] = useState('');
    const { createProject, error } = useProject();
-   //const { addDoc, error } = useAddDoc();
+
+   //const { documents: allProjects } = useCollection('projects',null);
    const user = getAuth().currentUser;
 
-   //query error
-//    const { documents: projects } = useCollection('projects',
-//         ['projid','==',`users/${user.uid}/tokens/projid`] 
-//    );
+   let ownProjectList = null
 
-//    const { documents: lists } = useCollection(`users/${user.uid}/tokens`, null);
+   //console.log(allProjects.where('id', '==', user.id))
+
+
+   //fetch the current user project list
+    const currUserDoc = doc(firedb, `users`, user.uid);
+
+    getDoc(currUserDoc)
+        .then((doc) => {
+        ownProjectList = doc.data().ownedProjects
+    })
+ 
 
     const handleSubmit = (event) => {
-    event.preventDefault();
-    createProject(user.uid, projName, projDescr);
-    
-    //generate date and unique id for project
-    // const projid = uuid();
-    // const createdAt = new Date();
-
-    // //create new collection structure
-    // const project = {
-    //     projectid: projid,
-    //     ownerid : user.uid,
-    //     projName,
-    //     projDescr,
-    //     createdAt
-    // }
-    
-    // const projtoken = {
-    //     projid : projid 
-    // }
-    
-    // addDoc(`projects`, projid, project)
-    // addDoc( `users/${user.uid}/tokens`, projid, projtoken)
-
-    // console.log('project list:' , projects)
-   }
-
+        event.preventDefault();
+        createProject(user.uid, projName, projDescr);
+    }
+   
 
    return (
     <div> 
