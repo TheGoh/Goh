@@ -12,25 +12,38 @@ import {
 import { firedb } from '../../../firebase/config';
 
 export default function Project() {
-   const [projName, setProjName] = useState('');
-   const [projDescr, setProjDescr] = useState('');
-   const { createProject, error } = useProject();
+    const [projName, setProjName] = useState('');
+    const [projDescr, setProjDescr] = useState('');
+    const { createProject, error } = useProject();
 
-   //const { documents: allProjects } = useCollection('projects',null);
-   const user = getAuth().currentUser;
+    const { documents: allProjects } = useCollection('projects',null);
+    const user = getAuth().currentUser;
+    
 
-   let ownProjectList = null
+    let ownProjectList = null
 
-   //console.log(allProjects.where('id', '==', user.id))
+    //console.log(allProjects.where('id', '==', user.id))
+    
 
-
-   //fetch the current user project list
+    //fetch the current user project list
     const currUserDoc = doc(firedb, `users`, user.uid);
 
     getDoc(currUserDoc)
         .then((doc) => {
-        ownProjectList = doc.data().ownedProjects
-    })
+            ownProjectList = doc.data().ownedProjects;
+            //console.log(ownProjectList);
+        })
+        .then(() => {
+            //only get owned projects
+            const ownProject = allProjects.filter((element) => {
+                if (ownProjectList.includes(element.id)) {
+                    return element;
+                }
+            })
+            //console.log(ownProject);
+        })
+
+    // console.log(ownProject);
  
 
     const handleSubmit = (event) => {
@@ -39,36 +52,36 @@ export default function Project() {
     }
    
 
-   return (
-    <div> 
-    <form onSubmit={handleSubmit}>
-        <h2>Project Info</h2>
-            
-            {/* Project Name field */}
-            <label>
-                <span>Project Name</span>
-                    <input type = "projName"
-                        onChange = {(e)=>setProjName(e.target.value)}
-                        value = {projName}>
-                    </input>
-            </label>
+    return (
+        <div> 
+        <form onSubmit={handleSubmit}>
+            <h2>Project Info</h2>
+                
+                {/* Project Name field */}
+                <label>
+                    <span>Project Name</span>
+                        <input type = "projName"
+                            onChange = {(e)=>setProjName(e.target.value)}
+                            value = {projName}>
+                        </input>
+                </label>
 
-            
-            {/* Project Description */}
-            <label>
-                <span>Project Description</span>
-                    <textarea type = "projDescr"
-                        onChange = {(e)=>setProjDescr(e.target.value)}
-                        value = {projDescr}>
-                    </textarea>
-            </label>
+                
+                {/* Project Description */}
+                <label>
+                    <span>Project Description</span>
+                        <textarea type = "projDescr"
+                            onChange = {(e)=>setProjDescr(e.target.value)}
+                            value = {projDescr}>
+                        </textarea>
+                </label>
 
-            {/* Project Lists */}
+                {/* Project Lists */}
 
 
-            <button className="btn" >Create Project</button>
-            {error && <p> {error} </p>}
-        </form>
-    </div>   
+                <button className="btn" >Create Project</button>
+                {error && <p> {error} </p>}
+            </form>
+        </div>   
    )
 }
