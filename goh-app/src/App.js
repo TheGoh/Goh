@@ -54,7 +54,7 @@ function App() {
 
               <Route
               path = '/notification'
-              element={ user ? <Notification/> : <Navigate to = "/notification"/>}
+              element={ !user ? <Notification/> : <Navigate to = "/notification"/>}
               />
 
             </Routes>
