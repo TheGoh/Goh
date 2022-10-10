@@ -14,36 +14,31 @@ import { firedb } from '../../../firebase/config';
 export default function Project() {
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
+    const [projOwned, setProjOwned] = useState('');
     const { createProject, error } = useProject();
 
     const { documents: allProjects } = useCollection('projects',null);
     const user = getAuth().currentUser;
-    
 
-    let ownProjectList = null
-
+    let ownProjectList = null;
     //console.log(allProjects.where('id', '==', user.id))
     
-
     //fetch the current user project list
     const currUserDoc = doc(firedb, `users`, user.uid);
+    let ownProject = null;
 
     getDoc(currUserDoc)
         .then((doc) => {
             ownProjectList = doc.data().ownedProjects;
-            //console.log(ownProjectList);
         })
         .then(() => {
             //only get owned projects
-            const ownProject = allProjects.filter((element) => {
+            setProjOwned(allProjects.filter((element) => {
                 if (ownProjectList.includes(element.id)) {
                     return element;
                 }
-            })
-            //console.log(ownProject);
+            }));
         })
-
-    // console.log(ownProject);
  
 
     const handleSubmit = (event) => {
