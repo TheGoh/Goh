@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+
+.project-grid {
+  
+}
+
+.project-grid-item {
+  vertical-align: middle;
+}
+
+.project-grid-paper {
+  width: 200px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
+
+.project-grid-button {
+  width: 200px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
