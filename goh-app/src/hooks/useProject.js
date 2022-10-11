@@ -3,11 +3,14 @@ import { useState } from 'react'
 import { 
     doc,
     getDoc,
-    setDoc
+    setDoc,
+    updateDoc
     } from "firebase/firestore"
    
 import { firedb } from '../firebase/config';
 import { v4 as uuid } from 'uuid';
+
+
 //create project hook
 export const useProject = () => {
     const [error, setError] = useState('')
@@ -18,13 +21,14 @@ export const useProject = () => {
 
         const projid = uuid();
         const projDocRef = doc(firedb, `projects`, projid);
-        const userProjRef = doc(firedb, `users/${ownerid}/tokens`, projid);
+        const currUserDoc = doc(firedb, `users`, ownerid);
         const projSnapshot = await getDoc(projDocRef);
-        const userSnapshot = await getDoc(userProjRef);
+
         if (!projSnapshot.exists()) {
             const createdAt = new Date();
             try {
                 await setDoc(projDocRef, {
+                    id: projid,
                     ownerid,
                     projName,
                     projDescr,
@@ -35,15 +39,19 @@ export const useProject = () => {
             }
         }
 
-        if (!userSnapshot.exists()) {
-            try {
-                await setDoc(userProjRef, {
-                    projid
-                });
-            } catch (error) {
-                console.log('error creating project token', error.message);
-            }
-        }
+        
+        getDoc(currUserDoc)
+            .then ((doc) => {
+                let tempOwnedProjects = doc.data().ownedProjects;
+                tempOwnedProjects.push(projid);
+                
+                updateDoc(currUserDoc, {
+                    ownedProjects: tempOwnedProjects
+                })
+                .then(() => {
+                    console.log("update successfully!!!",doc.data().ownedProjects)
+                })
+            })
 
     }
 

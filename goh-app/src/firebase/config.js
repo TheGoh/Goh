@@ -54,21 +54,23 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export {firedb, auth}
 /* *** FUNCTION TO ADD NEW UID TO FIRESTORE *** */
 
-export const createUserDocumentFromAuth = async (userAuth) => {
+export const createUserDocumentFromAuth = async (userAuth, userid) => {
     const userDocRef = doc(firedb, 'users', userAuth.uid);
     console.log(userDocRef);
     const userSnapshot = await getDoc(userDocRef);
     console.log(userSnapshot);
     console.log(userSnapshot.exists());
     if (!userSnapshot.exists()) {
-        const { displayName, email } = userAuth;
+        const { email } = userAuth;
         const createdAt = new Date();
+        const ownedProjects = [];
 
         try {
             await setDoc(userDocRef, {
-                displayName,
+                displayName : userid,
                 email,
-                createdAt
+                createdAt,
+                ownedProjects
             });
         } catch (error) {
             console.log('error creating the user', error.message);

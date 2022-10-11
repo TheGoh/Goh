@@ -19,7 +19,7 @@ export const useSignup = () => {
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            createUserDocumentFromAuth(user);
+            createUserDocumentFromAuth(user, userid);
             // dispatch login function
             dispatch({ type: 'LOGIN', payload: user})      
         })
