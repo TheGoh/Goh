@@ -31,24 +31,35 @@ export default function Project() {
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
     const [projOwned, setProjOwned] = useState(''); // hold current user owned projects
+    const [projOwnedIds, setProjOwnedIds] = useState(''); // hold all owned project ids for searching in projOwned
     const { createProject, error } = useProject();
     const { documents: allProjects } = useCollection('projects',null);
-    
+
     /* Fetch the current user project list */
-    const user = getAuth().currentUser;
     let ownProjectList = null;
+    const user = getAuth().currentUser;
     const currUserDoc = doc(firedb, `users`, user.uid);
+    const PROJECT_NAMES = [];
+    const PROJECT_DESCRIPTIONS = [];
     getDoc(currUserDoc)
     .then((doc) => {
         ownProjectList = doc.data().ownedProjects;
     })
     .then(() => {
         if (allProjects !== null) {
-            setProjOwned(allProjects.filter((element) => { //only get owned projects
+            let items_arr = allProjects.filter((element) => { //only get owned projects
                 if (ownProjectList !== undefined) {
                     if (ownProjectList.includes(element.id)) return element;
                 }
-            }));
+            })
+            let items_dict = {};
+            let items_ids = [];
+            items_arr.forEach((item) => {
+                items_dict[item.id] = item;
+                items_ids.push(item.id);
+            });
+            setProjOwned(items_dict);
+            setProjOwnedIds(items_ids);
         }
     });
 
@@ -69,9 +80,18 @@ export default function Project() {
         setProjDescr('');
         setOpen(false);
     };
-   
+
+    /* Dynamic add/delete */
+    const addToList = () => {
+        console.log(projOwnedIds);
+    };
+
+    const test1 = [1,2,3,4,5,6,7,8,9,10];
+       
     return ( 
         <Box sx={{ p: 2, border: '1px dashed grey' }}>
+
+            {/* Projects display */}
             <Grid container spacing={5} 
                   className={styles['project-grid']} 
                   columns={5} 
@@ -80,11 +100,18 @@ export default function Project() {
                     <Button variant="outlined" className={styles['project-grid-button']} onClick={handleClickOpen}>
                         <AddIcon fontSize="large"/>
                     </Button>
-                </Grid>              
+                </Grid>
+                {projOwnedIds.length > 0 && projOwnedIds.map((item) => 
+                    <Grid item xs={1}>
+                        <Button variant="contained" className={styles['project-grid-button']}>
+                            {projOwned[item].projName}
+                        </Button>
+                    </Grid>
+                )}
             </Grid>
 
             {/* Popup form */}
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={Boolean(open)} onClose={handleClose}>
                 <DialogTitle>Create Project</DialogTitle>
                     <DialogContent>
                         <DialogContentText sx={{textIndent:'0px'}}>
@@ -93,7 +120,7 @@ export default function Project() {
                         </DialogContentText>
 
                         <Grid container sx={{marginTop: '20px'}} columns={1}>
-                            <Grid xs={1} sx={{marginBottom: '20px'}}>
+                            <Grid item xs={1} sx={{marginBottom: '20px'}}>
                                 <FormControl sx={{width: "100%"}}>
                                     <InputLabel htmlFor="component-outlined">Project Name</InputLabel>
                                     <OutlinedInput
@@ -105,7 +132,7 @@ export default function Project() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid xs={1}>
+                            <Grid item xs={1}>
                                 <FormControl sx={{width: "100%"}}>
                                     <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
                                     <OutlinedInput
@@ -120,8 +147,8 @@ export default function Project() {
                         </Grid>
                     </DialogContent>
                 <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit}>Create</Button> 
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleSubmit}>Create</Button> 
                 </DialogActions>
             </Dialog>
         </Box>
