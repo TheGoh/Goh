@@ -8,18 +8,16 @@ import {
     } from "firebase/firestore"
    
 import { firedb } from '../firebase/config';
-import { v4 as uuid } from 'uuid';
 
 
 //create project hook
 export const useProject = () => {
     const [error, setError] = useState('')
+    const [projid, setProjId] = useState('')
 
     //takes fields and creates a firebase document for a project
-    const createProject = async (ownerid, projName, projDescr) => {
+    const createProject = async (ownerid, projid, projName, projDescr) => {
         setError(null)
-
-        const projid = uuid();
         const projDocRef = doc(firedb, `projects`, projid);
         const currUserDoc = doc(firedb, `users`, ownerid);
         const projSnapshot = await getDoc(projDocRef);

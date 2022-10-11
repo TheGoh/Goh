@@ -7,6 +7,9 @@ import { useCollection } from '../../../hooks/useCollection';
 import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
 import { doc, getDoc } from "firebase/firestore"
+import { v4 as uuid } from 'uuid';
+
+
 
 //routing
 import { Link } from "react-router-dom";
@@ -36,13 +39,15 @@ export default function Project() {
     const [projDescr, setProjDescr] = useState('');
     const [projOwned, setProjOwned] = useState(''); // hold current user owned projects
     const [projOwnedIds, setProjOwnedIds] = useState(''); // hold all owned project ids for searching in projOwned
-    const { createProject, error } = useProject();
+    const { createProject, projid, error } = useProject();
     const { documents: allProjects } = useCollection('projects',null);
 
     /* Fetch the current user project list */
     let ownProjectList = null;
     const user = getAuth().currentUser;
     const currUserDoc = doc(firedb, `users`, user.uid);
+    const PROJECT_NAMES = [];
+    const PROJECT_DESCRIPTIONS = [];
     getDoc(currUserDoc)
     .then((doc) => {
         ownProjectList = doc.data().ownedProjects;
@@ -77,7 +82,9 @@ export default function Project() {
     }
     const handleSubmit = (event) => { //close form and save project
         event.preventDefault();
-        createProject(user.uid, projName, projDescr);
+        const projid = uuid();
+        createProject(user.uid, projid, projName, projDescr);
+        console.log(projid);
         setProjName('');
         setProjDescr('');
         setOpen(false);
