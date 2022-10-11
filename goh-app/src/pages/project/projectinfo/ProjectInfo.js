@@ -1,5 +1,5 @@
 
-import './ProjectInfo.css'
+//import './ProjectInfo.css'
 import { useParams } from 'react-router-dom';
 import { useFetchProject } from '../../../hooks/useFetchProject'
 import { useCollection } from '../../../hooks/useCollection';

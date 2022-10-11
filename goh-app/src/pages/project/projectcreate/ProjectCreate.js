@@ -9,11 +9,8 @@ import { firedb } from '../../../firebase/config';
 import { doc, getDoc } from "firebase/firestore"
 import { v4 as uuid } from 'uuid';
 
-
-
 //routing
 import { Link } from "react-router-dom";
-
 
 //Html components
 import styles from './ProjectCreate.module.css';
@@ -62,7 +59,8 @@ export default function Project() {
             let items_dict = {};
             let items_ids = [];
             items_arr.forEach((item) => {
-                items_dict[item.id] = item;
+                // [project_id, project_name, project_description]
+                items_dict[item.id] = [item.id, item.projName, item.projDescr];
                 items_ids.push(item.id);
             });
             setProjOwned(items_dict);
@@ -72,7 +70,7 @@ export default function Project() {
 
     /* Form control */
     const handleClickOpen = () => { //popup form
-        console.log(projOwned);
+        //console.log(projOwned);
         setOpen(true);
     };
     const handleClose = () => { //close form and clear inputs
@@ -85,6 +83,15 @@ export default function Project() {
         const projid = uuid();
         createProject(user.uid, projid, projName, projDescr);
         console.log(projid);
+
+        //update global storage
+        let tempIds = projOwnedIds;
+        tempIds.push(projid);
+        setProjOwnedIds(tempIds);
+        let tempProjs = projOwned;
+        tempProjs[projid] = [projid, projName, projDescr];
+        setProjOwned(tempProjs);
+
         setProjName('');
         setProjDescr('');
         setOpen(false);
@@ -115,7 +122,7 @@ export default function Project() {
                         <Link to = {`/project/${projOwned[item].id}`} key = {projOwned[item].id}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
-                                    projOwned[item].projName
+                                    projOwned[item][1]
                                 }
                             </Button>
                         </Link>
