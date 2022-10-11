@@ -43,8 +43,6 @@ export default function Project() {
     let ownProjectList = null;
     const user = getAuth().currentUser;
     const currUserDoc = doc(firedb, `users`, user.uid);
-    const PROJECT_NAMES = [];
-    const PROJECT_DESCRIPTIONS = [];
     getDoc(currUserDoc)
     .then((doc) => {
         ownProjectList = doc.data().ownedProjects;
