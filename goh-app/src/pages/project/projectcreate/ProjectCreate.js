@@ -112,7 +112,7 @@ export default function Project() {
                 </Grid>
                 {projOwnedIds.length > 0 && projOwnedIds.map((item) => 
                     <Grid item xs={1}>
-                        <Link to = {`/project/${projOwned[item][0]}`} key = {projOwned[item].id}>
+                        <Link to = {`/project/${projOwned[item][0]}`} key = {projOwned[item][0]}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
                                     projOwned[item][1]
