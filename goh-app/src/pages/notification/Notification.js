@@ -54,11 +54,12 @@ export default function Notification() {
     //current text
     const [curText, setcurText] = useState('');
     //当前的对话框的内容，需要去获取
+    //TODO
     const [talkList,settalkList]=useState([
       {'userName':'zhangsan',userId:1,
-      'MessageTime': 12,'text': '你'},
+      'MessageTime': 12,'text': 'TODO，获取与该用户的对话记录'},
       {'userName':'qifei',userId:1,
-      'MessageTime': 13,'text': '你好'},
+      'MessageTime': 13,'text': 'TODO'},
       {'userName':'zhangsan',userId:1,
       'MessageTime': 14,'text': '我'},
     ])
