@@ -43,8 +43,6 @@ export default function Project() {
     let ownProjectList = null;
     const user = getAuth().currentUser;
     const currUserDoc = doc(firedb, `users`, user.uid);
-    const PROJECT_NAMES = [];
-    const PROJECT_DESCRIPTIONS = [];
     getDoc(currUserDoc)
     .then((doc) => {
         ownProjectList = doc.data().ownedProjects;
@@ -97,11 +95,6 @@ export default function Project() {
         setOpen(false);
     };
 
-    /* Dynamic add/delete */
-    const addToList = () => {
-        console.log(projOwnedIds);
-    };
-
     const test1 = [1,2,3,4,5,6,7,8,9,10];
        
     return ( 
@@ -119,7 +112,7 @@ export default function Project() {
                 </Grid>
                 {projOwnedIds.length > 0 && projOwnedIds.map((item) => 
                     <Grid item xs={1}>
-                        <Link to = {`/project/${projOwned[item].id}`} key = {projOwned[item].id}>
+                        <Link to = {`/project/${projOwned[item][0]}`} key = {projOwned[item].id}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
                                     projOwned[item][1]
