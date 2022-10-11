@@ -53,7 +53,7 @@ export default function Login() {
           <FormControl sx={{width: "100%"}}>
             <InputLabel htmlFor="component-outlined">Email</InputLabel>
             <OutlinedInput
-              id="component-outlined"
+              id="component-outlined1"
               value={email}
               label="Email"
               onChange={(e)=> setEmail(e.target.value)}
@@ -66,7 +66,7 @@ export default function Login() {
           <FormControl sx={{width: "100%"}}>
               <InputLabel htmlFor="component-outlined">Password</InputLabel>
               <OutlinedInput
-                id="component-outlined"
+                id="component-outlined2"
                 value={password}
                 label="Password"
                 onChange={(e => setPassword(e.target.value))}

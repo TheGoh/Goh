@@ -54,7 +54,7 @@ export default function Signup() {
               <FormControl sx={{width: "100%"}}>
                 <InputLabel htmlFor="component-outlined">Email</InputLabel>
                 <OutlinedInput
-                  id="component-outlined"
+                  id="component-outlined1"
                   value={email}
                   label="Email"
                   onChange={(e)=> setEmail(e.target.value)}
@@ -67,7 +67,7 @@ export default function Signup() {
               <FormControl sx={{width: "100%"}}>
                 <InputLabel htmlFor="component-outlined">Username</InputLabel>
                 <OutlinedInput
-                  id="component-outlined"
+                  id="component-outlined2"
                   value={userid}
                   label="Username"
                   onChange={(e)=> setUserid(e.target.value)}
@@ -80,7 +80,7 @@ export default function Signup() {
               <FormControl sx={{width: "100%"}}>
                   <InputLabel htmlFor="component-outlined">Password</InputLabel>
                   <OutlinedInput
-                    id="component-outlined"
+                    id="component-outlined3"
                     value={password}
                     label="Password"
                     onChange={(e => setPassword(e.target.value))}
