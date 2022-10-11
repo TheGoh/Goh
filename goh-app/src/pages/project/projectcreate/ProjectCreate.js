@@ -8,6 +8,10 @@ import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
 import { doc, getDoc } from "firebase/firestore"
 
+//routing
+import { Link } from "react-router-dom";
+
+
 //Html components
 import styles from './ProjectCreate.module.css';
 import { styled } from '@mui/material/styles';
@@ -103,9 +107,14 @@ export default function Project() {
                 </Grid>
                 {projOwnedIds.length > 0 && projOwnedIds.map((item) => 
                     <Grid item xs={1}>
-                        <Button variant="contained" className={styles['project-grid-button']}>
-                            {projOwned[item].projName}
-                        </Button>
+                        <Link to = {`/project/${projOwned[item].id}`} key = {projOwned[item].id}>
+                            <Button variant="contained" className={styles['project-grid-button']}>
+                                {
+                                    projOwned[item].projName
+                                }
+                            </Button>
+                        </Link>
+                        
                     </Grid>
                 )}
             </Grid>

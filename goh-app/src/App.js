@@ -13,6 +13,7 @@ import Navbar from './components/Navbar'
 import AccountInfo from './pages/accountInfo/AccountInfo'
 import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
+import Project from './pages/project/projectinfo/ProjectInfo'
 
 //console.log(version);
 
@@ -33,13 +34,13 @@ function App() {
               {/* Redirect to Home page */}
               <Route 
               path = '/login' 
-              element={ !user ? <Login /> : <Navigate to = "/accountInfo"/> } 
+              element={ !user ? <Login /> : <Navigate to = "/project/projectcreate"/> } 
               />
 
               {/* Redirect to Home page */}
               <Route
               path = '/signup'
-              element={ user ? <Navigate to = "/accountInfo"/> : <Signup />} 
+              element={ user ? <Navigate to = "/project/projectcreate"/> : <Signup />} 
               />       
 
               <Route 
@@ -54,7 +55,12 @@ function App() {
 
               <Route
               path = '/notification'
-              element={ !user ? <Notification/> : <Navigate to = "/notification"/>}
+              element={ user ? <Notification/> : <Navigate to = "/login"/>}
+              />
+
+              <Route
+              path = '/project/:id'
+              element={ user ? <Project/> : <Navigate to = "/login"/>}
               />
 
             </Routes>

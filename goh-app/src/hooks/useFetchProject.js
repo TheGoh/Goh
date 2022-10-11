@@ -5,7 +5,7 @@ import { collection, getDocs } from 'firebase/firestore'
 
 //fetch collection from firestore
 //parameter is the reference/path of the collection
-export const useCollection = (collect, id) => { 
+export const useFetchProject = (collect, id) => { 
     const [documents, setDocuments] = useState(null)
     const [error, setError] = useState(null)
 
