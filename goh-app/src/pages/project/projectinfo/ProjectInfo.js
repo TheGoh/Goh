@@ -6,18 +6,16 @@ import { useCollection } from '../../../hooks/useCollection';
 
 export default function Project() {
     let { projectId } = useParams();
-    console.log("here is target project id", projectId );
-    //const { documents: projectDtl } = useFetchProject('projects', projectId);
+    //console.log("here is target project id", projectId );
+    const { documents: projectDtl } = useFetchProject('projects', projectId);
 
-    //console.log(projectDtl)
+    console.log(projectDtl)
 
-    // if (!projectDtl) {
-    //     return <div className = "loading"> Loading .... </div>
-    // }
     
     return (
         <div className = "project - detail"> 
-            Project Detail
+        <h1>{projectDtl.projName}</h1>
+            <h2>{projectDtl.projDescr}</h2>
         </div>
     )
 }
