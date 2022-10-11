@@ -11,10 +11,13 @@ export default function Project() {
 
     console.log(projectDtl)
 
-    
+    if (!projectDtl) {
+        return <div> Loading... </div>
+    }
+
     return (
         <div className = "project - detail"> 
-        <h1>{projectDtl.projName}</h1>
+            <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
         </div>
     )
