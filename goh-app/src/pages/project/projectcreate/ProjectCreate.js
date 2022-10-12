@@ -1,8 +1,8 @@
 /* Project Creation and Selection */
 
 //Functionality
-import { useState } from 'react';
-import { getAuth } from 'firebase/auth'
+import { useState,useEffect } from 'react';
+import { useAuthContext } from '../../../hooks/useAuthContext'
 import { useCollection } from '../../../hooks/useCollection';
 import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
@@ -38,10 +38,12 @@ export default function Project() {
     const [projOwnedIds, setProjOwnedIds] = useState(''); // hold all owned project ids for searching in projOwned
     const { createProject, projid, error } = useProject();
     const { documents: allProjects } = useCollection('projects',null);
+    const { user } = useAuthContext()
+
 
     /* Fetch the current user project list */
     let ownProjectList = null;
-    const user = getAuth().currentUser;
+    
     const currUserDoc = doc(firedb, `users`, user.uid);
     getDoc(currUserDoc)
     .then((doc) => {
@@ -65,11 +67,7 @@ export default function Project() {
             setProjOwned(items_dict);
             setProjOwnedIds(items_ids);
         }
-    })
-    .catch(error => {
-        console.error(error)
-    })
-    ;
+    });
 
     /* Form control */
     const handleClickOpen = () => { //popup form
@@ -99,8 +97,6 @@ export default function Project() {
         setProjDescr('');
         setOpen(false);
     };
-
-    const test1 = [1,2,3,4,5,6,7,8,9,10];
        
     return ( 
         <Box sx={{ p: 2, border: '1px dashed grey' }}>
