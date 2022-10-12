@@ -61,7 +61,7 @@ export default function Project() {
         <div className = "project - detail"> 
             <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
-
+            <li><Link to="/project/projectmodify" key = {projectId}>Modify Project</Link></li>
             <button onClick={handleDelete}> !!!Delete This Project!!! </button>
         </div>
     )
