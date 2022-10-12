@@ -20,7 +20,7 @@ export default function AccountInfo() {
     const [ newPassword, setPassword ] = useState('');
     
     const updateInfo = (event) => {
-      event.preventDefault();
+      //event.preventDefault();
       console.log("HERE");
       auth.onAuthStateChanged((user) => {
         if (user) {
