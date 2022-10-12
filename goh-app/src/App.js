@@ -55,10 +55,10 @@ function App() {
               />        
 
               {/* Redirect to add task */}
-              <Route
+              {/* <Route
               path = '/task/taskcreate'
               element={ user ? <TaskCreate/> : <Navigate to = "/login"/>} 
-              />
+              /> */}
 
               <Route
               path = '/project/:projectId'
