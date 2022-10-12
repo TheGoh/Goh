@@ -170,7 +170,7 @@ export default function Project() {
                 <DialogTitle>Create Task</DialogTitle>
                     <DialogContent>
                         <DialogContentText sx={{textIndent:'0px'}}>
-                            To create a Task, please enter your project details. We
+                            To create a Task, please enter your task details. We
                             will send updates occasionally.
                         </DialogContentText>
 
@@ -189,7 +189,7 @@ export default function Project() {
                             </Grid>
                             <Grid item xs={1}>
                                 <FormControl sx={{width: "100%"}}>
-                                    <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
+                                    <InputLabel htmlFor="component-outlined">Task Description</InputLabel>
                                     <OutlinedInput
                                     id="component-outlined"
                                     value={projDescr}
