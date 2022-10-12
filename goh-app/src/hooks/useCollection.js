@@ -8,9 +8,12 @@ import { collection, query, where, getDocs } from 'firebase/firestore'
 export const useCollection = (collect, _query) => { 
     const [documents, setDocuments] = useState(null)
 
+
+
     useEffect(() => {
         let ref = collection(firedb, collect)
 
+        console.log(ref);
         if (_query) {
             ref = query(ref, where(..._query))
         }

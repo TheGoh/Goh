@@ -1,7 +1,24 @@
 import { useState } from 'react';
 import { getAuth } from 'firebase/auth'
 import * as React from 'react';
+// import firebase from 'firebase/app';
+import 'firebase/firestore';
+//Functionality
+import { firedb } from '../../firebase/config';
+import { 
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  collection,query,getFirestore
+  } from "firebase/firestore"
+  import { useCollection } from '../../hooks/useCollection';
+
+  /* Initialize firebase */
+import { initializeApp } from "firebase/app";
+ 
 import { styled } from '@mui/material/styles';
+import { useAuthContext } from '../../hooks/useAuthContext'
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -63,7 +80,7 @@ export default function Notification() {
       'MessageTime': 14,'text': '我'},
     ])
 
-    //current user list
+    // current user list
     const [userData,setUserData]=useState([
       {'userName':'qifei',userId:1,
       'newMessageTime': 12,'readMessageTime': 10},
@@ -73,6 +90,24 @@ export default function Notification() {
       'newMessageTime': 12,'readMessageTime': 13}
     ])
     let myUSerId = 1;
+
+    const { user } = useAuthContext()
+    const auth = getAuth();
+
+    //todo ,获取全部的用户列表
+    const fff = useCollection('users',null);
+
+    const {documents: allUsers} = useCollection('users',null);
+    console.log(allUsers);
+
+    // const user = getAuth().currentUser;
+    // const currUserDoc = doc(firedb, `users`, user.uid);
+    console.log(auth)
+    let myUser = auth.currentUser;
+    // const currUserDoc = query( collection(firedb, `users`));
+    // console.log(currUserDoc)
+
+
 
     //open dialog box
       const openUserDialog = (userInfo) => {
@@ -105,13 +140,14 @@ export default function Notification() {
 
       
 
-    //todo 获取用户列表信息
+   
 
     return(
         <div class='notify'>
+
         <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             {
-                userData.map((item,index)=>{
+                !allUsers ? '': allUsers.map((item,index)=>{
 
                   if(item.userId != myUSerId){
                     return     ( <React.Fragment> 
@@ -119,21 +155,21 @@ export default function Notification() {
                     <ListItemAvatar>
                       {
                         item.newMessageTime <= item.readMessageTime ? (
-                          <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
+                          <Avatar alt={item.displayName} src="/static/images/avatar/1.jpg" />
                         ) :(
                           <StyledBadge
                           overlap="circular"
                           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                           variant="dot"
                         >
-                          <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
+                          <Avatar alt={item.displayName} src="/static/images/avatar/1.jpg" />
                         </StyledBadge>
                         )
                       }
                    
                     </ListItemAvatar>
                     <ListItemText
-                      primary={item.userName}
+                      primary={item.displayName}
                     />
                   </ListItem>
                   <Divider variant="inset" component="li" /></React.Fragment>) }
