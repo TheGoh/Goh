@@ -80,23 +80,13 @@ export default function Project() {
         event.preventDefault();
         const projid = uuid();
         createProject(user.uid, projid, projName, projDescr);
-        console.log(projid);
-
-        //update global storage
-        let tempIds = projOwnedIds;
-        tempIds.push(projid);
-        setProjOwnedIds(tempIds);
-        let tempProjs = projOwned;
-        tempProjs[projid] = [projid, projName, projDescr];
-        setProjOwned(tempProjs);
 
         setProjName('');
         setProjDescr('');
         setOpen(false);
     };
 
-    const test1 = [1,2,3,4,5,6,7,8,9,10];
-       
+
     return ( 
         <Box sx={{ p: 2, border: '1px dashed grey' }}>
 
