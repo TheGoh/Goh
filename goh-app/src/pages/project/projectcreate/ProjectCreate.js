@@ -29,60 +29,41 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
-let project_owned = {}; // hold current user owned projects
-let project_owned_ids = []; // hold all owned project ids for searching in projOwned
-let ownProjectList = [];
+// let snapshots = [];
 
 export default function Project() {
     /* React states */
     const [open, setOpen] = useState(''); // form dialog open/close
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
-    const [projOwned, setProjOwned] = useState(''); // hold current user owned projects
-    const [projOwnedIds, setProjOwnedIds] = useState(''); // hold all owned project ids for searching in projOwned
     const { createProject, projid, error } = useProject();
-    const { documents: allProjects } = useCollection('projects',null);
-    
+    const { documents: allProjects } = useCollection('projects', null);
+    const [user_owned_ids, setUserOwnedIds] = useState('');
+    const [all_projects_dict, setAllProjectsDict] = useState('');
 
     /* Fetch the current user project list */
     const user = getAuth().currentUser;
     const currUserDoc = doc(firedb, `users`, user.uid);
-
+    
     useEffect(() => {
-        updateUserProjectList();
-        //console.log(project_owned_ids);
-    });
-
-    function updateUserProjectList() {
-        getDoc(currUserDoc)
-        .then((doc) => {
-            ownProjectList = doc.data().ownedProjects;
-            // console.log(ownProjectList);
-            // console.log(allProjects);
-            
-        })
-        .then(() => {
-            if (allProjects !== null) {
-                let items_arr = allProjects.filter((element) => { //only get owned projects
-                    if (ownProjectList !== undefined) {
-                        if (ownProjectList.includes(element.id)) return element;
-                    }
-                })
-                let items_dict = {};
-                let items_ids = [];
-                items_arr.forEach((item) => {
-                    // [project_id, project_name, project_description]
-                    items_dict[item.id] = [item.id, item.projName, item.projDescr];
-                    items_ids.push(item.id);
-                });
-                project_owned = items_dict;
-                project_owned_ids = items_ids;
-                // console.log(project_owned)
+        onSnapshot(currUserDoc, (doc) => {
+            if (user_owned_ids.length !== doc.data().ownedProjects.length) {
+                setUserOwnedIds(doc.data().ownedProjects);
             }
         });
-        // console.log(allProjects);
-        // console.log(project_owned_ids);
-    }
+
+        if (allProjects !== null) {
+            let temp = {};
+            allProjects.forEach(project => {
+                temp[project.id] = project;
+            });
+            setAllProjectsDict(temp);
+        }
+        
+    }, [user_owned_ids, allProjects]);
+    console.log(all_projects_dict);
+
+    
     
     /* Form control */
     const handleClickOpen = () => { //popup form
@@ -98,20 +79,13 @@ export default function Project() {
         event.preventDefault();
         const projid = uuid();
         createProject(user.uid, projid, projName, projDescr);
-        console.log(projid);
-
-        //update global storage
-        project_owned_ids.push(projid);
-        project_owned[projid] = [projid, projName, projDescr];
-
         setProjName('');
         setProjDescr('');
         setOpen(false);
     };
-
-    const test1 = [1,2,3,4,5,6,7,8,9,10];
-       
-    return ( 
+    
+    if (allProjects === null || Object.keys(all_projects_dict).length === 0) return (<div>Loading</div>)
+    else return ( 
         <Box sx={{ p: 2, border: '1px dashed grey' }}>
 
             {/* Projects display */}
@@ -124,17 +98,16 @@ export default function Project() {
                         <AddIcon fontSize="large"/>
                     </Button>
                 </Grid>
-                {project_owned_ids.length > 0 && project_owned_ids.map((item) => 
-                    <Grid item xs={1}>
-                        <Link to = {`/project/${project_owned[item][0]}`} key = {project_owned[item][0]}>
+                {user_owned_ids.length > 0 && user_owned_ids.map((item) => 
+                    <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id}>
+                        <Grid item xs={1}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
-                                    project_owned[item][1]
+                                    all_projects_dict[item].projName
                                 }
                             </Button>
-                        </Link>
-                        
-                    </Grid>
+                        </Grid>
+                    </Link>
                 )}
             </Grid>
 

@@ -46,7 +46,7 @@ export const useProject = () => {
                 ownedProjects: tempOwnedProjects
             })
             .then(() => {
-                console.log("update successfully!!!",doc.data().ownedProjects)
+                //console.log("update successfully!!!",doc.data().ownedProjects)
                 
             })
         })
