@@ -13,7 +13,7 @@ import Navbar from './components/Navbar'
 import AccountInfo from './pages/accountInfo/AccountInfo'
 import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
-import Project from './pages/project/projectinfo/ProjectInfo'
+import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
 //console.log(version);
 
@@ -34,34 +34,34 @@ function App() {
               {/* Redirect to Home page */}
               <Route 
               path = '/login' 
-              element={ !user ? <Login /> : <Navigate to = "/project/projectcreate"/> } 
+              element={ !user ? <Login /> : <Navigate to = "/accountInfo"/> } 
               />
 
               {/* Redirect to Home page */}
               <Route
               path = '/signup'
-              element={ user ? <Navigate to = "/project/projectcreate"/> : <Signup />} 
+              element={ user ? <Navigate to = "/accountInfo"/> : <Signup />} 
               />       
 
               <Route 
               path = '/accountInfo' 
               element={ user ? <AccountInfo/> : <Navigate to = "/login"/> } 
               />
-              
               {/* Redirect to add project */}
               <Route
               path = '/project/projectcreate'
               element={ user ? <ProjectCreate/> : <Navigate to = "/login"/>} 
+              />        
+
+              {/* Redirect to add task */}
+              <Route
+              path = '/task/taskcreate'
+              element={ user ? <TaskCreate/> : <Navigate to = "/login"/>} 
               />
 
               <Route
               path = '/notification'
-              element={ user ? <Notification/> : <Navigate to = "/login"/>}
-              />
-
-              <Route
-              path = '/project/:projectId'
-              element={ user ? <Project/> : <Navigate to = "/login"/>}
+              element={ user ? <Notification/> : <Navigate to = "/notification"/>}
               />
 
             </Routes>

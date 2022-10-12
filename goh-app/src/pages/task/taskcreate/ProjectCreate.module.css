@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+
+
+.addtask{
+  display: flex;
+}
+
+.project-grid {
+  
+}
+
+.project-grid-item {
+  vertical-align: middle;
+}
+
+.project-grid-paper {
+  width: 200px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
+
+.project-grid-button {
+  width: 200px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
+
+.project-create-form {
+  margin: auto;
+  color: white;
+  font-family: 'Cabin', sans-serif;
+  text-indent: 0px;
+}
