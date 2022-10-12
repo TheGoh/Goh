@@ -2,7 +2,7 @@
 
 //Functionality
 import { useState, useEffect } from 'react';
-import { getAuth } from 'firebase/auth'
+import { useAuthContext } from '../../../hooks/useAuthContext'
 import { useCollection } from '../../../hooks/useCollection';
 import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
@@ -37,19 +37,23 @@ export default function Project() {
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
     const { createProject, projid, error } = useProject();
-    const { documents: allProjects } = useCollection('projects', null);
+    const { documents: allProjects , error2} = useCollection('projects', null);
     const [user_owned_ids, setUserOwnedIds] = useState('');
     const [all_projects_dict, setAllProjectsDict] = useState('');
 
+
     /* Fetch the current user project list */
-    const user = getAuth().currentUser;
-    const currUserDoc = doc(firedb, `users`, user.uid);
+    const { user } = useAuthContext()
+    
     
     useEffect(() => {
+        const currUserDoc = doc(firedb, `users`, user.uid);
         onSnapshot(currUserDoc, (doc) => {
+            if (doc !== undefined) {
             if (user_owned_ids.length !== doc.data().ownedProjects.length) {
-                setUserOwnedIds(doc.data().ownedProjects);
-            }
+                    setUserOwnedIds(doc.data().ownedProjects);
+                }   
+            }                  
         });
 
         if (allProjects !== null) {
@@ -58,10 +62,8 @@ export default function Project() {
                 temp[project.id] = project;
             });
             setAllProjectsDict(temp);
-        }
-        
+        }       
     }, [user_owned_ids, allProjects]);
-    console.log(all_projects_dict);
 
     
     

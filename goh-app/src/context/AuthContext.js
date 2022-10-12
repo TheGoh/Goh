@@ -31,7 +31,7 @@ export const AuthContextProvider = ({children}) => {
         })
     },[])
 
-    console.log('AuthContext state:', state)
+    //console.log('AuthContext state:', state)
 
     return (
         // there will be more state to be added
