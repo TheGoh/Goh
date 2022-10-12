@@ -101,15 +101,17 @@ export default function Project() {
                     </Button>
                 </Grid>
                 {user_owned_ids.length > 0 && user_owned_ids.map((item) => 
-                    <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id}>
+                    
                         <Grid item xs={1}>
+                        <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
                                     all_projects_dict[item].projName
                                 }
                             </Button>
+                        </Link>
                         </Grid>
-                    </Link>
+                    
                 )}
             </Grid>
 
