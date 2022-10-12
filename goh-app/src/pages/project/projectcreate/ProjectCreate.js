@@ -1,12 +1,12 @@
 /* Project Creation and Selection */
 
 //Functionality
-import { useState,useEffect } from 'react';
-import { useAuthContext } from '../../../hooks/useAuthContext'
+import { useState, useEffect } from 'react';
+import { getAuth } from 'firebase/auth'
 import { useCollection } from '../../../hooks/useCollection';
 import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
-import { doc, getDoc } from "firebase/firestore"
+import { doc, getDoc, onSnapshot } from "firebase/firestore"
 import { v4 as uuid } from 'uuid';
 
 //routing
@@ -29,6 +29,10 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
+let project_owned = {}; // hold current user owned projects
+let project_owned_ids = []; // hold all owned project ids for searching in projOwned
+let ownProjectList = [];
+
 export default function Project() {
     /* React states */
     const [open, setOpen] = useState(''); // form dialog open/close
@@ -38,37 +42,48 @@ export default function Project() {
     const [projOwnedIds, setProjOwnedIds] = useState(''); // hold all owned project ids for searching in projOwned
     const { createProject, projid, error } = useProject();
     const { documents: allProjects } = useCollection('projects',null);
-    const { user } = useAuthContext()
-
+    
 
     /* Fetch the current user project list */
-    let ownProjectList = null;
-    
+    const user = getAuth().currentUser;
     const currUserDoc = doc(firedb, `users`, user.uid);
-    getDoc(currUserDoc)
-    .then((doc) => {
-        ownProjectList = doc.data().ownedProjects;
-        
-    })
-    .then(() => {
-        if (allProjects !== null) {
-            let items_arr = allProjects.filter((element) => { //only get owned projects
-                if (ownProjectList !== undefined) {
-                    if (ownProjectList.includes(element.id)) return element;
-                }
-            })
-            let items_dict = {};
-            let items_ids = [];
-            items_arr.forEach((item) => {
-                // [project_id, project_name, project_description]
-                items_dict[item.id] = [item.id, item.projName, item.projDescr];
-                items_ids.push(item.id);
-            });
-            setProjOwned(items_dict);
-            setProjOwnedIds(items_ids);
-        }
+
+    useEffect(() => {
+        updateUserProjectList();
+        //console.log(project_owned_ids);
     });
 
+    function updateUserProjectList() {
+        getDoc(currUserDoc)
+        .then((doc) => {
+            ownProjectList = doc.data().ownedProjects;
+            // console.log(ownProjectList);
+            // console.log(allProjects);
+            
+        })
+        .then(() => {
+            if (allProjects !== null) {
+                let items_arr = allProjects.filter((element) => { //only get owned projects
+                    if (ownProjectList !== undefined) {
+                        if (ownProjectList.includes(element.id)) return element;
+                    }
+                })
+                let items_dict = {};
+                let items_ids = [];
+                items_arr.forEach((item) => {
+                    // [project_id, project_name, project_description]
+                    items_dict[item.id] = [item.id, item.projName, item.projDescr];
+                    items_ids.push(item.id);
+                });
+                project_owned = items_dict;
+                project_owned_ids = items_ids;
+                // console.log(project_owned)
+            }
+        });
+        // console.log(allProjects);
+        // console.log(project_owned_ids);
+    }
+    
     /* Form control */
     const handleClickOpen = () => { //popup form
         //console.log(projOwned);
@@ -86,17 +101,15 @@ export default function Project() {
         console.log(projid);
 
         //update global storage
-        let tempIds = projOwnedIds;
-        tempIds.push(projid);
-        setProjOwnedIds(tempIds);
-        let tempProjs = projOwned;
-        tempProjs[projid] = [projid, projName, projDescr];
-        setProjOwned(tempProjs);
+        project_owned_ids.push(projid);
+        project_owned[projid] = [projid, projName, projDescr];
 
         setProjName('');
         setProjDescr('');
         setOpen(false);
     };
+
+    const test1 = [1,2,3,4,5,6,7,8,9,10];
        
     return ( 
         <Box sx={{ p: 2, border: '1px dashed grey' }}>
@@ -111,12 +124,12 @@ export default function Project() {
                         <AddIcon fontSize="large"/>
                     </Button>
                 </Grid>
-                {projOwnedIds.length > 0 && projOwnedIds.map((item) => 
+                {project_owned_ids.length > 0 && project_owned_ids.map((item) => 
                     <Grid item xs={1}>
-                        <Link to = {`/project/${projOwned[item][0]}`} key = {projOwned[item][0]}>
+                        <Link to = {`/project/${project_owned[item][0]}`} key = {project_owned[item][0]}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
-                                    projOwned[item][1]
+                                    project_owned[item][1]
                                 }
                             </Button>
                         </Link>

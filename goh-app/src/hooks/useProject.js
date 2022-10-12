@@ -13,7 +13,6 @@ import { firedb } from '../firebase/config';
 //create project hook
 export const useProject = () => {
     const [error, setError] = useState('')
-    const [projid, setProjId] = useState('')
 
     //takes fields and creates a firebase document for a project
     const createProject = async (ownerid, projid, projName, projDescr) => {
@@ -39,17 +38,18 @@ export const useProject = () => {
 
         
         getDoc(currUserDoc)
-            .then ((doc) => {
-                let tempOwnedProjects = doc.data().ownedProjects;
-                tempOwnedProjects.push(projid);
-                
-                updateDoc(currUserDoc, {
-                    ownedProjects: tempOwnedProjects
-                })
-                .then(() => {
-                    console.log("update successfully!!!",doc.data().ownedProjects)
-                })
+        .then ((doc) => {
+            let tempOwnedProjects = doc.data().ownedProjects;
+            tempOwnedProjects.push(projid);
+            
+            updateDoc(currUserDoc, {
+                ownedProjects: tempOwnedProjects
             })
+            .then(() => {
+                console.log("update successfully!!!",doc.data().ownedProjects)
+                
+            })
+        })
 
     }
 
