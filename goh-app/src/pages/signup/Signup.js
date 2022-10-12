@@ -11,12 +11,8 @@ import logo from '../../imgs/GohLogo.png'
 
 // styles
 import styles from './Signup.module.css'
-import { 
-auth, 
-firedb, 
-createUserDocumentFromAuth,
-signInWithGooglePopup
-} from '../../firebase/config';
+
+//TODO: ERROR Message Field!!!
 
 // components
 export default function Signup() {
@@ -85,12 +81,13 @@ export default function Signup() {
                     label="Password"
                     onChange={(e => setPassword(e.target.value))}
                     type="password"
+                    autoComplete="on"
                   />
               </FormControl>
             </Grid>
     
             <Grid sx={{width: '90%', margin: '20px auto'}}>
-              <Button sx={{width: '50%'}} variant="contained" type="submit">Signup</Button>         
+              <Button sx={{width: '50%'}} variant="contained" type="submit">Signup</Button>
             </Grid>
           </Grid>
         </Grid>

@@ -55,7 +55,7 @@ export default function Project() {
                 }   
             }                  
         });
-
+        //console.log("11111")
         if (allProjects !== null) {
             let temp = {};
             allProjects.forEach(project => {

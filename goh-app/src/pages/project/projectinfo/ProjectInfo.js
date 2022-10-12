@@ -8,7 +8,7 @@ import { useDeleteDoc } from '../../../hooks/useDeleteDoc'
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 
 
@@ -54,6 +54,7 @@ export default function Project() {
                 .then(() => {
                     console.log("update successfully!!!",tempList)
                 })
+
             })
     }
 
@@ -62,7 +63,8 @@ export default function Project() {
             <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
 
-            <button onClick={handleDelete}> !!!Delete This Project!!! </button>
+        
+            <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
         </div>
     )
 }
