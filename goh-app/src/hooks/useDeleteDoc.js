@@ -1,18 +1,20 @@
 
 import { firedb } from '../firebase/config';
 
-import { useState, useEffect } from 'react' 
+import { useState } from 'react' 
 import { doc, deleteDoc } from 'firebase/firestore'
 
-export const useDeleteDoc = (docRef, id) => { 
+export const useDeleteDoc = () => { 
     const [error, setError] = useState(null)
 
-    useEffect(async () => {
+    const deleteDocument = async(docRef, id) => {
         let ref = doc(firedb, docRef, id)
 
         await deleteDoc(ref)
             .catch(error => {
                 setError(error.message)
             })
-    }, [docRef, id])
+    }
+
+    return {deleteDocument, error}
 }
