@@ -45,12 +45,7 @@ export default function Project() {
     const currUserDoc = doc(firedb, `users`, user.uid);
     getDoc(currUserDoc)
     .then((doc) => {
-        if (doc.data.ownProjects !== undefined) {
-            ownProjectList = doc.data().ownedProjects;
-        }
-        else {
-            ownProjectList = [];
-        }
+        ownProjectList = doc.data().ownedProjects;
         
     })
     .then(() => {
@@ -70,7 +65,11 @@ export default function Project() {
             setProjOwned(items_dict);
             setProjOwnedIds(items_ids);
         }
-    });
+    })
+    .catch(error => {
+        console.error(error)
+    })
+    ;
 
     /* Form control */
     const handleClickOpen = () => { //popup form

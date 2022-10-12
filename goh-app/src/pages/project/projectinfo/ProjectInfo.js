@@ -37,20 +37,22 @@ export default function Project() {
     const handleDelete = async(e) => {
 
         //remove from projects collection
-        deleteDocument(`project`, projectId)
+        deleteDocument(`projects`, projectId)
         const ref = doc(firedb, `users`, user.uid)
 
         //remove from user's project id entry
         getDoc(ref)
             .then ((doc) => {
                 let tempOwnedProjects = doc.data().ownedProjects;
-                tempOwnedProjects.filter((project) => project.uid === projectId)
+                let tempList = tempOwnedProjects.filter((project) => {
+                    if (projectId !== project) return project
+                })
                 
                 updateDoc(ref, {
-                     ownedProjects: tempOwnedProjects
+                     ownedProjects: tempList
                 })
                 .then(() => {
-                    console.log("update successfully!!!",tempOwnedProjects)
+                    console.log("update successfully!!!",tempList)
                 })
             })
     }
