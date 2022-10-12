@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react' 
 import { firedb } from '../firebase/config';
 
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore'
 
 //fetch collection from firestore
 //parameter is the reference/path of the collection
@@ -15,14 +15,18 @@ export const useCollection = (collect, _query) => {
             ref = query(ref, where(..._query))
         }
 
-        getDocs(ref)
+        const unsub = onSnapshot(ref, () => {
+            getDocs(ref)
             .then((snapshot) => {
                 let result = [];
                 snapshot.docs.forEach(doc => {
                     result.push({...doc.data(), id: doc.id})
                 })
                 setDocuments(result)
-            })    
+            }) 
+        })
+        
+        return () => unsub()  
     }, [collect, _query])
 
     return {documents}
