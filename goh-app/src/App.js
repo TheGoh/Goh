@@ -13,6 +13,7 @@ import Navbar from './components/Navbar'
 import AccountInfo from './pages/accountInfo/AccountInfo'
 import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
+import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
 //console.log(version);
 
@@ -50,11 +51,17 @@ function App() {
               <Route
               path = '/project/projectcreate'
               element={ user ? <ProjectCreate/> : <Navigate to = "/login"/>} 
+              />        
+
+              {/* Redirect to add task */}
+              <Route
+              path = '/task/taskcreate'
+              element={ user ? <TaskCreate/> : <Navigate to = "/login"/>} 
               />
 
               <Route
               path = '/notification'
-              element={ !user ? <Notification/> : <Navigate to = "/notification"/>}
+              element={ user ? <Notification/> : <Navigate to = "/notification"/>}
               />
 
             </Routes>

@@ -25,6 +25,7 @@ export const useCollection = (collect, _query) => {
                     result.push({...doc.data(), id: doc.id})
                 })
                 setDocuments(result)
+                console.log(result);
             })    
     }, [collect, _query])
 

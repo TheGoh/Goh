@@ -28,6 +28,7 @@ export default function Nav() {
                 {user && (
                     <>
                         <li><Link to="/project/projectcreate">Add Project</Link></li>
+                        <li><Link to="/task/taskcreate">Add task</Link></li>
                         <li><Link to="/accountInfo">Account Info</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
                         <li><Link to="/notification">Notification</Link></li>
