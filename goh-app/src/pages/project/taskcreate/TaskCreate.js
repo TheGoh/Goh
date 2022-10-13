@@ -78,35 +78,6 @@ export default function Task() {
       return <div> Loading... </div>
     }
     return(
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-        <div>
-          <form>
-            <h2>Task Information</h2>
-            <label>
-            <span>Task Name</span>
-              <input
-                    type = "text"
-                    value={taskName}
-                    onChange={(e)=>{
-                        setTaskName(e.target.value)
-                    }}
-              />
-              <span>Task Description</span>
-              <input
-                    type = "text"
-                    value={taskDescr}
-                    onChange={(e)=>{
-                         setTaskDescr(e.target.value)
-                    }}  
-              />
-            </label>
-            <Link to= {`/project/${projectId}`} key = {projectId} onClick={handleSubmit}> Save </Link>
-          </form>
-        </div>
-=======
->>>>>>> jim-branch
         // <Link to= {`/project/${projectId}`} key = {projectId} onClick={handleSubmit}> Save </Link>
         
         <Box>
@@ -117,11 +88,7 @@ export default function Task() {
               {
                 task_ids.length > 0 && task_ids.map((task) => 
                 <Grid item xs={1} key={task}>
-<<<<<<< HEAD
                   <Link style={{ textDecoration: 'none' }}>
-=======
-                  <Link to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} style={{ textDecoration: 'none' }}>
->>>>>>> jim-branch
                     <Button variant="contained" className={styles['task-grid-button']}>
                       {task_dict[task].taskName}
                     </Button>
@@ -129,10 +96,7 @@ export default function Task() {
                 </Grid>
               )}
           </Grid>
-<<<<<<< HEAD
 
-=======
->>>>>>> jim-branch
           {/* Popup form */}
           <Dialog open={Boolean(open)} onClose={handleClose}>
             <DialogTitle>Create Task</DialogTitle>
@@ -176,10 +140,6 @@ export default function Task() {
             </Dialog>
 
         </Box>
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> jim-branch
     )
 
 
