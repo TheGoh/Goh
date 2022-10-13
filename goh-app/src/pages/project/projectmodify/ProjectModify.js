@@ -61,6 +61,16 @@ export default function Modify() {
         if (projName !== '' && projDescr !== '') {
           console.log("here3")
           modifyDocument(`projects`, projectId, projName, projDescr)
+        } else if (projName !== '') {
+          console.log("here4")
+          modifyDocument(`projects`, projectId, projName, descr)
+        } else if (projDescr !== '') {
+          console.log("here5")
+
+          modifyDocument(`projects`, projectId, name, projDescr)
+        } else {
+          console.log("here6")
+          modifyDocument(`projects`, projectId, name, descr)
         }
         
         //const ref = doc(firedb, `users`, user.uid
