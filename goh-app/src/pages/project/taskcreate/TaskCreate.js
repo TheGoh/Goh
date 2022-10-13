@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useFetchProject } from '../../../hooks/useFetchProject'
 import { useTask } from '../../../hooks/useTask';
 import { useCollection } from '../../../hooks/useCollection';
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { firedb } from '../../../firebase/config';
 import { doc, getDoc, onSnapshot } from "firebase/firestore"
 
@@ -22,14 +22,15 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
-
 export default function Task() {
     const [open, setOpen] = useState(''); // form dialog open/close
     let { projectId, userUid } = useParams();
     const { documents: projectDtl } = useFetchProject('projects', projectId);
-    const { documents: task_collections } = useCollection(`projects/${projectId}/task`, null);
+    const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
+    const [task_ids, setTaskIds] = useState('');
+    const [task_dict, setTaskDict] = useState('');
     const { createTask } = useTask();
 
     /* Form control */
@@ -50,9 +51,27 @@ export default function Task() {
       setOpen(false);
     }
 
-    console.log(task_collections);
+    /* Fetch new tasks list */ 
+    useEffect(() => {
+      console.log(task_collections);
+      //update task_ids if task collection changes
+      const updateList = async() => {
+        const temp_collection = await task_collections;
+        let temp_ids = [];
+        let temp_id_dict = {};
+        if (temp_collection !== null) {
+          temp_collection.forEach(task => {
+            temp_ids.push(task.id);
+            temp_id_dict[task.id] = task;
+          });
+        }
+        setTaskIds(temp_ids);
+        setTaskDict(temp_id_dict);
+      }
+      updateList();
+    }, [task_collections]);
 
-    if (!projectDtl) {
+    if (!projectDtl && task_ids == []) {
       return <div> Loading... </div>
     }
     return(
@@ -63,6 +82,16 @@ export default function Task() {
               <Grid item xs={1}>
                   <Button variant="outlined" className={styles['task-grid-button']} onClick={handleClickOpen}><LibraryAddIcon/></Button>
              </Grid>
+              {
+                task_ids.length > 0 && task_ids.map((task) => 
+                <Grid item xs={1} key={task}>
+                  <Link style={{ textDecoration: 'none' }}>
+                    <Button variant="contained" className={styles['task-grid-button']}>
+                      {task_dict[task].taskName}
+                    </Button>
+                  </Link>
+                </Grid>
+              )}
           </Grid>
 
           {/* Popup form */}
