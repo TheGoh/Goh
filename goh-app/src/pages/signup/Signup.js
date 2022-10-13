@@ -47,7 +47,7 @@ export default function Signup() {
           
             <h1>Welcome!</h1>
             <h3>Signup to your account</h3>
-            {error ? <Alert severity="warning">{error}</Alert> : <></> }
+            {error ? <Alert severity="warning" sx={{height: '6%'}}>{error}</Alert> : <Box sx={{height: '7%'}}></Box> }
             {/* email button */}
             <Grid sx={{width: '90%', margin: '20px auto'}}>
               <FormControl sx={{width: "100%"}}>
@@ -90,7 +90,7 @@ export default function Signup() {
             </Grid>
     
             <Grid sx={{width: '90%', margin: '20px auto'}}>
-              <Button sx={{width: '50%'}} variant="contained" type="submit">Signup</Button>
+              {isPending ? <Button sx={{width: '50%'}} variant="contained" disabled>Pending</Button> : <Button sx={{width: '50%'}} variant="contained" type="submit">Sign Up</Button>}
             </Grid>
           </Grid>
         </Grid>

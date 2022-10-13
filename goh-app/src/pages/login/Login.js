@@ -21,7 +21,7 @@ export default function Login() {
   
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
-  const { login, error ,isPending } = useLogin()
+  const { login, error, isPending } = useLogin()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ export default function Login() {
       >
         <h1>Welcome back!</h1>
         <h3>Login to your account</h3>
-        {error ? <Alert severity="warning">{error}</Alert> : <></> }
+        {error ? <Alert severity="warning" sx={{height: '6%'}}>{error}</Alert> : <Box sx={{height: '7%'}}></Box> }
         <Grid sx={{width: '90%', margin: '20px auto'}}>
           <FormControl sx={{width: "100%"}}>
             <InputLabel htmlFor="component-outlined">Email</InputLabel>
@@ -80,7 +80,8 @@ export default function Login() {
         </Grid>
 
         <Grid sx={{width: '90%', margin: '20px auto'}}>
-          <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>         
+          {isPending ? <Button sx={{width: '50%'}} variant="contained" disabled>Pending</Button> : <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>}
+          
         </Grid>
       </Grid>
     </Grid>
