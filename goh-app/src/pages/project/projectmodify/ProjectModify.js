@@ -52,7 +52,6 @@ export default function Modify() {
           setProjDescr(descr)
           console.log("new one:" + projDescr)
         }
-        setProjDescr(descr)
         console.log(projDescrSet === false)
         console.log("name:"+name)
         console.log("descr:"+descr)
