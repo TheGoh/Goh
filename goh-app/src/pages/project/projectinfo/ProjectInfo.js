@@ -71,7 +71,6 @@ export default function Project() {
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log(invite);
 
         let ref = collection (firedb, 'users')
         if (invite) {
@@ -92,9 +91,13 @@ export default function Project() {
                 getDoc(currUserDoc)
                     .then ((doc) => {
                         let invite_list = doc.data().invitations;
-                        if (!invite_list.includes(projectId) && !doc.data().ownedProjects.includes(projectId)) {
-                            invite_list.push(projectId);
+
+                        if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
+                            invite_list[projectId] = projectDtl.projName
                             updateDoc(currUserDoc, {invitations: invite_list});
+                        }
+                        else {
+                            console.log("error")
                         }                
                     })
             })

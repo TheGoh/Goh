@@ -17,10 +17,12 @@ export default function PendingInvite() {
             const userSnapShot = await getDoc(currUserDoc)
             if (userSnapShot.exists()) {
                 onSnapshot(currUserDoc, (doc) => {
-                //console.log(doc.data().invitations)
-                setinviteList(doc.data().invitations);
-                console.log(inviteList)
-            });
+                    console.log(doc.data().invitations)
+                    let temp = doc.data().invitations
+                    const arr = Array.from(temp)
+                    setinviteList(arr)
+                    console.log(arr)
+                });
             }
         }
         retrieve()
@@ -29,9 +31,10 @@ export default function PendingInvite() {
     return (
         <div> 
             <h1>Here's your invitation from project manager</h1>
-            <Select 
+            {/* <Select
+                onChange = {(option) => setinviteList(option)}
                 options = {inviteList}
-            />
+            /> */}
         </div>
     )
 }

@@ -64,7 +64,7 @@ export const createUserDocumentFromAuth = async (userAuth, userid) => {
         const { email } = userAuth;
         const createdAt = new Date();
         const ownedProjects = [];
-        const invitations = []; // a list of project ids being invited to
+        const invitations = {}; // a list of project ids being invited to
 
         try {
             await setDoc(userDocRef, {
