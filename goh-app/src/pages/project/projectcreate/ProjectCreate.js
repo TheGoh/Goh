@@ -91,13 +91,12 @@ export default function ProjectCreate() {
     
     if (allProjects === null || Object.keys(all_projects_dict).length === 0) return (<div>Loading</div>)
     else return ( 
-        <Box sx={{ p: 2, border: '1px dashed grey' }}>
+        <Box>
 
             {/* Projects display */}
-            <Grid container spacing={5} 
-                  className={styles['project-grid']} 
+            <Grid container spacing={5}  
                   columns={5} 
-                  sx={{ border: '1px dashed grey', width: '90%', margin: 'auto' }}>
+                  sx={{width: '90%', margin: 'auto' }}>
                 <Grid item xs={1}>
                     <Button variant="outlined" className={styles['project-grid-button']} onClick={handleClickOpen}>
                         <AddIcon fontSize="large"/>

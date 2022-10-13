@@ -133,7 +133,11 @@ export default function Project() {
             </Grid>
 
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
-                <Grid item xs={1}></Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> 
+                        <Button variant='contained'>Create Task</Button>
+                    </Link>   
+                </Grid>
                 <Grid item xs={1}>
                     <Link to={`/project/projectmodify/${projectId}`} key={projectId}>
                         <Button variant="contained">Change project information</Button>
@@ -144,11 +148,7 @@ export default function Project() {
                         <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
                     </Link>
                 </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> 
-                        <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Create Task</Button>
-                    </Link>   
-                </Grid>
+                
             </Grid>
         </Box>
     )
