@@ -9,7 +9,7 @@ import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 
 import { Link} from "react-router-dom";
-
+import { useState } from 'react'
 
 
 
@@ -25,6 +25,7 @@ export default function Project() {
     //console.log("here is target project id", projectId );
     const { documents: projectDtl } = useFetchProject('projects', projectId);
     const { user } = useAuthContext()
+    const [invite, setInvite] = useState('')
 
     // console.log(projectDtl)
     // console.log("project page user id", user.uid)
@@ -58,10 +59,26 @@ export default function Project() {
             })
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
+
     return (
         <div className = "project - detail"> 
             <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
+            <form>
+                <span>Invite a user 'Email'</span>
+                <input 
+                    type = "text"
+                    value={invite}
+                    onChange={(e)=>{
+                        setInvite(e.target.value)
+                    }}
+                />
+                 
+                 {<button onClick={handleSubmit}>Send</button>}
+            </form>
             <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
             <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
         </div>

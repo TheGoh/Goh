@@ -13,8 +13,8 @@ export const useCollection = (collect, _query) => {
         if (_query) {
             ref = query(ref, where(..._query))
         }
-        const unsub = onSnapshot(ref, async () => {
-            await getDocs(ref)
+        const unsub = onSnapshot(ref, () => {
+            getDocs(ref)
             .then((snapshot) => {
                 let result = [];
                 snapshot.docs.forEach(doc => {

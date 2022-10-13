@@ -48,13 +48,16 @@ export default function Project() {
     
     useEffect(() => {
         const currUserDoc = doc(firedb, `users`, user.uid);
-        onSnapshot(currUserDoc, (doc) => {
-            if (doc !== undefined) {
-            if (user_owned_ids.length !== doc.data().ownedProjects.length) {
-                    setUserOwnedIds(doc.data().ownedProjects);
+          const unsub = onSnapshot(currUserDoc, async () => {
+            await getDoc(currUserDoc)
+            .then((doc) => {
+                console.log(doc)
+                if (user_owned_ids.length !== doc.data().ownedProjects.length) {
+                setUserOwnedIds(doc.data().ownedProjects);
                 }   
-            }                  
-        });
+            })
+            
+        })
         //console.log("11111")
         if (allProjects !== null) {
             let temp = {};
@@ -62,7 +65,8 @@ export default function Project() {
                 temp[project.id] = project;
             });
             setAllProjectsDict(temp);
-        }       
+        }  
+        //return () =>unsub()
     }, [user_owned_ids, allProjects]);
 
     
