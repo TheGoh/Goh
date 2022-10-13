@@ -7,11 +7,9 @@ import { useDeleteDoc } from '../../../hooks/useDeleteDoc'
 
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
-
-import { Link} from "react-router-dom";
-
-
-
+import { useState } from 'react';
+import { Link } from "react-router-dom";
+import { getAuth } from 'firebase/auth'
 
 import { 
     doc,
@@ -25,6 +23,7 @@ export default function Project() {
     //console.log("here is target project id", projectId );
     const { documents: projectDtl } = useFetchProject('projects', projectId);
     const { user } = useAuthContext()
+    const [invite, setInvite] = useState('')
 
     // console.log(projectDtl)
     // console.log("project page user id", user.uid)
@@ -58,12 +57,27 @@ export default function Project() {
             })
     }
 
+    const handleSubmit = (e) => {
+
+    }
+
     return (
         <div className = "project - detail"> 
             <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
 
-        
+            <form>
+                <span>Invite a user 'Email'</span>
+                <input 
+                    type = "text"
+                    value={invite}
+                    onChange={(e)=>{
+                        setInvite(e.target.value)
+                    }}
+                />
+                 
+                 {<button onClick={handleSubmit}>Send</button>}
+            </form>
             <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
         </div>
     )
