@@ -73,7 +73,7 @@ function App() {
               /> */}
 
               <Route
-              path = '/project/projectmodify'
+              path = '/project/projectmodify/:projectId'
               element={ user ? <Modify/> : <Navigate to = "/login"/>}
               />
 

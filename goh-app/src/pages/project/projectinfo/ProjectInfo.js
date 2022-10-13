@@ -62,8 +62,7 @@ export default function Project() {
         <div className = "project - detail"> 
             <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
-
-        
+            <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
             <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
         </div>
     )

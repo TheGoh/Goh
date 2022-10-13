@@ -27,7 +27,10 @@ export default function Modify() {
     const { user } = useAuthContext()
     const [projDescr, setProjDescr] = useState('');
     const [projName, setProjName] = useState('');
+    const [projDescrSet, setDescr] = useState(false);
+    const [projNameSet, setName] = useState(false);
     const { modifyDocument } = useSetDoc();
+
 
     // console.log(projectDtl)
     // console.log("project page user id", user.uid)
@@ -35,12 +38,32 @@ export default function Modify() {
     if (!projectDtl) {
         return <div> Loading... </div>
     }
-
+    const name = projectDtl.projName
+    const descr = projectDtl.projDescr
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
-    const handleModify = async(e) => {
+    const handleModify = (e) => {
 
+       
+        if (projNameSet === false) {
+          setProjName(name)
+        }
+        if (projDescrSet === false) {
+          console.log("IM HEREs")
+          setProjDescr(descr)
+          console.log("new one:" + projDescr)
+        }
+        setProjDescr(descr)
+        console.log(projDescrSet === false)
+        console.log("name:"+name)
+        console.log("descr:"+descr)
+        console.log("projname:" + projName)
+        console.log("projDescr:" + projDescr)
         //remove from projects collection
-        modifyDocument(`projects`, projectId, projName, projDescr)
+        if (projName !== '' && projDescr !== '') {
+          console.log("here3")
+          modifyDocument(`projects`, projectId, projName, projDescr)
+        }
+        
         //const ref = doc(firedb, `users`, user.uid
         //remove from user's project id entry
     }
@@ -55,7 +78,8 @@ export default function Modify() {
                     type = "text"
                     value={projName}
                     onChange={(e)=>{
-                      setProjName(e.target.value)
+                        setProjName(e.target.value)
+                        setName(true)
                     }}
               />
               <span>Project Description</span>
@@ -63,11 +87,12 @@ export default function Modify() {
                     type = "text"
                     value={projDescr}
                     onChange={(e)=>{
-                      setProjDescr(e.target.value)
-                    }}
+                         setProjDescr(e.target.value)
+                         setDescr(true)
+                    }}  
               />
             </label>
-            {<button onClick={handleModify}>Save</button>}
+            <Link to="/project/projectcreate" onClick={handleModify}> Save </Link>
           </form>
         </div>
     )
