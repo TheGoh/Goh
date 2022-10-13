@@ -87,7 +87,8 @@ export default function Project() {
                 
                 const receiver_uid = result[0].id;
                 const currUserDoc = doc(firedb, `users`, receiver_uid);
-
+                
+                //update user's invitation list 
                 getDoc(currUserDoc)
                     .then ((doc) => {
                         let invite_list = doc.data().invitations;

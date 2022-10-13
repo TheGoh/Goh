@@ -16,6 +16,7 @@ import Notification from './pages/notification/Notification'
 import Project from './pages/project/projectinfo/ProjectInfo'
 import Modify from './pages/project/projectmodify/ProjectModify'
 import Task from './pages/project/taskcreate/TaskCreate'
+import PendingInvite from './pages/pendinginvite/PendingInvite'
 
 //import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
@@ -82,6 +83,11 @@ function App() {
               <Route
               path = '/project/taskcreate/:projectId/:userUid'
               element={ user ? <Task/> : <Navigate to = "/login"/>}
+              />
+
+              <Route
+              path = '/invitations'
+              element={ user ? <PendingInvite/> : <Navigate to = "/login"/>}
               /> 
 
             </Routes>
