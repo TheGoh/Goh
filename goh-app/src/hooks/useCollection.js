@@ -8,8 +8,11 @@ export const useCollection = (collect, _query) => {
     const [documents, setDocuments] = useState(null)
     const [error, setError] = useState(null)
 
+
+
     useEffect(() => {
         let ref = collection(firedb, collect)
+
         if (_query) {
             ref = query(ref, where(..._query))
         }
@@ -28,6 +31,7 @@ export const useCollection = (collect, _query) => {
         })
         
         return () => unsub()   
+
     }, [collect, _query])
 
     return {documents, error}
