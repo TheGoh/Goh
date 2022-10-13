@@ -11,21 +11,19 @@ export default function PendingInvite() {
     const { user } = useAuthContext()
     const [ inviteList, setinviteList ] = useState([])
     const { documents: userDetail } = useFetchProject('users', user.uid )
-
-
     
     useEffect(() => {
         if (userDetail) {
             if (inviteList.length !== Object.keys(userDetail.invitations).length) {
-                let result = []
+                let result = inviteList
                 Object.keys(userDetail.invitations).forEach(item => {
                     result.push({value:item, label: userDetail.invitations[item] })
                 })
-                console.log(result)
+                //console.log(result)
                 setinviteList(result)
                 console.log("myList: ", inviteList)
 
-                console.log("inviteList.length: " + inviteList.length + "map length: " + Object.keys(userDetail.invitations).length)
+                //console.log("inviteList.length: " + inviteList.length + " map length: " + Object.keys(userDetail.invitations).length)
             } 
         }
     }, [userDetail, inviteList])
