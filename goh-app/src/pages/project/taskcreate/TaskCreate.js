@@ -53,7 +53,8 @@ export default function Task() {
 
     /* Fetch new tasks list */ 
     useEffect(() => {
-      console.log(task_collections);
+      if (task_collections) {
+        console.log(task_collections);
       //update task_ids if task collection changes
       const updateList = async() => {
         const temp_collection = await task_collections;
@@ -69,6 +70,8 @@ export default function Task() {
         setTaskDict(temp_id_dict);
       }
       updateList();
+      }
+      
     }, [task_collections]);
 
     if (!projectDtl && task_ids == []) {

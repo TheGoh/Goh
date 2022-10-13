@@ -21,11 +21,9 @@ export default function PendingInvite() {
                         result.push({value:item, label: userDetail.invitations[item]});
                     }
                 })
-                //console.log(result)
+                
                 setinviteList(result)
                 console.log("myList: ", inviteList)
-
-                //console.log("inviteList.length: " + inviteList.length + " map length: " + Object.keys(userDetail.invitations).length)
             } 
         }
     }, [userDetail, inviteList])
@@ -33,10 +31,9 @@ export default function PendingInvite() {
     return (
         <div> 
             <h1>Here's your invitation from project manager</h1>
-            {/* <Select
-                onChange = {(option) => setinviteList(option)}
+            <Select
                 options = {inviteList}
-            /> */}
+            />
         </div>
     )
 }
