@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react' 
 import { firedb } from '../firebase/config';
 
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 
 //fetch collection from firestore
 //parameter is the reference/path of the collection
@@ -12,10 +12,13 @@ export const useFetchProject = (collect, id) => {
     useEffect(() => {
         let ref = doc(firedb, collect, id)
 
-        getDoc(ref)
+        onSnapshot(ref, () => {
+            getDoc(ref)
             .then((snapshot) => {
                 setDocuments({...snapshot.data(), id: snapshot.id})
-            })    
+            })  
+        })
+              
     }, [collect, id])
 
     return {documents}
