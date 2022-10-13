@@ -15,7 +15,13 @@ import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
 import Project from './pages/project/projectinfo/ProjectInfo'
 import Modify from './pages/project/projectmodify/ProjectModify'
+import TModify from './pages/project/taskmodify/TaskModify'
 import Task from './pages/project/taskcreate/TaskCreate'
+<<<<<<< Updated upstream
+=======
+import TaskInfo from './pages/project/taskinfo/TaskInfo'
+import PendingInvite from './pages/pendinginvite/PendingInvite'
+>>>>>>> Stashed changes
 
 //import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
@@ -78,10 +84,27 @@ function App() {
               path = '/project/projectmodify/:projectId'
               element={ user ? <Modify/> : <Navigate to = "/login"/>}
               />
+              <Route
+              path = '/project/taskmodify/:projectId/:taskId'
+              element={ user ? <TModify/> : <Navigate to = "/login"/>}
+              />
 
               <Route
               path = '/project/taskcreate/:projectId/:userUid'
               element={ user ? <Task/> : <Navigate to = "/login"/>}
+<<<<<<< Updated upstream
+=======
+              />
+
+              <Route
+              path = '/project/taskinfo/:projectId/:taskId'
+              element={ user ? <TaskInfo/> : <Navigate to = "/login"/>}
+              />
+
+              <Route
+              path = '/invitation'
+              element={ user ? <PendingInvite/> : <Navigate to = "/login"/>}
+>>>>>>> Stashed changes
               /> 
 
             </Routes>

@@ -59,6 +59,7 @@ export default function Project() {
     }
 
     return (
+<<<<<<< Updated upstream
         <div className = "project - detail"> 
             <h1>{projectDtl.projName}</h1>
             <h2>{projectDtl.projDescr}</h2>
@@ -66,5 +67,47 @@ export default function Project() {
             <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> !!!Add Task To This Project!!! </Link>
             <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
         </div>
+=======
+        <Box>
+            <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
+                <Grid item xs={3}><h1>{projectDtl.projName}</h1></Grid>
+                <Grid item xs={3}><h3>{projectDtl.projDescr}</h3></Grid>
+                
+                <Grid item xs={1}><h3>Add contributors</h3></Grid>
+                <Grid item xs={1}>
+                    <FormControl sx={{width: "80%"}}>
+                        <InputLabel htmlFor="component-outlined">Email</InputLabel>
+                        <OutlinedInput
+                        id="component-outlined"
+                        value={invite}
+                        label="target"
+                        onChange = {(e)=>setInvite(e.target.value)}
+                        type="email"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Button variant='outlined' onClick={handleSubmit} endIcon={<SendIcon/>}>Send invitation</Button>
+                </Grid>
+            </Grid>
+            <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> 
+                        <Button variant='contained'>Create Task</Button>
+                    </Link>   
+                </Grid>
+                <Grid item xs={1}>
+                    <Link to={`/project/projectmodify/${projectId}`} key={projectId}>
+                        <Button variant="contained">Change project information</Button>
+                    </Link>
+                </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Link to="/project/projectcreate" onClick={handleDelete}>
+                        <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
+                    </Link>
+                </Grid>
+            </Grid>
+        </Box>
+>>>>>>> Stashed changes
     )
 }
