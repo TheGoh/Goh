@@ -15,9 +15,9 @@ export default function PendingInvite() {
     useEffect(() => {
         if (userDetail) {
             if (inviteList.length !== Object.keys(userDetail.invitations).length) {
-                let result = inviteList
+                let result = inviteList;
                 Object.keys(userDetail.invitations).forEach(item => {
-                    if (!result.includes(item)) {
+                    if (!result.some( e => e.value == item)) {
                         result.push({value:item, label: userDetail.invitations[item]});
                     }
                 })
