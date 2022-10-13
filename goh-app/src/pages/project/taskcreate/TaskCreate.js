@@ -79,7 +79,6 @@ export default function Task() {
     }
     return(
         // <Link to= {`/project/${projectId}`} key = {projectId} onClick={handleSubmit}> Save </Link>
-        
         <Box>
           <Grid container spacing={5} columns={6} sx={{width: '90%', margin: 'auto'}}>
               <Grid item xs={1}>
@@ -88,7 +87,7 @@ export default function Task() {
               {
                 task_ids.length > 0 && task_ids.map((task) => 
                 <Grid item xs={1} key={task}>
-                  <Link style={{ textDecoration: 'none' }}>
+                  <Link to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} style={{ textDecoration: 'none' }}>
                     <Button variant="contained" className={styles['task-grid-button']}>
                       {task_dict[task].taskName}
                     </Button>

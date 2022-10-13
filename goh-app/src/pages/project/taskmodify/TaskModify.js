@@ -17,7 +17,7 @@ import Button from '@mui/material/Button';
 
 export default function TModify() {
     let { projectId, taskId } = useParams();
-    const { documents: taskDtl } = useFetchProject(`projects/${projectId}`, taskId);
+    const { documents: taskDtl } = useFetchProject(`projects/${projectId}/tasks`, taskId);
     const [taskDescr, setTaskDescr] = useState('');
     const [taskName, setTaskName] = useState('');
     const { modifyTask } = useSetTask();
@@ -31,13 +31,13 @@ export default function TModify() {
     const handleModify = () => {
         //remove from projects collection
         if (taskName !== '' && taskDescr !== '') {
-            modifyTask(`projects/${projectId}`, taskId, taskName, taskDescr);
+            modifyTask(`projects/${projectId}/tasks`, taskId, taskName, taskDescr);
         } else if (taskName !== '') {
-            modifyTask(`projects/${projectId}`, taskId, taskName, tdescr);
+            modifyTask(`projects/${projectId}/tasks`, taskId, taskName, tdescr);
         } else if (taskDescr !== '') {
-            modifyTask(`projects/${projectId}`, taskId, tname, taskDescr);
+            modifyTask(`projects/${projectId}/tasks`, taskId, tname, taskDescr);
         } else {
-            modifyTask(`projects/${projectId}`, taskId, tname, tdescr);
+            modifyTask(`projects/${projectId}/tasks`, taskId, tname, tdescr);
         }
     }
     
@@ -76,7 +76,7 @@ export default function TModify() {
                 </Grid>
 
                 <Grid item xs={1}>
-                    <Link to="/project/projectcreate" onClick={handleModify} >
+                    <Link to={`/project/taskinfo/${projectId}/${taskId}`} onClick={handleModify} >
                         <Button variant="contained" sx={{height: '90%', width: '50%'}}>Save</Button>
                     </Link>
                 </Grid>
