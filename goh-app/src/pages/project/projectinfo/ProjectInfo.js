@@ -14,9 +14,13 @@ import { useState } from 'react'
 
 
 import { 
+    collection,
     doc,
     getDoc,
-    updateDoc
+    getDocs,
+    updateDoc,
+    query,
+    where
     } from "firebase/firestore"
 
 export default function Project() {
@@ -59,8 +63,37 @@ export default function Project() {
             })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault()
+        console.log(invite)
+
+        let ref = collection (firedb, 'users')
+        if (invite) {
+            ref = query(ref, where("email", "==", invite))
+        }
+        
+        await getDocs(ref)
+            .then((snapshot) => {
+                let result = [];
+                snapshot.docs.forEach(doc => {
+                    result.push({...doc.data(), id: doc.id})
+                })
+                
+                const receiver_uid = result[0].id
+                const currUserDoc = doc(firedb, `users`, receiver_uid);
+
+                getDoc(currUserDoc)
+                    .then ((doc) => {
+                        let invite_list = doc.data().invitations
+                        invite_list.push(projectId)
+                        updateDoc(currUserDoc, {invitations: invite_list})                       
+                    })
+            })
+            .catch((err) => {
+                console.error("no such user in database")
+            })
+
+        
     }
 
     return (
