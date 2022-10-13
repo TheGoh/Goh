@@ -1,16 +1,22 @@
 
 //import './ProjectInfo.css'
 import { useParams } from 'react-router-dom';
-import { useFetchProject } from '../../../hooks/useFetchProject'
+import { useFetchProject } from '../../../hooks/useFetchProject';
 import { useCollection } from '../../../hooks/useCollection';
 import { useDeleteDoc } from '../../../hooks/useDeleteDoc'
-
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
-
 import { Link} from "react-router-dom";
-import { useState } from 'react'
+import { useState } from 'react';
 
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import SendIcon from '@mui/icons-material/Send';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 import { 
@@ -21,7 +27,7 @@ import {
     updateDoc,
     query,
     where
-    } from "firebase/firestore"
+} from "firebase/firestore"
 
 export default function Project() {
     let { projectId } = useParams();
@@ -50,70 +56,110 @@ export default function Project() {
             .then ((doc) => {
                 let tempOwnedProjects = doc.data().ownedProjects;
                 let tempList = tempOwnedProjects.filter((project) => {
-                    if (projectId !== project) return project
+                    if (projectId !== project) return project;
                 })
                 
                 updateDoc(ref, {
                      ownedProjects: tempList
                 })
                 .then(() => {
-                    console.log("update successfully!!!",tempList)
+                    console.log("update successfully!!!",tempList);
                 })
 
             })
     }
 
     const handleSubmit = async(e) => {
-        e.preventDefault()
-        console.log(invite)
+        e.preventDefault();
+        console.log(invite);
 
         let ref = collection (firedb, 'users')
         if (invite) {
-            ref = query(ref, where("email", "==", invite))
+            ref = query(ref, where("email", "==", invite));
         }
         
         await getDocs(ref)
             .then((snapshot) => {
                 let result = [];
                 snapshot.docs.forEach(doc => {
-                    result.push({...doc.data(), id: doc.id})
-                })
+                    result.push({...doc.data(), id: doc.id});
+                });
                 
-                const receiver_uid = result[0].id
+                const receiver_uid = result[0].id;
                 const currUserDoc = doc(firedb, `users`, receiver_uid);
 
                 getDoc(currUserDoc)
                     .then ((doc) => {
-                        let invite_list = doc.data().invitations
-                        invite_list.push(projectId)
-                        updateDoc(currUserDoc, {invitations: invite_list})                       
+                        let invite_list = doc.data().invitations;
+                        if (!invite_list.includes(projectId) && !doc.data().ownedProjects.includes(projectId)) {
+                            invite_list.push(projectId);
+                            updateDoc(currUserDoc, {invitations: invite_list});
+                        }                
                     })
             })
             .catch((err) => {
-                console.error("Invalid User")
+                console.error("Invalid User");
             })
 
         
     }
 
     return (
-        <div className = "project - detail"> 
-            <h1>{projectDtl.projName}</h1>
-            <h2>{projectDtl.projDescr}</h2>
-            <form>
-                <span>Invite a user 'Email'</span>
-                <input 
-                    type = "text"
-                    value={invite}
-                    onChange={(e)=>{
-                        setInvite(e.target.value)
-                    }}
-                />
+        // <div className = "project - detail"> 
+        //     <h1>{projectDtl.projName}</h1>
+        //     <h2>{projectDtl.projDescr}</h2>
+        //     <form>
+        //         <span>Invite a user 'Email'</span>
+        //         <input 
+        //             type = "text"
+        //             value={invite}
+        //             onChange={(e)=>{
+        //                 setInvite(e.target.value)
+        //             }}
+        //         />
                  
-                 {<button onClick={handleSubmit}>Send</button>}
-            </form>
-            <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
-            <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
-        </div>
+        //          {<button onClick={handleSubmit}>Send</button>}
+        //     </form>
+        //     <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
+        //     <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
+        // </div>
+
+        <Box>
+            <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
+                <Grid item xs={3}><h1>{projectDtl.projName}</h1></Grid>
+                <Grid item xs={3}><h3>{projectDtl.projDescr}</h3></Grid>
+                
+                <Grid item xs={1}><h3>Add contributors</h3></Grid>
+                <Grid item xs={1}>
+                    <FormControl sx={{width: "80%"}}>
+                        <InputLabel htmlFor="component-outlined">Email</InputLabel>
+                        <OutlinedInput
+                        id="component-outlined"
+                        value={invite}
+                        label="target"
+                        onChange = {(e)=>setInvite(e.target.value)}
+                        type="email"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Button variant='outlined' onClick={handleSubmit} endIcon={<SendIcon/>}>Send invitation</Button>
+                </Grid>
+            </Grid>
+
+            <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={1}>
+                    <Link to={`/project/projectmodify/${projectId}`} key={projectId}>
+                        <Button variant="contained">Change project information</Button>
+                    </Link>
+                </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Link to="/project/projectcreate" onClick={handleDelete}>
+                        <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
+                    </Link>
+                </Grid>
+            </Grid>
+        </Box>
     )
 }
