@@ -10,6 +10,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import logo from '../../imgs/GohLogo.png'
+import { Alert } from '@mui/material';
 
 //TODO: ERROR Message Field!!!
 
@@ -36,7 +37,7 @@ export default function Login() {
       
       <Box sx={{ width:'50%'}} className={styles['intro']}>
         <img src={logo}></img>
-        <Grid container sx={{margin: 'auto', width: '100%', marginTop: '75px'}} columns={3}>
+        <Grid container sx={{margin: 'auto', width: '100%', marginTop: '155px'}} columns={3}>
           <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
           <Grid item className={styles['links']} xs={1}>
             <Link to="/signup" className={styles['links']}>Don't have an account yet?</Link>
@@ -50,6 +51,7 @@ export default function Login() {
       >
         <h1>Welcome back!</h1>
         <h3>Login to your account</h3>
+        {error ? <Alert severity="warning">{error}</Alert> : <></> }
         <Grid sx={{width: '90%', margin: '20px auto'}}>
           <FormControl sx={{width: "100%"}}>
             <InputLabel htmlFor="component-outlined">Email</InputLabel>

@@ -8,6 +8,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import logo from '../../imgs/GohLogo.png'
+import { Alert } from '@mui/material';
 
 // styles
 import styles from './Signup.module.css'
@@ -22,6 +23,7 @@ export default function Signup() {
     const {signup,  error ,isPending} = useSignup()
     const handleSubmit = (e) => {
       e.preventDefault();
+
       signup(email,password,userid);
     }
     return (
@@ -30,7 +32,7 @@ export default function Signup() {
           
           <Box sx={{ width:'50%'}} className={styles['intro']}>
             <img src={logo}></img>
-            <Grid container sx={{margin: 'auto', width: '100%', marginTop: '75px'}} columns={3}>
+            <Grid container sx={{margin: 'auto', width: '100%', marginTop: '155px'}} columns={3}>
               <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
               <Grid item className={styles['links']} xs={1}>
                 <Link to="/login" className={styles['links']}>Already have an account?</Link>
@@ -45,6 +47,7 @@ export default function Signup() {
           
             <h1>Welcome!</h1>
             <h3>Signup to your account</h3>
+            {error ? <Alert severity="warning">{error}</Alert> : <></> }
             {/* email button */}
             <Grid sx={{width: '90%', margin: '20px auto'}}>
               <FormControl sx={{width: "100%"}}>
@@ -92,6 +95,5 @@ export default function Signup() {
           </Grid>
         </Grid>
       </Box>
-      
     )
   }
