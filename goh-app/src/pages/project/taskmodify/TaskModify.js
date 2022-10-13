@@ -17,7 +17,11 @@ import Button from '@mui/material/Button';
 
 export default function TModify() {
     let { projectId, taskId } = useParams();
+<<<<<<< HEAD
     const { documents: taskDtl } = useFetchProject(`projects/${projectId}`, taskId);
+=======
+    const { documents: taskDtl } = useFetchProject(`projects/${projectId}/tasks`, taskId);
+>>>>>>> jim-branch
     const [taskDescr, setTaskDescr] = useState('');
     const [taskName, setTaskName] = useState('');
     const { modifyTask } = useSetTask();
@@ -28,6 +32,7 @@ export default function TModify() {
     const tname = taskDtl.taskName
     const tdescr = taskDtl.taskDescr
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
+<<<<<<< HEAD
     const handleModify = () => {
         //remove from projects collection
         if (taskName !== '' && taskDescr !== '') {
@@ -38,6 +43,19 @@ export default function TModify() {
             modifyTask(`projects/${projectId}`, taskId, tname, taskDescr);
         } else {
             modifyTask(`projects/${projectId}`, taskId, tname, tdescr);
+=======
+    const handleModify = (event) => {
+        //event.preventDefault()
+        //remove from projects collection
+        if (taskName !== '' && taskDescr !== '') {
+            modifyTask(`projects/${projectId}/tasks`, taskId, taskName, taskDescr);
+        } else if (taskName !== '') {
+            modifyTask(`projects/${projectId}/tasks`, taskId, taskName, tdescr);
+        } else if (taskDescr !== '') {
+            modifyTask(`projects/${projectId}/tasks`, taskId, tname, taskDescr);
+        } else {
+            modifyTask(`projects/${projectId}/tasks`, taskId, tname, tdescr);
+>>>>>>> jim-branch
         }
     }
     
@@ -76,7 +94,11 @@ export default function TModify() {
                 </Grid>
 
                 <Grid item xs={1}>
+<<<<<<< HEAD
                     <Link to="/project/projectcreate" onClick={handleModify} >
+=======
+                    <Link to={`/project/taskcreate/${projectId}/${taskId}`} onClick={handleModify} >
+>>>>>>> jim-branch
                         <Button variant="contained" sx={{height: '90%', width: '50%'}}>Save</Button>
                     </Link>
                 </Grid>

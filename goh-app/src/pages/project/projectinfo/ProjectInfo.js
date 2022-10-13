@@ -109,6 +109,18 @@ export default function Project() {
     }
 
     return (
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+        <div className = "project - detail"> 
+            <h1>{projectDtl.projName}</h1>
+            <h2>{projectDtl.projDescr}</h2>
+            <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
+            <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> !!!Add Task To This Project!!! </Link>
+            <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
+        </div>
+=======
+>>>>>>> jim-branch
         <Box>
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
                 <Grid item xs={3}><h1>{projectDtl.projName}</h1></Grid>
@@ -131,7 +143,10 @@ export default function Project() {
                     <Button variant='outlined' onClick={handleSubmit} endIcon={<SendIcon/>}>Send invitation</Button>
                 </Grid>
             </Grid>
+<<<<<<< HEAD
 
+=======
+>>>>>>> jim-branch
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> 
@@ -148,8 +163,14 @@ export default function Project() {
                         <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
                     </Link>
                 </Grid>
+<<<<<<< HEAD
                 
             </Grid>
         </Box>
+=======
+            </Grid>
+        </Box>
+>>>>>>> Stashed changes
+>>>>>>> jim-branch
     )
 }

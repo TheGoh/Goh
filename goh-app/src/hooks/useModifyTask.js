@@ -13,7 +13,10 @@ export const useSetTask = () => {
         updateDoc(ref, {taskDescr: taskDescr}).catch(error => {
                 setError(error.message)
             })
+<<<<<<< HEAD
         
+=======
+>>>>>>> jim-branch
     }
 
     return {modifyTask, error}
