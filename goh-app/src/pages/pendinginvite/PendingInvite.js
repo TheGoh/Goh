@@ -17,7 +17,9 @@ export default function PendingInvite() {
             if (inviteList.length !== Object.keys(userDetail.invitations).length) {
                 let result = inviteList
                 Object.keys(userDetail.invitations).forEach(item => {
-                    result.push({value:item, label: userDetail.invitations[item] })
+                    if (!result.includes(item)) {
+                        result.push({value:item, label: userDetail.invitations[item]});
+                    }
                 })
                 //console.log(result)
                 setinviteList(result)
