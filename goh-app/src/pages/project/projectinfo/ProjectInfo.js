@@ -90,7 +90,7 @@ export default function Project() {
                     })
             })
             .catch((err) => {
-                console.error("no such user in database")
+                console.error("Invalid User")
             })
 
         
