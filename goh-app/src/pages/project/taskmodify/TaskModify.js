@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useFetchProject } from '../../../hooks/useFetchProject';
 import { useCollection } from '../../../hooks/useCollection';
-import { useSetDoc } from '../../../hooks/useModifyDoc';
+import { useSetTask } from '../../../hooks/useModifyTask';
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext';
 import { useState } from 'react';
@@ -17,14 +17,10 @@ import Button from '@mui/material/Button';
 
 export default function TModify() {
     let { projectId, taskId } = useParams();
-    const { setDocument } = useSetDoc();
     const { documents: taskDtl } = useFetchProject(`projects/${projectId}`, taskId);
-    const { user } = useAuthContext();
     const [taskDescr, setTaskDescr] = useState('');
     const [taskName, setTaskName] = useState('');
-    const [projDescrSet, setDescr] = useState(false);
-    const [projNameSet, setName] = useState(false);
-    const { modifyDocument } = useSetDoc();
+    const { modifyTask } = useSetTask();
 
     if (!taskDtl) {
         return <div> Loading... </div>
@@ -32,33 +28,32 @@ export default function TModify() {
     const tname = taskDtl.taskName
     const tdescr = taskDtl.taskDescr
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
-    const handleModify = (e) => {
+    const handleModify = () => {
         //remove from projects collection
         if (taskName !== '' && taskDescr !== '') {
-            modifyDocument(`projects`, projectId, projName, projDescr);
-        } else if (projName !== '') {
-            modifyDocument(`projects`, projectId, projName, descr);
-        } else if (projDescr !== '') {
-            modifyDocument(`projects`, projectId, name, projDescr);
+            modifyTask(`projects/${projectId}`, taskId, taskName, taskDescr);
+        } else if (taskName !== '') {
+            modifyTask(`projects/${projectId}`, taskId, taskName, tdescr);
+        } else if (taskDescr !== '') {
+            modifyTask(`projects/${projectId}`, taskId, tname, taskDescr);
         } else {
-            modifyDocument(`projects`, projectId, name, descr);
+            modifyTask(`projects/${projectId}`, taskId, tname, tdescr);
         }
     }
     
     return (
         <Box >
             <Grid container sx={{margin: 'auto', width: '90%', alignItems: 'left'}} columns={4}>
-                <Grid item xs={1}><h1>Project Modify</h1></Grid><Grid item xs={3}></Grid>
+                <Grid item xs={1}><h1>Task Modify</h1></Grid><Grid item xs={3}></Grid>
                 <Grid item xs={1}>
                     <FormControl sx={{width:'55%'}}>
-                        <InputLabel htmlFor="component-outlined">Project Name</InputLabel>
+                        <InputLabel htmlFor="component-outlined">Task Name</InputLabel>
                         <OutlinedInput
                         id="component-outlined"
-                        value={projName}
-                        label="ProjectName"
+                        value={taskName}
+                        label="TaskName"
                         onChange = {(e)=>{
-                          setProjName(e.target.value);
-                          setName(true);
+                          setTaskName(e.target.value);
                         }}
                         type="text"
                         />
@@ -67,14 +62,13 @@ export default function TModify() {
 
                 <Grid item xs={2}>
                     <FormControl sx={{width:'80%'}}>
-                        <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
+                        <InputLabel htmlFor="component-outlined">Task Description</InputLabel>
                         <OutlinedInput
                         id="component-outlined"
-                        value={projDescr}
-                        label="ProjectDescr"
+                        value={taskDescr}
+                        label="TaskDescr"
                         onChange = {(e)=>{
-                          setProjDescr(e.target.value); 
-                          setDescr(true);
+                          setTaskDescr(e.target.value); 
                         }}
                         type="text"
                         />
