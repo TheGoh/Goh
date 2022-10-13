@@ -141,6 +141,11 @@ export default function Project() {
                         <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
                     </Link>
                 </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> 
+                        <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Create Task</Button>
+                    </Link>   
+                </Grid>
             </Grid>
         </Box>
     )
