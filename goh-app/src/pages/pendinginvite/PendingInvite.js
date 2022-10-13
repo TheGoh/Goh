@@ -9,24 +9,31 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore"
 export default function PendingInvite() {
     const { user } = useAuthContext()
     const [ inviteList, setinviteList ] = useState([])
+    const [ map, setMap ] = useState()
     //const { documents: userDetail } = useFetchProject('users', user.uid )
 
     useEffect(() => {
         const retrieve = async() => {
             const currUserDoc = doc(firedb, `users`, user.uid);
-            const userSnapShot = await getDoc(currUserDoc)
-            if (userSnapShot.exists()) {
+
                 onSnapshot(currUserDoc, (doc) => {
-                    console.log(doc.data().invitations)
-                    let temp = doc.data().invitations
-                    const arr = Array.from(temp)
-                    setinviteList(arr)
-                    console.log(arr)
+                    if (inviteList.length !== Object.keys(doc.data().invitations).length) {
+                        let result = []
+                        Object.keys(doc.data().invitations).forEach(item => {
+                            result.push({value:item, label: doc.data().invitations[item] })
+                        })
+                        const options = result.map(item => {
+                            return {value: item.value, label: item.label}
+                        })
+                        setinviteList(options)
+                        console.log(inviteList)
+
+                    }                   
                 });
-            }
+            //}
         }
         retrieve()
-    }, [])
+    }, [inviteList])
 
     return (
         <div> 
