@@ -44,7 +44,7 @@ export default function Project() {
       const { createTask, f} = useTask();
 
     const { documents: allProjects } = useCollection('projects',null);
-    const { documents: ffff } = useCollection('tasks',null);
+    const { documents: allTasks } = useCollection('tasks',null);
 
 
     const [curProjectId, setCurProjectId] = useState(''); // form dialog open/close
@@ -93,6 +93,7 @@ export default function Project() {
     }
     const handleSubmit = (event) => { //close form and save project
         event.preventDefault();
+        console.log(curProjectId);
         createTask(curProjectId,user.uid, projName, projDescr);
         setProjName('');
         setProjDescr('');
@@ -112,9 +113,9 @@ export default function Project() {
         setCurProjectId(id) ;
 
         
-        console.log(ffff)
-        if (ffff !== null){
-            setTaskList(ffff)
+        console.log(allTasks)
+        if (allTasks !== null){
+            setTaskList(allTasks)
         }
     }
        
@@ -163,6 +164,18 @@ export default function Project() {
                         <AddIcon fontSize="large"/>
                     </Button>
                 </Grid>
+                {allTasks.length > 0 && allTasks.map((item) => 
+                {
+                    if(item.parentId == curProjectId){
+                        <Grid item xs={1}>
+                        <Button variant="contained" className={styles['project-grid-button']}>
+                            {allTasks[item].taskName}
+                        </Button>
+                    </Grid>
+                    }
+                }
+                  
+                )}
             </Grid>
 
             {/* Popup form */}
@@ -189,11 +202,11 @@ export default function Project() {
                             </Grid>
                             <Grid item xs={1}>
                                 <FormControl sx={{width: "100%"}}>
-                                    <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
+                                    <InputLabel htmlFor="component-outlined">Task Description</InputLabel>
                                     <OutlinedInput
                                     id="component-outlined"
                                     value={projDescr}
-                                    label="ProjectDescription"
+                                    label="TaskDescription"
                                     onChange = {(e)=>setProjDescr(e.target.value)}
                                     type="text"
                                     />
