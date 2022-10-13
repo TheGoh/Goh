@@ -14,10 +14,8 @@ import { Link } from "react-router-dom";
 
 //Html components
 import styles from './ProjectCreate.module.css';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';

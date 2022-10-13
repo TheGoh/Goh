@@ -30,8 +30,6 @@ export default function Login() {
 
 
   return (
-
-
     <Box height="100vh" display="flex" className={styles['fulfill']}>
       <Grid container sx={{margin: '100px auto', width: '1000px'}} className={styles['container']}>
       
@@ -67,25 +65,23 @@ export default function Login() {
         
         <Grid sx={{width: '90%', margin: '20px auto'}}>
           <FormControl sx={{width: "100%"}}>
-              <InputLabel htmlFor="component-outlined">Password</InputLabel>
-              <OutlinedInput
-                id="component-outlined2"
-                value={password}
-                label="Password"
-                onChange={(e => setPassword(e.target.value))}
-                type="password"
-                autoComplete="on"
-              />
+            <InputLabel htmlFor="component-outlined">Password</InputLabel>
+            <OutlinedInput
+              id="component-outlined2"
+              value={password}
+              label="Password"
+              onChange={(e => setPassword(e.target.value))}
+              type="password"
+              autoComplete="on"
+            />
           </FormControl>
         </Grid>
 
         <Grid sx={{width: '90%', margin: '20px auto'}}>
           {isPending ? <Button sx={{width: '50%'}} variant="contained" disabled>Pending</Button> : <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>}
-          
         </Grid>
       </Grid>
     </Grid>
-    </Box>
-    
+    </Box> 
   )
 }
