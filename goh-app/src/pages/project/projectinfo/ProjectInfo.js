@@ -105,25 +105,6 @@ export default function Project() {
     }
 
     return (
-        // <div className = "project - detail"> 
-        //     <h1>{projectDtl.projName}</h1>
-        //     <h2>{projectDtl.projDescr}</h2>
-        //     <form>
-        //         <span>Invite a user 'Email'</span>
-        //         <input 
-        //             type = "text"
-        //             value={invite}
-        //             onChange={(e)=>{
-        //                 setInvite(e.target.value)
-        //             }}
-        //         />
-                 
-        //          {<button onClick={handleSubmit}>Send</button>}
-        //     </form>
-        //     <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
-        //     <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
-        // </div>
-
         <Box>
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
                 <Grid item xs={3}><h1>{projectDtl.projName}</h1></Grid>
