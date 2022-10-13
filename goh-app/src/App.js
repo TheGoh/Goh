@@ -15,6 +15,8 @@ import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
 import Project from './pages/project/projectinfo/ProjectInfo'
 import Modify from './pages/project/projectmodify/ProjectModify'
+import Task from './pages/project/taskcreate/TaskCreate'
+
 //import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
 //console.log(version);
@@ -76,6 +78,11 @@ function App() {
               path = '/project/projectmodify/:projectId'
               element={ user ? <Modify/> : <Navigate to = "/login"/>}
               />
+
+              <Route
+              path = '/project/taskcreate/:projectId/:userUid'
+              element={ user ? <Task/> : <Navigate to = "/login"/>}
+              /> 
 
             </Routes>
           </div>

@@ -31,7 +31,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 
 // let snapshots = [];
 
-export default function Project() {
+export default function ProjectCreate() {
     /* React states */
     const [open, setOpen] = useState(''); // form dialog open/close
     const [projName, setProjName] = useState('');
