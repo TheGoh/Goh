@@ -10,7 +10,9 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import logo from '../../imgs/GohLogo.png'
+import { Alert } from '@mui/material';
 
+//TODO: ERROR Message Field!!!
 
 // styles
 import styles from './Login.module.css'
@@ -19,7 +21,7 @@ export default function Login() {
   
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
-  const { login, error ,isPending } = useLogin()
+  const { login, error, isPending } = useLogin()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +37,7 @@ export default function Login() {
       
       <Box sx={{ width:'50%'}} className={styles['intro']}>
         <img src={logo}></img>
-        <Grid container sx={{margin: 'auto', width: '100%', marginTop: '75px'}} columns={3}>
+        <Grid container sx={{margin: 'auto', width: '100%', marginTop: '155px'}} columns={3}>
           <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
           <Grid item className={styles['links']} xs={1}>
             <Link to="/signup" className={styles['links']}>Don't have an account yet?</Link>
@@ -49,6 +51,7 @@ export default function Login() {
       >
         <h1>Welcome back!</h1>
         <h3>Login to your account</h3>
+        {error ? <Alert severity="warning" sx={{height: '6%'}}>{error}</Alert> : <Box sx={{height: '7%'}}></Box> }
         <Grid sx={{width: '90%', margin: '20px auto'}}>
           <FormControl sx={{width: "100%"}}>
             <InputLabel htmlFor="component-outlined">Email</InputLabel>
@@ -71,12 +74,14 @@ export default function Login() {
                 label="Password"
                 onChange={(e => setPassword(e.target.value))}
                 type="password"
+                autoComplete="on"
               />
           </FormControl>
         </Grid>
 
         <Grid sx={{width: '90%', margin: '20px auto'}}>
-          <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>         
+          {isPending ? <Button sx={{width: '50%'}} variant="contained" disabled>Pending</Button> : <Button sx={{width: '50%'}} variant="contained" type="submit">Login</Button>}
+          
         </Grid>
       </Grid>
     </Grid>

@@ -4,7 +4,8 @@ import {
   updateEmail, 
   updateProfile,
   sendEmailVerification,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  onAuthStateChanged
 } from "firebase/auth";
 import { useState } from "react";
 import styles from './AccountInfo.module.css'
@@ -13,61 +14,63 @@ import styles from './AccountInfo.module.css'
 
 export default function AccountInfo() {
     const auth = getAuth();
-    const user = auth.currentUser;
+    const user = auth.getCurrent;
     const [ newDisplayName, setDisplayName ] = useState('');
     const [ newEmail, setEmail ] = useState('');
-
-    function updateInfo() {
-      console.log('Updating');
-      if (user) {
-        //Update displayName and photo
-        if (user.displayName !== newDisplayName) {
-          updateProfile(user, {displayName: newDisplayName}).then(() => {}).catch((error) => {console.log(error.message);});
+    const [ newPassword, setPassword ] = useState('');
+    
+    const updateInfo = (event) => {
+      //event.preventDefault();
+      console.log("HERE");
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          let check = 0;
+          updateEmail(user, newEmail).then(()=>{
+            console.log("email update success")
+            check = 1
+          }).catch((error) => {
+            console.log("email update error")
+          });
+          updatePassword(user, newPassword).then(()=>{
+            console.log("pass update success")
+            check = 2
+          }).catch((error) => {
+            console.log("pass update error")
+          });
+          console.log(check);
+          if (check === 2) {
+            user.reload();
+          }
+          //user.reload();
         }
-
-        //TODO: update more attributes in account
-
-        user.reload();
-      }
-    }
-
-    function resetPassword() {
-      //TODO OPTIONAL: update password reset page UI
-      sendPasswordResetEmail(auth, user.email).then(() => {}).catch((error) => {console.log(error.message);})
-    }
+      });
+    };
     
     return (
         <div>
-          <form onSubmit={updateInfo} className={styles['signup-form']}>
+          <form className={styles['signup-form']}>
             <h2>Account Information</h2>
-
             <label>
-              <span>Display Name</span>
+            <span>Email</span>
               <input
                     type = "text"
-                    onChange={(e)=>{
-                      setDisplayName(e.target.value)
-                    }}
-                    value={newDisplayName}
-              />
-            </label>
-            
-            <label>
-              <span>Email</span>
-              <input
-                    type = "text"
+                    value={newEmail}
                     onChange={(e)=>{
                       setEmail(e.target.value)
                     }}
-                    value={newEmail}
+              />
+              <span>Password</span>
+              <input
+                    type = "text"
+                    value={newPassword}
+                    onChange={(e)=>{
+                      setPassword(e.target.value)
+                    }}
               />
             </label>
-            {<button>Save</button>}
+            
+            {<button onClick={updateInfo}>Save</button>}
           </form>
-          <div className={styles['passwd']}>
-            <button onClick={resetPassword}>Forgot Password?</button>
-          </div>
-          {/* <button onClick={seeSomething}>Test</button> */}
         </div>
       )
 }

@@ -3,7 +3,7 @@ import { useAuthContext } from './useAuthContext'
 
 //firebase imports
 import { auth, createUserDocumentFromAuth } from '../firebase/config'
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 
 export const useSignup = () => {
@@ -19,6 +19,7 @@ export const useSignup = () => {
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
+            updateProfile(user,{displayName:userid})
             createUserDocumentFromAuth(user, userid);
             // dispatch login function
             dispatch({ type: 'LOGIN', payload: user})      
@@ -29,6 +30,7 @@ export const useSignup = () => {
             setError(error.message)
 
         });
+      
     }
   
     return { signup, error, isPending }

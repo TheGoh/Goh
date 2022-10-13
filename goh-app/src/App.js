@@ -14,7 +14,8 @@ import AccountInfo from './pages/accountInfo/AccountInfo'
 import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
 import Project from './pages/project/projectinfo/ProjectInfo'
-import TaskCreate from './pages/task/taskcreate/TaskCreate'
+import Modify from './pages/project/projectmodify/ProjectModify'
+//import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
 //console.log(version);
 
@@ -48,6 +49,7 @@ function App() {
               path = '/accountInfo' 
               element={ user ? <AccountInfo/> : <Navigate to = "/login"/> } 
               />
+              
               {/* Redirect to add project */}
               <Route
               path = '/project/projectcreate'
@@ -69,6 +71,11 @@ function App() {
               path = '/notification'
               element={ user ? <Notification/> : <Navigate to = "/notification"/>}
               /> */}
+
+              <Route
+              path = '/project/projectmodify'
+              element={ user ? <Modify/> : <Navigate to = "/login"/>}
+              />
 
             </Routes>
           </div>
