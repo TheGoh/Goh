@@ -86,7 +86,7 @@ function App() {
               />
 
               <Route
-              path = '/invitations'
+              path = '/invitation'
               element={ user ? <PendingInvite/> : <Navigate to = "/login"/>}
               /> 
 
