@@ -17,15 +17,8 @@ import Project from './pages/project/projectinfo/ProjectInfo'
 import Modify from './pages/project/projectmodify/ProjectModify'
 import TModify from './pages/project/taskmodify/TaskModify'
 import Task from './pages/project/taskcreate/TaskCreate'
-<<<<<<< HEAD
 import PendingInvite from './pages/pendinginvite/PendingInvite'
-=======
-<<<<<<< Updated upstream
-=======
 import TaskInfo from './pages/project/taskinfo/TaskInfo'
-import PendingInvite from './pages/pendinginvite/PendingInvite'
->>>>>>> Stashed changes
->>>>>>> jim-branch
 
 //import TaskCreate from './pages/task/taskcreate/TaskCreate'
 
@@ -96,25 +89,18 @@ function App() {
               <Route
               path = '/project/taskcreate/:projectId/:userUid'
               element={ user ? <Task/> : <Navigate to = "/login"/>}
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
+
               />
 
               <Route
               path = '/project/taskinfo/:projectId/:taskId'
               element={ user ? <TaskInfo/> : <Navigate to = "/login"/>}
->>>>>>> jim-branch
+
               />
 
               <Route
               path = '/invitation'
               element={ user ? <PendingInvite/> : <Navigate to = "/login"/>}
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> jim-branch
               /> 
 
             </Routes>
