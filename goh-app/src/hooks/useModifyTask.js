@@ -7,14 +7,14 @@ export const useSetTask = () => {
 
     const modifyTask = (docRef, id, taskName, taskDescr) => {
         let ref = doc(firedb, docRef, id)
-        updateDoc(ref, {projName: projName }).catch(error => {
+        updateDoc(ref, {taskName: taskName }).catch(error => {
                 setError(error.message)
             })
-        updateDoc(ref, {projDescr: projDescr}).catch(error => {
+        updateDoc(ref, {taskDescr: taskDescr}).catch(error => {
                 setError(error.message)
             })
         
     }
 
     return {modifyTask, error}
-}
+} 
