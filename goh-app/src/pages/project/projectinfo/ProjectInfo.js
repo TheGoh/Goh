@@ -113,6 +113,7 @@ export default function Project() {
                  {<button onClick={handleSubmit}>Send</button>}
             </form>
             <Link to={`/project/projectmodify/${projectId}`} key = {projectId}> !!!Modify This Project!!! </Link>
+            <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> !!!Add Task To This Project!!! </Link>
             <Link to="/project/projectcreate" onClick={handleDelete}> !!!Delete This Project!!! </Link>
         </div>
     )

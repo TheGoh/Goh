@@ -5,7 +5,7 @@ import {
     getDoc,
     setDoc,
     updateDoc
-    } from "firebase/firestore"
+} from "firebase/firestore"
    
 import { firedb } from '../firebase/config';
 
