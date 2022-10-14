@@ -46,24 +46,32 @@ export default function ProjectCreate() {
     
     useEffect(() => {
         const retrieve = async() => {
-        const currUserDoc = doc(firedb, `users`, user.uid);
-        const userSnapShot = await getDoc(currUserDoc)
-        if (userSnapShot.exists()) {
-            //console.log("111")
-            onSnapshot(currUserDoc, (doc) => {
-            if (user_owned_ids.length !== doc.data().ownedProjects.length) {
-                    setUserOwnedIds(doc.data().ownedProjects);
-                }                  
-        });
-        }
-        //console.log("11111")
-        if (allProjects !== null) {
-            let temp = {};
-            allProjects.forEach(project => {
-                temp[project.id] = project;
-            });
-            setAllProjectsDict(temp);
-        }  
+            const currUserDoc = doc(firedb, `users`, user.uid);
+            const userSnapShot = await getDoc(currUserDoc)
+            if (userSnapShot.exists()) {
+                //console.log("111")
+                onSnapshot(currUserDoc, (doc) => {
+                    if (user_owned_ids.length !== doc.data().ownedProjects.length) {
+                        setUserOwnedIds(doc.data().ownedProjects);
+                    }
+                });
+            }
+            //console.log("11111")
+            if (allProjects !== null) {
+                let temp = {};
+                allProjects.forEach(project => {
+                    temp[project.id] = project;
+                });
+                setAllProjectsDict(temp);
+
+                //cleaned projects deleted by their owners
+                // let cleaned_project_ids = user_owned_ids.filter(id => {
+                //     if (Object.keys(all_projects_dict).includes(id)) {
+                //         return id;
+                //     }
+                // });
+                // setUserOwnedIds(cleaned_project_ids);
+            }
         }
         retrieve()
     }, [user_owned_ids, allProjects]);
