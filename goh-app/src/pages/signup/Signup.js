@@ -21,9 +21,9 @@ export default function Signup() {
     const [password, setPassword] = useState('')
     const [userid, setUserid] = useState('')
     const {signup,  error ,isPending} = useSignup()
+
     const handleSubmit = (e) => {
       e.preventDefault();
-
       signup(email,password,userid);
     }
     return (

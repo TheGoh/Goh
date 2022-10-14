@@ -14,6 +14,12 @@ export const useSignup = () => {
     const signup = (email, password, userid) => {
       setError(null)
       setIsPending(true)
+
+      if (userid.length === 0) {
+        setError("Invalid User ID");
+        setIsPending(false)
+        return;
+      }
     
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
