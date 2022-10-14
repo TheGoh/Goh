@@ -105,7 +105,7 @@ export default function ProjectCreate() {
                 {user_owned_ids.length > 0 && user_owned_ids.map((item) => 
                     
                         <Grid item xs={1} key = {item}>
-                        <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id}>
+                        <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id} style={{ textDecoration: 'none' }}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
                                     all_projects_dict[item].projName

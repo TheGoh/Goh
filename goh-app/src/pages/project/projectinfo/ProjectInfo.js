@@ -133,17 +133,17 @@ export default function Project() {
 
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId}> 
+                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId} style={{ textDecoration: 'none' }}> 
                         <Button variant='contained'>Create Task</Button>
                     </Link>   
                 </Grid>
                 <Grid item xs={1}>
-                    <Link to={`/project/projectmodify/${projectId}`} key={projectId}>
+                    <Link to={`/project/projectmodify/${projectId}`} key={projectId} style={{ textDecoration: 'none' }}>
                         <Button variant="contained">Change project information</Button>
                     </Link>
                 </Grid>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Link to="/project/projectcreate" onClick={handleDelete}>
+                    <Link to="/project/projectcreate" onClick={handleDelete} style={{ textDecoration: 'none' }}>
                         <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
                     </Link>
                 </Grid>
