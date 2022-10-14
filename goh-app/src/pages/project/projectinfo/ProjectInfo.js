@@ -151,10 +151,10 @@ export default function Project() {
                         </Link>
                     </Grid> 
                     : 
-                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}></Grid>
+                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                        You are a only a member of this project, only project owner can delete the project.
+                    </Grid>
                 }
-                
-                
             </Grid>
         </Box>
     )
