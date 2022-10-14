@@ -90,11 +90,13 @@ export default function ProjectCreate() {
     }
     const handleSubmit = (event) => { //close form and save project
         event.preventDefault();
-        const projid = uuid();
-        createProject(user.uid, projid, projName, projDescr);
+        if (projName.length !== 0) {
+            const projid = uuid();
+            createProject(user.uid, projid, projName, projDescr);
+            setOpen(false);
+        }      
         setProjName('');
-        setProjDescr('');
-        setOpen(false);
+        setProjDescr(''); 
     };
     
     if (allProjects === null || Object.keys(all_projects_dict).length === 0) return (<div>Loading</div>)
