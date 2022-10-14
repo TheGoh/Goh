@@ -7,6 +7,7 @@ import { useCollection } from '../../../hooks/useCollection';
 import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
 import { doc, getDoc, onSnapshot } from "firebase/firestore"
+import { useFetchProject } from '../../../hooks/useFetchProject';
 import { v4 as uuid } from 'uuid';
 
 //routing
@@ -40,12 +41,11 @@ export default function Project() {
     const { documents: allProjects , error2} = useCollection('projects', null);
     const [user_owned_ids, setUserOwnedIds] = useState('');
     const [all_projects_dict, setAllProjectsDict] = useState('');
+    const { user } = useAuthContext()
+    const { documents: userDetail } = useFetchProject('users', user.uid )
 
 
     /* Fetch the current user project list */
-    const { user } = useAuthContext()
-    
-    
     useEffect(() => {
         const currUserDoc = doc(firedb, `users`, user.uid);
         onSnapshot(currUserDoc, (doc) => {
@@ -69,7 +69,6 @@ export default function Project() {
     
     /* Form control */
     const handleClickOpen = () => { //popup form
-        //console.log(projOwned);
         setOpen(true);
     };
     const handleClose = () => { //close form and clear inputs
