@@ -39,9 +39,7 @@ export default function Project() {
     // console.log(projectDtl)
     // console.log("project page user id", user.uid)
 
-    if (!projectDtl) {
-        return <div> Loading... </div>
-    }
+    
 
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleDelete = async(e) => {
@@ -107,6 +105,9 @@ export default function Project() {
         
     }
 
+    if (!projectDtl) {
+        return <div> Loading... </div>
+    }
     return (
         <Box>
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
@@ -142,11 +143,18 @@ export default function Project() {
                         <Button variant="contained">Change project information</Button>
                     </Link>
                 </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Link to="/project/projectcreate" onClick={handleDelete} style={{ textDecoration: 'none' }}>
-                        <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
-                    </Link>
-                </Grid>
+
+                {user.uid === projectDtl.ownerid ? 
+                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                        <Link to="/project/projectcreate" onClick={handleDelete} style={{ textDecoration: 'none' }}>
+                            <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
+                        </Link>
+                    </Grid> 
+                    : 
+                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                        
+                    </Grid>}
+                
                 
             </Grid>
         </Box>
