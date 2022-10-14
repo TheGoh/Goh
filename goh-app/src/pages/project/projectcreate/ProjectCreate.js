@@ -65,12 +65,12 @@ export default function ProjectCreate() {
                 setAllProjectsDict(temp);
 
                 //cleaned projects deleted by their owners
-                let cleaned_project_ids = user_owned_ids.filter(id => {
-                    if (Object.keys(all_projects_dict).includes(id)) {
-                        return id;
-                    }
-                });
-                setUserOwnedIds(cleaned_project_ids);
+                // let cleaned_project_ids = user_owned_ids.filter(id => {
+                //     if (Object.keys(all_projects_dict).includes(id)) {
+                //         return id;
+                //     }
+                // });
+                // setUserOwnedIds(cleaned_project_ids);
             }
         }
         retrieve()
