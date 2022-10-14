@@ -132,17 +132,32 @@ export default function Project() {
                 </Grid>
             </Grid>
 
+            <Grid container columns={1}>
+                {user.uid === projectDtl.ownerid ? 
+                    <Grid item xs={1}>Project Owner</Grid>
+                    :
+                    <Grid item xs={1}>Project Member</Grid>
+                }
+            </Grid>
+
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId} style={{ textDecoration: 'none' }}> 
                         <Button variant='contained'>Create Task</Button>
                     </Link>   
                 </Grid>
-                <Grid item xs={1}>
-                    <Link to={`/project/projectmodify/${projectId}`} key={projectId} style={{ textDecoration: 'none' }}>
-                        <Button variant="contained">Change project information</Button>
-                    </Link>
-                </Grid>
+
+                {user.uid === projectDtl.ownerid ?
+                    <Grid item xs={1}>
+                        <Link to={`/project/projectmodify/${projectId}`} key={projectId} style={{ textDecoration: 'none' }}>
+                            <Button variant="contained">Change project information</Button>
+                        </Link>
+                    </Grid>
+                    :
+                    <Grid item xs={1}>
+                    </Grid>
+                }
+                
 
                 {user.uid === projectDtl.ownerid ? 
                     <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
@@ -152,7 +167,6 @@ export default function Project() {
                     </Grid> 
                     : 
                     <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                        You are a only a member of this project, only project owner can delete the project.
                     </Grid>
                 }
             </Grid>
