@@ -24,7 +24,7 @@ export const useProject = () => {
         if (!projSnapshot.exists()) {
             const createdAt = new Date();
             const memberList = [ownerid];
-            const roles = {};
+            const roles = {"owner": ownerid};
             try {
                 await setDoc(projDocRef, {
                     id: projid,
