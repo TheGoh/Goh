@@ -151,9 +151,8 @@ export default function Project() {
                         </Link>
                     </Grid> 
                     : 
-                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                        
-                    </Grid>}
+                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}></Grid>
+                }
                 
                 
             </Grid>
