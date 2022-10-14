@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react'
+import Select from 'react-select'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { firedb } from '../../firebase/config';
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
@@ -8,21 +9,13 @@ import { useFetchProject } from '../../hooks/useFetchProject';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-
-
-
-
 
 export default function PendingInvite() {
     const { user } = useAuthContext()
     const [ inviteList, setinviteList ] = useState([])
-    const { documents: userDetail } = useFetchProject('users', user.uid );
-    const [ selected, setSelected ] = useState('');
-    const [ invite_ids, setInviteIds ] = useState('');
-    const [ invite_dict, setInviteDict ] = useState('');
+    const { documents: userDetail } = useFetchProject('users', user.uid )
+    const [ assign, setAssign ] = useState([])
+    const [check, setCheck ] = useState('')
     
     useEffect(() => {
         if (userDetail) {
@@ -34,50 +27,28 @@ export default function PendingInvite() {
                     }
                 })
                 
-                setinviteList(result);
-                console.log("myList: ", inviteList);
-
-                let temp_ids = [];
-                let temp_dict = {};
-                inviteList.forEach(obj => {
-                    temp_ids.push(obj.value);
-                    temp_dict[obj.value] = obj.label;
-                });
-                setInviteIds(temp_ids);
-                setInviteDict(temp_dict);
+                setinviteList(result)
+                console.log("myList: ", inviteList)
             } 
         }
     }, [userDetail, inviteList]);
 
-    const handleAccept = () => {
+    const handleAccept = (e) => {
+        e.preventDefault()
+        console.log(assign)
        
     }
-    const handleReject = () => {
-
-    }
-    const handleOption = (e) => {
-        console.log(e.target.value);
-        setSelected(e.target.value);
-    }
-
-    if (inviteList === undefined || inviteList === null) {
-        return (<div>Loading...</div>);
-    }
+    
     return (
-        <div> 
-            <h1>Here's your invitation from project manager</h1>
-            <Button variant="contained" onClick={handleAccept}>Accept</Button>
-            <Button variant="contained" onClick={handleReject}>Reject</Button>
-            <Select 
-                value={selected}
-                label="invitations"
-                sx={{width: '400px'}}
-                onChange={handleOption}
-            >
-                {invite_ids.length > 0 && invite_ids.map((id) => 
-                    <MenuItem value={id}>{invite_dict[id]}</MenuItem>
-                )}
-            </Select>
+        <div>           
+            <form>                
+               <h1>Here's your invitation from project manager</h1>
+                <Select
+                        onChange={(option) => setAssign(option)}
+                        options = {inviteList}    
+                    />
+                <button className = "btn" onClick = {handleAccept}>Accept</button>
+            </form>           
         </div>
     )
 }
