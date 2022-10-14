@@ -55,7 +55,7 @@ export default function AccountInfo() {
                       setCurrEmail(e.target.value)
                     }}
               />
-            <span>Email</span>
+            <span>New Email</span>
               <input
                     type = "text"
                     value={newEmail}
@@ -71,7 +71,7 @@ export default function AccountInfo() {
                       setCurrPass(e.target.value)
                     }}
               />
-              <span>Password</span>
+              <span>New Password</span>
               <input
                     type = "text"
                     value={newPassword}
