@@ -10,21 +10,19 @@ export const useCollection = (collect, _query) => {
 
     useEffect(() => {
         let ref = collection(firedb, collect)
+        
         if (_query) {
             ref = query(ref, where(..._query))
         }
-        const unsub = onSnapshot(ref, () => {
-            getDocs(ref)
-            .then((snapshot) => {
-                let result = [];
-                snapshot.docs.forEach(doc => {
-                    result.push({...doc.data(), id: doc.id})
-                })
-                setDocuments(result)
+
+        const unsub = onSnapshot(ref, (snapshot) => {
+            let result = [];
+            snapshot.docs.forEach(doc => {
+                result.push({...doc.data(), id: doc.id})
             })
-            .catch((err) => {
-                setError(err.message)
-            })
+            setDocuments(result)
+        } , (error) => {
+            setError(error.message)
         })
         
         return () => unsub()   

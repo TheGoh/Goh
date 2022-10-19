@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { useCollection } from '../../../hooks/useCollection';
+import { useFetchProject } from '../../../hooks/useFetchProject';
 import { useProject } from '../../../hooks/useProject';
 import { firedb } from '../../../firebase/config';
 import { doc, getDoc, onSnapshot } from "firebase/firestore"
@@ -42,39 +43,26 @@ export default function ProjectCreate() {
 
     /* Fetch the current user project list */
     const { user } = useAuthContext()
+    const { documents: userDetail } = useFetchProject('users', user.uid);
     
     
     useEffect(() => {
-        const retrieve = async() => {
-            const currUserDoc = doc(firedb, `users`, user.uid);
-            const userSnapShot = await getDoc(currUserDoc)
-            if (userSnapShot.exists()) {
-                //console.log("111")
-                onSnapshot(currUserDoc, (doc) => {
-                    if (user_owned_ids.length !== doc.data().ownedProjects.length) {
-                        setUserOwnedIds(doc.data().ownedProjects);
-                    }
-                });
-            }
-            //console.log("11111")
-            if (allProjects !== null) {
-                let temp = {};
-                allProjects.forEach(project => {
-                    temp[project.id] = project;
-                });
-                setAllProjectsDict(temp);
-
-                //cleaned projects deleted by their owners
-                // let cleaned_project_ids = user_owned_ids.filter(id => {
-                //     if (Object.keys(all_projects_dict).includes(id)) {
-                //         return id;
-                //     }
-                // });
-                // setUserOwnedIds(cleaned_project_ids);
+        if (userDetail) {
+            if (user_owned_ids.length !== userDetail.ownedProjects.length) {
+                setUserOwnedIds(userDetail.ownedProjects);
             }
         }
-        retrieve()
-    }, [user_owned_ids, allProjects]);
+    }, [userDetail]);
+
+    useEffect(() => {
+        if (allProjects) {
+            let temp = {};
+            allProjects.forEach(project => {
+                temp[project.id] = project;
+            });
+            setAllProjectsDict(temp);
+        }
+    }, [allProjects])
 
     
     
