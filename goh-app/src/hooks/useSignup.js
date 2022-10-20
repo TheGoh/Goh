@@ -22,10 +22,10 @@ export const useSignup = () => {
       }
     
       createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            updateProfile(user,{displayName:userid})
+            await updateProfile(user,{displayName:userid})
             createUserDocumentFromAuth(user, userid);
             // dispatch login function
             dispatch({ type: 'LOGIN', payload: user})      
