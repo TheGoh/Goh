@@ -6,7 +6,8 @@ import { useTask } from '../../../hooks/useTask';
 import { useCollection } from '../../../hooks/useCollection';
 import { Link } from "react-router-dom";
 import { firedb } from '../../../firebase/config';
-import { doc, getDoc, onSnapshot } from "firebase/firestore"
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
+import  Select  from 'react-select';
 
 import styles from './TaskCreate.module.css';
 import Box from '@mui/material/Box';
@@ -31,8 +32,14 @@ export default function Task() {
     const [taskDescr, setTaskDescr] = useState('');
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
+    const taskStates  = [
+      { value: 'TODO', label: 'TODO' },
+      { value: 'IN PROGRESS', label: 'IN PROGRESS' },
+      { value: 'IN REVIEW', label: 'IN REVIEW'},
+      { value: 'COMPLETED', label: 'COMPLETED'}]
+    const [currTaskState, setCurrTaskState] = useState("TODO");
+    let currTask = "Curr Task: " + currTaskState;
     const { createTask } = useTask();
-
     /* Form control */
     const handleClickOpen = () => { //popup form
       setOpen(true);
@@ -73,6 +80,12 @@ export default function Task() {
       }
       
     }, [task_collections]);
+    const handleStateUpdate = (task) => {
+      const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+                        getDoc(curProjDoc).then(updateDoc(curProjDoc, {
+                          taskState: currTaskState
+                        }))
+    }
 
     if (!projectDtl && task_ids == []) {
       return <div> Loading... </div>
@@ -87,6 +100,13 @@ export default function Task() {
               {
                 task_ids.length > 0 && task_ids.map((task) => 
                 <Grid item xs={1} key={task}>
+                  <Select
+                      onChange={(state) => {
+                        setCurrTaskState(state);
+                        handleStateUpdate(task);
+                      }}
+                      options = {taskStates}
+                    />
                   <Link to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} style={{ textDecoration: 'none' }}>
                     <Button variant="contained" className={styles['task-grid-button']}>
                       {task_dict[task].taskName}
