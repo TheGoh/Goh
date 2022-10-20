@@ -35,14 +35,13 @@ export default function ProjectCreate() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
-    const { createProject, projid, error } = useProject();
-    const { documents: allProjects , error2} = useCollection('projects', null);
     const [user_owned_ids, setUserOwnedIds] = useState('');
     const [all_projects_dict, setAllProjectsDict] = useState('');
 
-
-    /* Fetch the current user project list */
     const { user } = useAuthContext()
+    const { createProject, projid, error } = useProject();
+    const { documents: allProjects , error2} = useCollection('projects', null);
+    /* Fetch the current user document*/
     const { documents: userDetail } = useFetchProject('users', user.uid);
     
     
@@ -56,6 +55,8 @@ export default function ProjectCreate() {
 
     useEffect(() => {
         if (allProjects) {
+
+            /* initialize a temp dictionary */
             let temp = {};
             allProjects.forEach(project => {
                 temp[project.id] = project;

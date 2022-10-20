@@ -21,10 +21,8 @@ export const useLogin = () => {
             const user = userCredential.user;
             // dispatch login function
             dispatch({ type: 'LOGIN', payload: user})
-            //console.log('login function is working!')  
         })
         .catch((error) => {
-            //TODO add console log for printing error
             setIsPending(false)
             setError(error.message)
 

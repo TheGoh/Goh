@@ -36,11 +36,6 @@ export default function Project() {
     const { user } = useAuthContext()
     const [invite, setInvite] = useState('')
 
-    // console.log(projectDtl)
-    // console.log("project page user id", user.uid)
-
-    
-
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleDelete = async(e) => {
 

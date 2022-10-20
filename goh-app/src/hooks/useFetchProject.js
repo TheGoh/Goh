@@ -23,5 +23,5 @@ export const useFetchProject = (collect, id) => {
               
     }, [collect, id])
 
-    return {documents}
+    return {documents, error}
 }

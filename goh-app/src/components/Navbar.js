@@ -8,11 +8,16 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 //styles
 import styles from './Navbar.module.css'
+import { useEffect } from 'react'
 
 export default function Nav() {
     const { logout } = useLogout()
     const { user } = useAuthContext()
 
+    useEffect(() => {
+
+    }, [user])
+    
     return (
         <nav className={styles.navbar}>
             <ul>
