@@ -6,9 +6,12 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   onAuthStateChanged,
+  EmailAuthCredential,
   reauthenticateWithCredential,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  EmailAuthProvider
 } from "firebase/auth";
+import React from "react";
 import { useState } from "react";
 import styles from './AccountInfo.module.css'
 
@@ -16,17 +19,20 @@ import styles from './AccountInfo.module.css'
 
 export default function AccountInfo() {
     const auth = getAuth();
-    let user = auth.currentUser
+    const user = auth.currentUser
     const [ newDisplayName, setDisplayName ] = useState('');
     const [ newEmail, setEmail ] = useState('');
-    const [ currEmail, setCurrEmail ] = useState('');
     const [ newPassword, setPassword ] = useState('');
     const [ currPass, setCurrPass ] = useState('');
     
     const updateInfo = (event) => {
       event.preventDefault();
-      signInWithEmailAndPassword(auth, currEmail, currPass).then((cred) => {
-            user = cred.user;  
+      const credential = EmailAuthProvider.credential(
+        user.email, 
+        currPass
+      );
+      reauthenticateWithCredential(user, credential).then((cred) => {
+            //user = cred.user;  
             console.log("HERE");
             console.log("email:" + newEmail)
             updateEmail(user, newEmail).then(()=>{
@@ -47,12 +53,12 @@ export default function AccountInfo() {
           <form className={styles['signup-form']}>
             <h2>Account Information</h2>
             <label>
-            <span>Current Email</span>
+            <span>Current Password</span>
               <input
                     type = "text"
-                    value={currEmail}
+                    value={currPass}
                     onChange={(e)=>{
-                      setCurrEmail(e.target.value)
+                      setCurrPass(e.target.value)
                     }}
               />
             <span>New Email</span>
@@ -63,14 +69,7 @@ export default function AccountInfo() {
                       setEmail(e.target.value)
                     }}
               />
-              <span>Current Password</span>
-              <input
-                    type = "text"
-                    value={currPass}
-                    onChange={(e)=>{
-                      setCurrPass(e.target.value)
-                    }}
-              />
+
               <span>New Password</span>
               <input
                     type = "text"
