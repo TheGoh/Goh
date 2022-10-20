@@ -36,16 +36,12 @@ export default function PendingInvite() {
     const handleAccept = (e) => {
         e.preventDefault()
         console.log(assign.id)
-
-        const currUserDoc = doc(firedb, `users`, user.uid);
-
         //extract current project and invitations
         let tempList = {};
         let returnList = {};
-        getDoc(currUserDoc)
-        .then ((doc) => {
-            let tempOwnedProjects = doc.data().ownedProjects;
-            tempList = {...doc.data().invitations}
+        if (userDetail) {
+            let tempOwnedProjects = userDetail.ownedProjects;
+            tempList = {...userDetail.invitations}
             
             Object.keys(tempList).forEach(item => {
                 
@@ -56,11 +52,32 @@ export default function PendingInvite() {
             })
            
             tempOwnedProjects.push(assign.id);
-            updateDoc(currUserDoc, { 
+            updateDoc(doc(firedb, `users`, user.uid), { 
                 ownedProjects: tempOwnedProjects,
                 invitations:returnList
             })
-        })
+        }        
+    }
+
+    const handleDecline = (e) => {
+        e.preventDefault();
+        console.log(assign.id)
+
+        let returnList = {};
+        if (userDetail) {
+            let tempList = {...userDetail.invitations}
+
+            Object.keys(tempList).forEach(item => {        
+                if (item != assign.id) {
+                    console.log(item)
+                    returnList[item] = tempList[item]
+                }
+            })
+    
+            updateDoc(doc(firedb, `users`, user.uid), { invitations:returnList});
+        }
+
+        
     }
     
     return (
@@ -72,6 +89,7 @@ export default function PendingInvite() {
                         options = {inviteList}    
                     />
                 <button className = "btn" onClick = {handleAccept}>Accept</button>
+                <button className = "btn" onClick = {handleDecline}>Decline</button>
             </form>           
         </div>
     )
