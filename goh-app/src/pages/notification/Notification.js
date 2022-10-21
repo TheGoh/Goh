@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth'
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
@@ -16,6 +16,9 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 // styles
 import styles from './notification_box.css'
+
+import { useFetchProject } from '../../hooks/useFetchProject';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -47,7 +50,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 
-
 export default function Notification() {
   //current user
     const [curUser, setcurUser] = useState('');
@@ -74,6 +76,24 @@ export default function Notification() {
       'newMessageTime': 12,'readMessageTime': 13}
     ])
     let myUSerId = 1;
+
+    // get project invitations from other user
+    const { user } = useAuthContext();
+    const { documents: userDetail } = useFetchProject('users', user.uid );
+    useEffect(() => {
+      let invitationList = {...userDetail?.invitations};
+      Object.values(invitationList).forEach(v => {
+        let msg = {
+          'userName': 'Project Invitation Notice',
+          'userId': 1,
+          'MessageTime': 12,
+          'text': v
+        };
+        let arr = talkList;
+        arr.push(msg);
+        settalkList(arr);
+      });
+    });
 
     //open dialog box
       const openUserDialog = (userInfo) => {
@@ -104,7 +124,6 @@ export default function Notification() {
         setcurText( event.target.value); 
         }
 
-      
 
     //todo 获取用户列表信息
 

@@ -37,7 +37,7 @@ export default function Nav() {
                         <li><Link to="/accountInfo">Hey, {user.displayName} Account Settings</Link></li>
                         <li><Link to="/invitation">My Invitations</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
-                        {/* <li><Link to="/notification">Notification</Link></li> */}
+                        <li><Link to="/notification">Notification</Link></li>
                         </>
                 )}
 
