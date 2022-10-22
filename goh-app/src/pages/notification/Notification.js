@@ -19,10 +19,7 @@ import styles from './notification_box.css'
 
 import { useFetchProject } from '../../hooks/useFetchProject';
 import { useAuthContext } from '../../hooks/useAuthContext';
-<<<<<<< HEAD
-=======
 import { Link } from "react-router-dom";
->>>>>>> c6a96418501ee65e654dc4e3d7e164a9d434d12a
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
