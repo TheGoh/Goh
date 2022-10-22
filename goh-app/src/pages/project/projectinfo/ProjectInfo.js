@@ -8,6 +8,7 @@ import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
 import { useState } from 'react';
 
+import styles from './ProjectInfo.module.css';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -37,7 +38,7 @@ export default function Project() {
     const [invite, setInvite] = useState('')
 
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
-    const handleDelete = async(e) => {
+    const handleProjectDelete = async(e) => {
 
         //remove from projects collection
         deleteDocument(`projects`, projectId)
@@ -61,7 +62,7 @@ export default function Project() {
             })
     }
 
-    const handleSubmit = async(e) => {
+    const handleInvitation = async(e) => {
         e.preventDefault();
 
         let ref = collection (firedb, 'users')
@@ -95,9 +96,7 @@ export default function Project() {
             })
             .catch((err) => {
                 console.error("Invalid User");
-            })
-
-        
+            })        
     }
 
     if (!projectDtl) {
@@ -105,66 +104,79 @@ export default function Project() {
     }
     return (
         <Box>
-            <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
-                <Grid item xs={3}><h1>{projectDtl.projName}</h1></Grid>
-                <Grid item xs={3}><h3>{projectDtl.projDescr}</h3></Grid>
-                
-                <Grid item xs={1}><h3>Add contributors</h3></Grid>
+            <Grid container columns={5}>
+                <Grid item xs={4}>
+                    {/* Basic information display */}
+                    <Grid container columns={3} sx={{width: '95%', margin: 'auto', marginTop: '20px',}} className={styles['info']}>
+                        <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start', margin: '0px'}}><h1>{projectDtl.projName} Board</h1></Grid>
+                        <Grid item xs={2}></Grid>
+                        <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
+                    </Grid>
+
+                    {/* Task creation */}
+
+                    <Grid container columns={4} className={styles['task-board']} sx={{marginBottom: '20px'}}>
+                        <Grid item xs={1}><h4>TODO</h4></Grid>
+                        <Grid item xs={1}>In Progress</Grid>
+                        <Grid item xs={1}>In Review</Grid>
+                        <Grid item xs={1}>Completed</Grid>
+                    </Grid>
+
+
+                    {/* Invitation */}
+                    <Grid container columns={5} sx={{display: 'flex', justifyContent: "flex-start", width: '95%', margin: 'auto'}}>
+                        <Grid item xs={2} sx={{display: 'flex', justifyContent: "flex-start"}}>
+                            <FormControl sx={{width: "90%"}}>
+                                <InputLabel htmlFor="component-outlined">Email</InputLabel>
+                                <OutlinedInput
+                                id="component-outlined"
+                                value={invite}
+                                label="target"
+                                onChange = {(e)=>setInvite(e.target.value)}
+                                type="email"
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                            <Button variant='outlined' onClick={handleInvitation} endIcon={<SendIcon/>}>Send invitation</Button>
+                        </Grid>
+                    </Grid>
+
+                    {/* Project operations */}
+                    <Grid container columns={5} sx={{width: '95%', margin: 'auto', paddingTop: '30px'}}>
+                        {/* <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                            <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId} style={{ textDecoration: 'none' }}> 
+                                <Button variant='contained'>Create Task</Button>
+                            </Link>   
+                        </Grid> */}
+
+                        {user.uid === projectDtl.ownerid ?
+                            <Grid item xs={1} sx={{display: 'flex', justifyContent: "flex-start"}}>
+                                <Link to={`/project/projectmodify/${projectId}`} key={projectId} style={{ textDecoration: 'none' }}>
+                                    <Button variant="contained">Update information</Button>
+                                </Link>
+                            </Grid>
+                            :
+                            <Grid item xs={1}>
+                            </Grid>
+                        }
+                        {user.uid === projectDtl.ownerid ? 
+                            <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
+                                <Link to="/project/projectcreate" onClick={handleProjectDelete} style={{ textDecoration: 'none' }}>
+                                    <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete Project</Button>
+                                </Link>
+                            </Grid> 
+                            : 
+                            <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                            </Grid>
+                        }
+                    </Grid>
+                </Grid>
                 <Grid item xs={1}>
-                    <FormControl sx={{width: "80%"}}>
-                        <InputLabel htmlFor="component-outlined">Email</InputLabel>
-                        <OutlinedInput
-                        id="component-outlined"
-                        value={invite}
-                        label="target"
-                        onChange = {(e)=>setInvite(e.target.value)}
-                        type="email"
-                        />
-                    </FormControl>
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Button variant='outlined' onClick={handleSubmit} endIcon={<SendIcon/>}>Send invitation</Button>
+
                 </Grid>
             </Grid>
-
-            <Grid container columns={1}>
-                {user.uid === projectDtl.ownerid ? 
-                    <Grid item xs={1}>Project Owner</Grid>
-                    :
-                    <Grid item xs={1}>Project Member</Grid>
-                }
-            </Grid>
-
-            <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId} style={{ textDecoration: 'none' }}> 
-                        <Button variant='contained'>Create Task</Button>
-                    </Link>   
-                </Grid>
-
-                {user.uid === projectDtl.ownerid ?
-                    <Grid item xs={1}>
-                        <Link to={`/project/projectmodify/${projectId}`} key={projectId} style={{ textDecoration: 'none' }}>
-                            <Button variant="contained">Change project information</Button>
-                        </Link>
-                    </Grid>
-                    :
-                    <Grid item xs={1}>
-                    </Grid>
-                }
-                
-
-                {user.uid === projectDtl.ownerid ? 
-                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                        <Link to="/project/projectcreate" onClick={handleDelete} style={{ textDecoration: 'none' }}>
-                            <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Project</Button>
-                        </Link>
-                    </Grid> 
-                    : 
-                    <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    </Grid>
-                }
-            </Grid>
+            
         </Box>
     )
 }
