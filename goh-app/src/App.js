@@ -72,10 +72,10 @@ function App() {
               element={ user ? <Project/> : <Navigate to = "/login"/>}
               />
 
-              {/* <Route
+              <Route
               path = '/notification'
               element={ user ? <Notification/> : <Navigate to = "/notification"/>}
-              /> */}
+              />
 
               <Route
               path = '/project/projectmodify/:projectId'
