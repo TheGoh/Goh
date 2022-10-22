@@ -19,6 +19,10 @@ import styles from './notification_box.css'
 
 import { useFetchProject } from '../../hooks/useFetchProject';
 import { useAuthContext } from '../../hooks/useAuthContext';
+<<<<<<< HEAD
+=======
+import { Link } from "react-router-dom";
+>>>>>>> c6a96418501ee65e654dc4e3d7e164a9d434d12a
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -58,11 +62,11 @@ export default function Notification() {
     //当前的对话框的内容，需要去获取
     //TODO
     const [talkList,settalkList]=useState([
-      {'userName':'zhangsan',userId:1,
+      {'userName':'qifei',userId:1,
       'MessageTime': 12,'text': 'TODO，获取与该用户的对话记录'},
       {'userName':'qifei',userId:1,
       'MessageTime': 13,'text': 'TODO'},
-      {'userName':'zhangsan',userId:1,
+      {'userName':'qifei',userId:1,
       'MessageTime': 14,'text': '我'},
     ])
 
@@ -71,9 +75,7 @@ export default function Notification() {
       {'userName':'qifei',userId:1,
       'newMessageTime': 12,'readMessageTime': 10},
       {'userName':'ziyang',userId:2,
-      'newMessageTime': 12,'readMessageTime': 10},
-      {'userName':'zhangsan',userId:3,
-      'newMessageTime': 12,'readMessageTime': 13}
+      'newMessageTime': 12,'readMessageTime': 10}
     ])
     let myUSerId = 1;
 
@@ -172,8 +174,21 @@ export default function Notification() {
     <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             {
                 talkList.map((item,index)=>{
-                  
-                    return     ( <React.Fragment> <ListItem alignItems="flex-start" >
+                  if (item.userName == 'Project Invitation Notice') {
+                    return ( <React.Fragment> <ListItem alignItems="flex-start" >
+                      <ListItemAvatar sx={{ width:'20',height:'10%'}}>
+                        <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.userName}
+                        secondary={item.text}
+                      />
+                      <Link to="/invitation">more operations</Link>
+                    </ListItem>
+                    </React.Fragment>) 
+                  } 
+
+                  return ( <React.Fragment> <ListItem alignItems="flex-start" >
                     <ListItemAvatar sx={{ width:'20',height:'10%'}}>
                       <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
                     </ListItemAvatar>
@@ -181,9 +196,9 @@ export default function Notification() {
                       primary={item.userName}
                       secondary={item.text}
                     />
-                   
                   </ListItem>
-                  </React.Fragment>) }
+                  </React.Fragment>) 
+                }
                    
                 )
             }
