@@ -23,8 +23,8 @@ export const useProject = () => {
 
         if (!projSnapshot.exists()) {
             const createdAt = new Date();
-            const memberList = [ownerid];
-            const roles = {"owner": [ownerid]};
+            //const memberList = [ownerid];
+            const memberList = { "owner": [ownerid], "members":[] };
             try {
                 await setDoc(projDocRef, {
                     id: projid,
@@ -32,8 +32,7 @@ export const useProject = () => {
                     projName,
                     projDescr,
                     createdAt,
-                    memberList,
-                    roles
+                    memberList: memberList,
                 });
             } catch (error) {
                 console.log('error creating the project', error.message);

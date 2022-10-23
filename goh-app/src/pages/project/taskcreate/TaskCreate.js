@@ -86,7 +86,7 @@ export default function Task() {
       }))
     }
 
-    if (!projectDtl && task_ids == []) {
+    if (!projectDtl && task_ids === []) {
       return <div> Loading... </div>
     }
     return(

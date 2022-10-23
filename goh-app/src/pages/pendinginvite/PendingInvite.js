@@ -33,7 +33,7 @@ export default function PendingInvite() {
         }
     }, [userDetail, inviteList]);
 
-    const handleAccept = (e) => {
+    const handleAccept = async(e) => {
         e.preventDefault()
         console.log(assign.id)
         //extract current project and invitations
@@ -50,12 +50,34 @@ export default function PendingInvite() {
                     returnList[item] = tempList[item]
                 }
             })
-            //Check Exist()
-            tempOwnedProjects.push(assign.id);
-            updateDoc(doc(firedb, `users`, user.uid), { 
-                ownedProjects: tempOwnedProjects,
-                invitations:returnList
-            })
+
+            //fetch the target project from database
+            const projDocRef = doc(firedb, `projects`, assign.id);
+            const projSnapshot = await getDoc(projDocRef);
+
+            //Check if the database has this project
+            if (projSnapshot.exists()) {
+
+                //STEP1: push the project id into user ownproject list
+                tempOwnedProjects.push(assign.id);
+                updateDoc(doc(firedb, `users`, user.uid), { 
+                    ownedProjects: tempOwnedProjects,
+                    invitations:returnList
+                })
+
+                //STEP2: add user id into project memberList
+                let MemList = {...projSnapshot.data().memberList}
+                MemList["members"].push(user.uid)
+                updateDoc(projDocRef, {
+                    memberList: MemList
+                })
+
+            } else {
+                //If project doesnt't exist, simply remove the project from the invitation list.
+                updateDoc(doc(firedb, `users`, user.uid), { 
+                    invitations:returnList
+                })
+            }        
         }        
     }
 
