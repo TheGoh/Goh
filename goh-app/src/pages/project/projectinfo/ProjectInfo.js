@@ -205,11 +205,11 @@ export default function Project() {
 
                     {/* Project operations */}
                     <Grid container columns={5} sx={{width: '95%', margin: 'auto', paddingTop: '30px'}}>
-                        {/* <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId} style={{ textDecoration: 'none' }}> 
                                 <Button variant='contained'>Create Task</Button>
                             </Link>   
-                        </Grid> */}
+                        </Grid>
 
                         {user.uid === projectDtl.ownerid ?
                             <Grid item xs={1} sx={{display: 'flex', justifyContent: "flex-start"}}>
