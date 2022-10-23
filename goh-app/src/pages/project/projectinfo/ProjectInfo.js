@@ -1,13 +1,18 @@
-//import './ProjectInfo.css'
+/* Functionality dependencies */
 import { useParams } from 'react-router-dom';
 import { useFetchProject } from '../../../hooks/useFetchProject';
 import { useCollection } from '../../../hooks/useCollection';
-import { useDeleteDoc } from '../../../hooks/useDeleteDoc'
+import { useDeleteDoc } from '../../../hooks/useDeleteDoc';
+import { useTask } from '../../../hooks/useTask';
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { v4 as uuid } from 'uuid';
+import { collection, doc, getDoc, getDocs, updateDoc, query, where} from "firebase/firestore";
+import Select from 'react-select';
 
+/* MUI components */
 import styles from './ProjectInfo.module.css';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,31 +20,40 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-
-import { 
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    updateDoc,
-    query,
-    where
-} from "firebase/firestore"
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
 export default function Project() {
-    let { projectId } = useParams();
-    const { deleteDocument } = useDeleteDoc()
-    //console.log("here is target project id", projectId );
+    /* Project information variables */
+    let { projectId, userUid } = useParams();
+    const { deleteDocument } = useDeleteDoc();
     const { documents: projectDtl } = useFetchProject('projects', projectId);
-    const { user } = useAuthContext()
-    const [invite, setInvite] = useState('')
+    const { user } = useAuthContext();
+    const [invite, setInvite] = useState('');
 
-    //When user click button, the handledelete function will remove the project collection from the database and user's project id list
+    /* Task creation variables */
+    const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
+    const [taskName, setTaskName] = useState('');
+    const [taskDescr, setTaskDescr] = useState('');
+    const [task_ids, setTaskIds] = useState('');
+    const [task_dict, setTaskDict] = useState('');
+    const [open, setOpen] = useState(''); // form dialog open/close
+    const [currTaskState, setCurrTaskState] = useState("TODO");
+    const { createTask } = useTask();
+    let currTask = "Curr Task: " + currTaskState;
+    const taskStates = [{ value: 'TODO', label: 'TODO' },
+                        { value: 'IN PROGRESS', label: 'IN PROGRESS' },
+                        { value: 'IN REVIEW', label: 'IN REVIEW'},
+                        { value: 'COMPLETED', label: 'COMPLETED'}];
+    
+    /* Project operations starts */
     const handleProjectDelete = async(e) => {
-
         //remove from projects collection
         deleteDocument(`projects`, projectId)
         const ref = doc(firedb, `users`, user.uid)
@@ -51,18 +65,16 @@ export default function Project() {
                 let tempList = tempOwnedProjects.filter((project) => {
                     if (projectId !== project) return project;
                 })
-                
                 updateDoc(ref, {
                      ownedProjects: tempList
                 })
                 .then(() => {
                     console.log("update successfully!!!",tempList);
                 })
-
             })
     }
 
-    const handleInvitation = async(e) => {
+    const handleProjectInvitation = async(e) => {
         e.preventDefault();
 
         let ref = collection (firedb, 'users')
@@ -96,8 +108,50 @@ export default function Project() {
             })
             .catch((err) => {
                 console.error("Invalid User");
-            })        
+            }); 
     }
+    /* Project operations ends */
+
+    /* Task creation starts */
+    const handleClickOpen = () => { //popup form
+        setOpen(true);
+        console.log(task_ids);
+    };
+    const handleClose = () => { //close form and clear inputs
+        setTaskName('');
+        setTaskDescr('');
+        setOpen(false);
+    }
+    const handleTaskCreation = (event) => {
+        //event.preventDefault();
+        const taskid = uuid();
+        createTask(projectId, userUid, taskid, taskName, taskDescr);
+        setTaskName('');
+        setTaskDescr('');
+        setOpen(false);
+    }
+    useEffect(() => {
+        if (task_collections) {
+            console.log(task_collections);
+            //update task_ids if task collection changes
+            const updateList = async() => {
+                const temp_collection = await task_collections;
+                let temp_ids = [];
+                let temp_id_dict = {};
+                if (temp_collection !== null) {
+                    temp_collection.forEach(task => {
+                    temp_ids.push(task.id);
+                    temp_id_dict[task.id] = task;
+                    });
+                }
+                setTaskIds(temp_ids);
+                setTaskDict(temp_id_dict);
+            }
+            updateList();
+        }
+    }, [task_collections]);
+
+    /* Task creation ends */
 
     if (!projectDtl) {
         return <div> Loading... </div>
@@ -115,11 +169,18 @@ export default function Project() {
 
                     {/* Task creation */}
 
-                    <Grid container columns={4} className={styles['task-board']} sx={{marginBottom: '20px'}}>
-                        <Grid item xs={1}><h4>TODO</h4></Grid>
-                        <Grid item xs={1}>In Progress</Grid>
-                        <Grid item xs={1}>In Review</Grid>
-                        <Grid item xs={1}>Completed</Grid>
+                    <Grid container columns={9} className={styles['task-board']} sx={{marginBottom: '20px'}}>
+                        <Grid item xs={2}><h4>TODO</h4></Grid>
+                        <Grid item xs={2}><h4>In Progress</h4></Grid>
+                        <Grid item xs={2}><h4>In Review</h4></Grid>
+                        <Grid item xs={2}><h4>Completed</h4></Grid>
+                        <Grid item xs={1}>
+                            <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
+                        </Grid>
+                        <Grid item xs={2}>Hi</Grid>
+                        <Grid item xs={2}>Hi</Grid>
+                        <Grid item xs={2}>Hi</Grid>
+                        <Grid item xs={2}>Hi</Grid>
                     </Grid>
 
 
@@ -138,7 +199,7 @@ export default function Project() {
                             </FormControl>
                         </Grid>
                         <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                            <Button variant='outlined' onClick={handleInvitation} endIcon={<SendIcon/>}>Send invitation</Button>
+                            <Button variant='outlined' onClick={handleProjectInvitation} endIcon={<SendIcon/>}>Send invitation</Button>
                         </Grid>
                     </Grid>
 
@@ -172,10 +233,53 @@ export default function Project() {
                         }
                     </Grid>
                 </Grid>
-                <Grid item xs={1}>
 
+                <Grid item xs={1}>
+                    {/* For Users in projects */}
                 </Grid>
             </Grid>
+
+            {/* Popup form */}
+            <Dialog open={Boolean(open)} onClose={handleClose}>
+                <DialogTitle>Create Task</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            To create a task, please enter your task details. We
+                            will send updates occasionally.
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                        <Grid item xs={1} sx={{marginBottom: '20px'}}>
+                            <FormControl sx={{width: "100%"}}>
+                            <InputLabel htmlFor="component-outlined">Task Name</InputLabel>
+                            <OutlinedInput
+                            id="component-outlined"
+                            value={taskName}
+                            label="TaskName"
+                            onChange = {(e)=>setTaskName(e.target.value)}
+                            type="text"
+                            />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <FormControl sx={{width: "100%"}}>
+                            <InputLabel htmlFor="component-outlined">Task Description</InputLabel>
+                            <OutlinedInput
+                            id="component-outlined"
+                            value={taskDescr}
+                            label="TaskDescription"
+                            onChange = {(e)=>setTaskDescr(e.target.value)}
+                            type="text"
+                            />
+                            </FormControl>
+                        </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleTaskCreation}>Create</Button> 
+                    </DialogActions>
+                </Dialog>
             
         </Box>
     )

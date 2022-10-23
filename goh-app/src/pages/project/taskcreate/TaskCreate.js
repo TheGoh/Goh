@@ -78,13 +78,12 @@ export default function Task() {
       }
       updateList();
       }
-      
     }, [task_collections]);
     const handleStateUpdate = (task) => {
       const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-                        getDoc(curProjDoc).then(updateDoc(curProjDoc, {
-                          taskState: currTaskState
-                        }))
+      getDoc(curProjDoc).then(updateDoc(curProjDoc, {
+        taskState: currTaskState
+      }))
     }
 
     if (!projectDtl && task_ids == []) {
@@ -96,7 +95,7 @@ export default function Task() {
           <Grid container spacing={5} columns={6} sx={{width: '90%', margin: 'auto'}}>
               <Grid item xs={1}>
                   <Button variant="outlined" className={styles['task-grid-button']} onClick={handleClickOpen}><LibraryAddIcon/></Button>
-             </Grid>
+              </Grid>
               {
                 task_ids.length > 0 && task_ids.map((task) => 
                 <Grid item xs={1} key={task}>
