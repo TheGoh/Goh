@@ -50,7 +50,7 @@ export default function PendingInvite() {
                     returnList[item] = tempList[item]
                 }
             })
-           
+            //Check Exist()
             tempOwnedProjects.push(assign.id);
             updateDoc(doc(firedb, `users`, user.uid), { 
                 ownedProjects: tempOwnedProjects,

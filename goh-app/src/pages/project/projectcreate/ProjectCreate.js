@@ -44,15 +44,6 @@ export default function ProjectCreate() {
     /* Fetch the current user document*/
     const { documents: userDetail } = useFetchProject('users', user.uid);
     
-    
-    useEffect(() => {
-        if (userDetail) {
-            if (user_owned_ids.length !== userDetail.ownedProjects.length) {
-                setUserOwnedIds(userDetail.ownedProjects);
-            }
-        }
-    }, [userDetail]);
-
     useEffect(() => {
         if (allProjects) {
 
@@ -65,7 +56,17 @@ export default function ProjectCreate() {
         }
     }, [allProjects])
 
-    
+    useEffect(() => {
+
+        //TODO deleteitem
+        
+        if (userDetail) {
+            if (user_owned_ids.length !== userDetail.ownedProjects.length) {
+                setUserOwnedIds(userDetail.ownedProjects);
+            }
+        }
+    }, [userDetail]);
+ 
     
     /* Form control */
     const handleClickOpen = () => { //popup form
