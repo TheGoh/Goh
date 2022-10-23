@@ -30,14 +30,18 @@ export const useTask = () => {
         const taskSnapshot = await getDoc(taskDocRef);
         if (!taskSnapshot.exists()) {
             const createdAt = new Date();
+            const taskState = "TODO";
+            const currUserId = "";
             try {
                 await setDoc(taskDocRef, {
                     taskId,
                     projId,
                     ownerid,
+                    currUserId,
                     taskName,
                     taskDescr,
                     createdAt,
+                    taskState
                 });
             } catch (error) {
                 console.log('error creating the task', error.message);

@@ -22,6 +22,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import { useAuthContext } from '../../../hooks/useAuthContext';
 
 export default function Task() {
     const [open, setOpen] = useState(''); // form dialog open/close
@@ -32,13 +33,18 @@ export default function Task() {
     const [taskDescr, setTaskDescr] = useState('');
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
-    const taskStates  = [
+    const { user } = useAuthContext();
+    const currUserId = user.uid;
+    const taskStatesOwner  = [
       { value: 'TODO', label: 'TODO' },
       { value: 'IN PROGRESS', label: 'IN PROGRESS' },
       { value: 'IN REVIEW', label: 'IN REVIEW'},
       { value: 'COMPLETED', label: 'COMPLETED'}]
-    const [currTaskState, setCurrTaskState] = useState("TODO");
-    let currTask = "Curr Task: " + currTaskState;
+    const taskStatesMember = [
+      { value: 'TODO', label: 'TODO' },
+      { value: 'IN PROGRESS', label: 'IN PROGRESS' },
+      { value: 'IN REVIEW', label: 'IN REVIEW'}]
+
     const { createTask } = useTask();
     /* Form control */
     const handleClickOpen = () => { //popup form
@@ -79,11 +85,22 @@ export default function Task() {
       updateList();
       }
     }, [task_collections]);
-    const handleStateUpdate = (task) => {
+    const handleStateUpdate = (state, task) => {
       const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-      getDoc(curProjDoc).then(updateDoc(curProjDoc, {
-        taskState: currTaskState
-      }))
+      getDoc(curProjDoc).then((doc) => {
+        let owner = doc.data().ownerid;
+        if ((state.value === "IN PROGRESS" || state.value === "IN REVIEW") && (currUserId !== owner)) {
+          updateDoc(curProjDoc, {
+            taskState: state.value,
+            currUserId: currUserId
+          })
+        } else {
+          updateDoc(curProjDoc, {
+            taskState: state.value,
+            currUserId: ""
+          })
+        }
+      })
     }
 
     if (!projectDtl && task_ids === []) {
@@ -101,10 +118,10 @@ export default function Task() {
                 <Grid item xs={1} key={task}>
                   <Select
                       onChange={(state) => {
-                        setCurrTaskState(state);
-                        handleStateUpdate(task);
+                        //setCurrTaskState(state);
+                        handleStateUpdate(state, task);
                       }}
-                      options = {taskStates}
+                      options = {taskStatesMember}
                     />
                   <Link to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} style={{ textDecoration: 'none' }}>
                     <Button variant="contained" className={styles['task-grid-button']}>
