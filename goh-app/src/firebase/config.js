@@ -56,10 +56,7 @@ export {firedb, auth}
 
 export const createUserDocumentFromAuth = async (userAuth, userid) => {
     const userDocRef = doc(firedb, 'users', userAuth.uid);
-    console.log(userDocRef);
     const userSnapshot = await getDoc(userDocRef);
-    console.log(userSnapshot);
-    console.log(userSnapshot.exists());
     if (!userSnapshot.exists()) {
         const { email } = userAuth;
         const createdAt = new Date();
