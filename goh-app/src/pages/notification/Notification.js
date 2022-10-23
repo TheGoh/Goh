@@ -53,19 +53,12 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 export default function Notification() {
   //current user
-    const [curUser, setcurUser] = useState('');
+    const [curUser, setcurUser] = useState('ziyang');
     //current text
     const [curText, setcurText] = useState('');
     //当前的对话框的内容，需要去获取
     //TODO
-    const [talkList,settalkList]=useState([
-      {'userName':'qifei',userId:1,
-      'MessageTime': 12,'text': 'TODO，获取与该用户的对话记录'},
-      {'userName':'qifei',userId:1,
-      'MessageTime': 13,'text': 'TODO'},
-      {'userName':'qifei',userId:1,
-      'MessageTime': 14,'text': '我'},
-    ])
+    const [talkList,settalkList]=useState([])
 
     //current user list
     const [userData,setUserData]=useState([
@@ -128,7 +121,7 @@ export default function Notification() {
 
     return(
         <div class='notify'>
-        <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper', visibility: 'hidden' }}>
             {
                 userData.map((item,index)=>{
 
@@ -165,7 +158,7 @@ export default function Notification() {
         </List>
 {
   //只有当点击用户时，才会出现对话框
- curUser == ''? '':
+// curUser == ''? '':
     <Box  sx={{ width:'50%'}}   class='notify_box'>
     <div class='notify_box_content'>
     <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -202,8 +195,8 @@ export default function Notification() {
         </List>
 
     </div>
-    <textarea class='notify_box_text' value={curText} onChange={handleChange}></textarea>
-    <Button  onClick={submitText}  className='notify_box_button' sx={{width: '10%'}} variant="contained" type="submit">submit</Button> 
+    <textarea sx={{ visibility: 'hidden' }} class='notify_box_text' value={curText} onChange={handleChange}></textarea>
+    <Button sx={{ visibility: 'hidden' }}  onClick={submitText}  className='notify_box_button' sx={{width: '10%'}} variant="contained" type="submit">submit</Button> 
   </Box>
 }
         
