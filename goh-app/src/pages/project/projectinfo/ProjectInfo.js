@@ -16,6 +16,7 @@ import Select from 'react-select';
 import styles from './ProjectInfo.module.css';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -25,13 +26,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import TaskIcon from '@mui/icons-material/Task';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 export default function Project() {
     /* Project information variables */
-    let { projectId, userUid } = useParams();
+    let { projectId } = useParams();
     const { deleteDocument } = useDeleteDoc();
     const { documents: projectDtl } = useFetchProject('projects', projectId);
     const { user } = useAuthContext();
@@ -44,13 +50,15 @@ export default function Project() {
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
-    const [currTaskState, setCurrTaskState] = useState("TODO");
     const { createTask } = useTask();
-    let currTask = "Curr Task: " + currTaskState;
-    const taskStates = [{ value: 'TODO', label: 'TODO' },
-                        { value: 'IN PROGRESS', label: 'IN PROGRESS' },
-                        { value: 'IN REVIEW', label: 'IN REVIEW'},
-                        { value: 'COMPLETED', label: 'COMPLETED'}];
+    const currUserId = user.uid;
+    const taskStatesOwner = [{value: 'TODO', label: 'TODO'},
+                            {value: 'IN PROGRESS', label: 'IN PROGRESS'},
+                            {value: 'IN REVIEW', label: 'IN REVIEW'},
+                            {value: 'COMPLETED', label: 'COMPLETED'}];
+    const taskStatesMember = [{value: 'TODO', label: 'TODO'},
+                            { value: 'IN PROGRESS', label: 'IN PROGRESS'},
+                            { value: 'IN REVIEW', label: 'IN REVIEW'}]
     
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -116,6 +124,8 @@ export default function Project() {
     const handleClickOpen = () => { //popup form
         setOpen(true);
         console.log(task_ids);
+        console.log(task_dict);
+        console.log(test);
     };
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
@@ -125,7 +135,8 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        createTask(projectId, userUid, taskid, taskName, taskDescr);
+        
+        createTask(projectId, user.uid, taskid, taskName, taskDescr);
         setTaskName('');
         setTaskDescr('');
         setOpen(false);
@@ -151,9 +162,43 @@ export default function Project() {
         }
     }, [task_collections]);
 
+    // Task state changes
+    const handleTakeTask = (task) => { //TODO to IN PROGRESS
+        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        getDoc(curProjDoc).then((doc) => {
+            let owner = doc.data().ownerid;
+            updateDoc(curProjDoc, {
+                taskState: "IN PROGRESS",
+                currUserId: currUserId,
+            });
+        });
+    }
+
+    const handleMarkDone = (task) => { //IN PROGRESS to IN REVIEW
+        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        getDoc(curProjDoc).then((doc) => {
+            let owner = doc.data().ownerid;
+            updateDoc(curProjDoc, {
+                taskState: "IN REVIEW",
+                currUserId: currUserId,
+            });
+        });
+    }
+
+    const handleReview = (task) => {
+        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        getDoc(curProjDoc).then((doc) => {
+            let owner = doc.data().ownerid;
+            updateDoc(curProjDoc, {
+                taskState: "COMPLETED",
+                currUserId: currUserId,
+            });
+        });
+    }
+
     /* Task creation ends */
 
-    if (!projectDtl) {
+    if (!projectDtl && task_ids == []) {
         return <div> Loading... </div>
     }
     return (
@@ -168,8 +213,7 @@ export default function Project() {
                     </Grid>
 
                     {/* Task creation */}
-
-                    <Grid container columns={9} className={styles['task-board']} sx={{marginBottom: '20px'}}>
+                    <Grid container columns={9} className={styles['task-board']} sx={{width: '95%', margin: 'auto', paddingBottom: '20px'}}>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
                         <Grid item xs={2}><h4>In Progress</h4></Grid>
                         <Grid item xs={2}><h4>In Review</h4></Grid>
@@ -177,10 +221,87 @@ export default function Project() {
                         <Grid item xs={1}>
                             <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
                         </Grid>
-                        <Grid item xs={2}>Hi</Grid>
-                        <Grid item xs={2}>Hi</Grid>
-                        <Grid item xs={2}>Hi</Grid>
-                        <Grid item xs={2}>Hi</Grid>
+
+                        <Grid item xs={2}>
+                            <Grid container columns={1} sx={{width: '100%'}}>
+                                {
+                                    task_ids.length > 0 && task_ids.filter(task => {
+                                            if (task_dict[task]['taskState'] === "TODO") {return task;}
+                                        }).map((task) => 
+                                        <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                            <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
+                                                <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                        {task_dict[task].taskName}
+                                                </Button>
+                                                <Button onClick={() => {handleTakeTask(task)}}><PlaylistAddIcon/></Button>
+                                            </Paper>
+                                        </Grid>
+                                    )
+                                }
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <Grid container columns={1}>
+                                <Grid container columns={1} sx={{width: '100%'}}>
+                                    {
+                                        task_ids.length > 0 && task_ids.filter(task => {
+                                                if (task_dict[task]['taskState'] === "IN PROGRESS") {return task;}
+                                        }).map((task) => 
+                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                                <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
+                                                    <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                            {task_dict[task].taskName}
+                                                    </Button>
+                                                    <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
+                                                </Paper>
+                                            </Grid>
+                                        )
+                                    }
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <Grid container columns={1}>
+                                <Grid container columns={1} sx={{width: '100%'}}>
+                                    {
+                                        task_ids.length > 0 && task_ids.filter(task => {
+                                                if (task_dict[task]['taskState'] === "IN REVIEW") {return task;}
+                                            }).map((task) => 
+                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                                <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
+                                                    <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                            {task_dict[task].taskName}
+                                                    </Button>
+                                                    <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>
+                                                </Paper>
+                                            </Grid>
+                                        )
+                                    }
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <Grid container columns={1}>
+                                <Grid container columns={1} sx={{width: '100%'}}>
+                                    {
+                                        task_ids.length > 0 && task_ids.filter(task => {
+                                                if (task_dict[task]['taskState'] === "COMPLETED") {return task;}
+                                            }).map((task) => 
+                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                                <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
+                                                    <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}} color="success">
+                                                            {task_dict[task].taskName}
+                                                    </Button>
+                                                </Paper>
+                                            </Grid>
+                                        )
+                                    }
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>
 
 
@@ -205,12 +326,6 @@ export default function Project() {
 
                     {/* Project operations */}
                     <Grid container columns={5} sx={{width: '95%', margin: 'auto', paddingTop: '30px'}}>
-                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                            <Link to={`/project/taskcreate/${projectId}/${user.uid}`} key = {projectId} style={{ textDecoration: 'none' }}> 
-                                <Button variant='contained'>Create Task</Button>
-                            </Link>   
-                        </Grid>
-
                         {user.uid === projectDtl.ownerid ?
                             <Grid item xs={1} sx={{display: 'flex', justifyContent: "flex-start"}}>
                                 <Link to={`/project/projectmodify/${projectId}`} key={projectId} style={{ textDecoration: 'none' }}>
