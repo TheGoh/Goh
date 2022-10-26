@@ -20,3 +20,15 @@
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.member-ls {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.member-ls h1 {
+    padding-top: 20px;
+}
+
+.item-box {
+    margin-bottom: 20px;
+}

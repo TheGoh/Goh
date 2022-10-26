@@ -26,8 +26,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
@@ -123,9 +121,7 @@ export default function Project() {
     /* Task creation starts */
     const handleClickOpen = () => { //popup form
         setOpen(true);
-        console.log(task_ids);
-        console.log(task_dict);
-        console.log(test);
+        console.log(projectDtl);
     };
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
@@ -143,7 +139,6 @@ export default function Project() {
     }
     useEffect(() => {
         if (task_collections) {
-            console.log(task_collections);
             //update task_ids if task collection changes
             const updateList = async() => {
                 const temp_collection = await task_collections;
@@ -206,14 +201,17 @@ export default function Project() {
             <Grid container columns={5}>
                 <Grid item xs={4}>
                     {/* Basic information display */}
-                    <Grid container columns={3} sx={{width: '95%', margin: 'auto', marginTop: '20px',}} className={styles['info']}>
-                        <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start', margin: '0px'}}><h1>{projectDtl.projName} Board</h1></Grid>
+                    
+                    <Grid container columns={4} sx={{width: '95%', margin: 'auto', marginTop: '20px',}} className={styles['info']}>
+                        <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start', margin: '0px'}}><h1>{projectDtl.projName} Board</h1></Grid>
                         <Grid item xs={2}></Grid>
-                        <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
+                        <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                     </Grid>
+                    
 
                     {/* Task creation */}
-                    <Grid container columns={9} className={styles['task-board']} sx={{width: '95%', margin: 'auto', paddingBottom: '20px'}}>
+                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
+                    <Grid container columns={9} className={styles['task-board']}>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
                         <Grid item xs={2}><h4>In Progress</h4></Grid>
                         <Grid item xs={2}><h4>In Review</h4></Grid>
@@ -303,6 +301,7 @@ export default function Project() {
                             </Grid>
                         </Grid>
                     </Grid>
+                    </Paper>
 
 
                     {/* Invitation */}
@@ -349,8 +348,14 @@ export default function Project() {
                     </Grid>
                 </Grid>
 
-                <Grid item xs={1}>
-                    {/* For Users in projects */}
+                {/* Users in projects */}
+                <Grid item xs={1} sx={{width:"95%"}}>
+                    <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
+                        <Grid container columns={1}>
+                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>Project Members</Grid>
+                            <Grid item xs={1}>Hi2</Grid>
+                        </Grid>
+                    </Paper>
                 </Grid>
             </Grid>
 
