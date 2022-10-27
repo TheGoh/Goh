@@ -2,12 +2,10 @@
 
 //Functionality
 import { useState, useEffect } from 'react';
-import { useAuthContext } from '../../../hooks/useAuthContext'
+import { useAuthContext } from '../../../hooks/useAuthContext';
 import { useCollection } from '../../../hooks/useCollection';
 import { useFetchProject } from '../../../hooks/useFetchProject';
 import { useProject } from '../../../hooks/useProject';
-import { firedb } from '../../../firebase/config';
-import { doc, getDoc, onSnapshot } from "firebase/firestore"
 import { v4 as uuid } from 'uuid';
 
 //routing
@@ -28,25 +26,22 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
-// let snapshots = [];
-
 export default function ProjectCreate() {
     /* React states */
     const [open, setOpen] = useState(''); // form dialog open/close
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
-    const [user_owned_ids, setUserOwnedIds] = useState('');
     const [all_projects_dict, setAllProjectsDict] = useState('');
 
     const { user } = useAuthContext()
     const { createProject, projid, error } = useProject();
-    const { documents: allProjects , error2} = useCollection('projects', null);
     /* Fetch the current user document*/
     const { documents: userDetail } = useFetchProject('users', user.uid);
+    const { documents: allProjects , error2} = useCollection('projects', null);
+    
     
     useEffect(() => {
         if (allProjects) {
-
             /* initialize a temp dictionary */
             let temp = {};
             allProjects.forEach(project => {
@@ -55,29 +50,18 @@ export default function ProjectCreate() {
             setAllProjectsDict(temp);
         }
     }, [allProjects])
-
-    useEffect(() => {
-
-        //TODO deleteitem
-        
-        if (userDetail) {
-            if (user_owned_ids.length !== userDetail.ownedProjects.length) {
-                setUserOwnedIds(userDetail.ownedProjects);
-            }
-        }
-    }, [userDetail]);
- 
     
     /* Form control */
     const handleClickOpen = () => { //popup form
-        //console.log(projOwned);
         setOpen(true);
     };
+
     const handleClose = () => { //close form and clear inputs
         setProjName('');
         setProjDescr('');
         setOpen(false);
-    }
+    };
+
     const handleSubmit = (event) => { //close form and save project
         event.preventDefault();
         if (projName.length !== 0) {
@@ -89,7 +73,7 @@ export default function ProjectCreate() {
         setProjDescr(''); 
     };
     
-    if (allProjects === null || Object.keys(all_projects_dict).length === 0) return (<div>Loading</div>)
+    if (allProjects === null || userDetail === null || Object.keys(all_projects_dict).length === 0) return (<div>Loading</div>)
     else return ( 
         <Box>
 
@@ -102,9 +86,13 @@ export default function ProjectCreate() {
                         <AddIcon fontSize="large"/>
                     </Button>
                 </Grid>
-                {user_owned_ids.length > 0 && user_owned_ids.map((item) => 
+                {userDetail.ownedProjects.length > 0 && userDetail.ownedProjects.map((item) => 
                     
-                        <Grid item xs={1} key = {item}>
+                    <Grid item xs={1} key = {item}>
+                    {
+                        all_projects_dict[item] === undefined ? 
+                        <div></div>
+                        :
                         <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id} style={{ textDecoration: 'none' }}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
@@ -112,7 +100,9 @@ export default function ProjectCreate() {
                                 }
                             </Button>
                         </Link>
-                        </Grid>
+                    }
+                    
+                </Grid>
                     
                 )}
             </Grid>

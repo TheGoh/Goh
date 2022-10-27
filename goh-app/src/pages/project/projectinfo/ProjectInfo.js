@@ -10,7 +10,6 @@ import { Link} from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { collection, doc, getDoc, getDocs, updateDoc, query, where} from "firebase/firestore";
-import Select from 'react-select';
 
 /* MUI components */
 import styles from './ProjectInfo.module.css';
@@ -50,18 +49,10 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const { createTask } = useTask();
     const currUserId = user.uid;
-    const taskStatesOwner = [{value: 'TODO', label: 'TODO'},
-                            {value: 'IN PROGRESS', label: 'IN PROGRESS'},
-                            {value: 'IN REVIEW', label: 'IN REVIEW'},
-                            {value: 'COMPLETED', label: 'COMPLETED'}];
-    const taskStatesMember = [{value: 'TODO', label: 'TODO'},
-                            { value: 'IN PROGRESS', label: 'IN PROGRESS'},
-                            { value: 'IN REVIEW', label: 'IN REVIEW'}]
     
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
         //remove from projects collection
-        deleteDocument(`projects`, projectId)
         const ref = doc(firedb, `users`, user.uid)
 
         //remove from user's project id entry
@@ -78,6 +69,31 @@ export default function Project() {
                     console.log("update successfully!!!",tempList);
                 })
             })
+        
+        /* Delete project id from member project id list */
+        const projDocRef = doc(firedb, `projects`, projectId);
+        const projSnapshot = await getDoc(projDocRef);
+        
+        projSnapshot.data().memberList["members"].forEach((member) => {
+            const ref2 = doc(firedb, `users`, member)
+            //remove from user's project id entry
+            getDoc(ref2)
+                .then (async (doc) => {
+                    console.log(doc.data())
+                    let tempOwnedProjects = doc.data().ownedProjects;
+                    let tempList = tempOwnedProjects.filter((project) => {
+                        if (projectId !== project) return project;
+                    })
+                    await updateDoc(ref2, {
+                            ownedProjects: tempList
+                    })
+                    .then(() => {
+                        console.log("update successfully!!!",tempList);
+                    })
+            })
+        })
+
+        deleteDocument(`projects`, projectId)
     }
 
     const handleProjectInvitation = async(e) => {
