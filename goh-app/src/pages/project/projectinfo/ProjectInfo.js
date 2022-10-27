@@ -65,30 +65,20 @@ export default function Project() {
                 updateDoc(ref, {
                      ownedProjects: tempList
                 })
-                .then(() => {
-                    console.log("update successfully!!!",tempList);
-                })
             })
         
-        /* Delete project id from member project id list */
-        const projDocRef = doc(firedb, `projects`, projectId);
-        const projSnapshot = await getDoc(projDocRef);
-        
-        projSnapshot.data().memberList["members"].forEach((member) => {
-            const ref2 = doc(firedb, `users`, member)
+        /* Delete project id from member project id list */     
+        projectDtl.memberList["members"].forEach((member) => {
+            const ref2 = doc(firedb, `users`, member.id)
             //remove from user's project id entry
             getDoc(ref2)
                 .then (async (doc) => {
-                    console.log(doc.data())
                     let tempOwnedProjects = doc.data().ownedProjects;
                     let tempList = tempOwnedProjects.filter((project) => {
                         if (projectId !== project) return project;
                     })
                     await updateDoc(ref2, {
                             ownedProjects: tempList
-                    })
-                    .then(() => {
-                        console.log("update successfully!!!",tempList);
                     })
             })
         })

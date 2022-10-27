@@ -67,7 +67,11 @@ export default function PendingInvite() {
 
                 //STEP2: add user id into project memberList
                 let MemList = {...projSnapshot.data().memberList}
-                MemList["members"].push(user.uid)
+                const obj = {
+                    id: user.uid,
+                    displayName: user.displayName
+                }
+                MemList["members"].push(obj)
                 updateDoc(projDocRef, {
                     memberList: MemList
                 })

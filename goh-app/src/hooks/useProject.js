@@ -8,11 +8,12 @@ import {
 } from "firebase/firestore"
    
 import { firedb } from '../firebase/config';
-
+import { useAuthContext } from '../hooks/useAuthContext'
 
 //create project hook
 export const useProject = () => {
     const [error, setError] = useState('')
+    const { user } = useAuthContext();
 
     //takes fields and creates a firebase document for a project
     const createProject = async (ownerid, projid, projName, projDescr) => {
@@ -23,8 +24,11 @@ export const useProject = () => {
 
         if (!projSnapshot.exists()) {
             const createdAt = new Date();
-            //const memberList = [ownerid];
-            const memberList = { "owner": [ownerid], "members":[] };
+            const obj = {
+                id: ownerid,
+                displayName: user.displayName
+            }
+            const memberList = { "owner": [obj], "members":[] };
             try {
                 await setDoc(projDocRef, {
                     id: projid,
