@@ -363,17 +363,19 @@ export default function Project() {
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                                        <Button variant="outlined" disabled className={styles['ppls-btn']}>owner</Button>
+                                        <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
                             {
                                 projectDtl.memberList.members.length > 0 && 
-                                projectDtl.memberList.members.map((index) => 
+                                projectDtl.memberList.members.map((member) => 
                                     <Grid item xs={1}>
-                                        <Grid container columns={2}>{index.displayName}</Grid>
-                                        <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                                            <Button variant="outlined" disabled className={styles['ppls-btn']}>member</Button>
+                                        <Grid container columns={2}>
+                                            <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
+                                            <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
+                                                <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>member</Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 )
