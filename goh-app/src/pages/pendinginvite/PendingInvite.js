@@ -116,6 +116,7 @@ export default function PendingInvite() {
                     />
                 <button className = "btn" onClick = {handleAccept}>Accept</button>
                 <button className = "btn" onClick = {handleDecline}>Decline</button>
+                
             </form>           
         </div>
     )
