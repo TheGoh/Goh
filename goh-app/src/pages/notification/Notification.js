@@ -53,7 +53,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 export default function Notification() {
   //current user
-    const [curUser, setcurUser] = useState('ziyang');
+    const [curUser, setcurUser] = useState('');
     //current text
     const [curText, setcurText] = useState('');
     //当前的对话框的内容，需要去获取
@@ -121,7 +121,7 @@ export default function Notification() {
 
     return(
         <div class='notify'>
-        <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper', visibility: 'hidden' }}>
+        <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             {
                 userData.map((item,index)=>{
 
