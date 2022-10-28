@@ -31,6 +31,14 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import TaskIcon from '@mui/icons-material/Task';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions';
+
+
 
 export default function Project() {
     /* Project information variables */
@@ -49,6 +57,8 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const { createTask } = useTask();
     const currUserId = user.uid;
+    const [searchField, setSearchField] = useState('');
+    const [filteredTasks, setFilteredTasks] = useState('');
     
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -85,6 +95,7 @@ export default function Project() {
 
         deleteDocument(`projects`, projectId)
     }
+    
 
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
@@ -123,6 +134,37 @@ export default function Project() {
             }); 
     }
     /* Project operations ends */
+    
+    /* Task Search starts */
+    const handleSearchField = (event) => {
+        const field = event.target.value.toLocaleLowerCase();
+        console.log(field);
+        setSearchField(field);
+    }
+    useEffect(() => {
+        if (searchField) {
+            //update task_ids if task collection changes
+            const updateSearch = () => {
+                const temp_tasks = task_collections;
+                //console.log(temp_tasks)
+                const filtered = [];
+                if (temp_tasks !== null) {
+                    temp_tasks.forEach(task => {  
+                        const tmp_task = task.taskName.toLocaleLowerCase().includes(searchField);
+                        if (tmp_task === true) {
+                            filtered.push(task);            
+                        }
+                       
+                    });
+                }
+                setFilteredTasks(filtered);
+                //console.log(filteredTasks);
+            }
+            updateSearch();
+        }
+    }, [searchField]);
+
+    /* Task Search ends */
 
     /* Task creation starts */
     const handleClickOpen = () => { //popup form
@@ -207,17 +249,29 @@ export default function Project() {
             <Grid container columns={5}>
                 <Grid item xs={4}>
                     {/* Basic information display */}
-                    
                     <Grid container columns={4} sx={{width: '95%', margin: 'auto', marginTop: '20px',}} className={styles['info']}>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start', margin: '0px'}}><h1>{projectDtl.projName} Board</h1></Grid>
                         <Grid item xs={2}></Grid>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                     </Grid>
-                    
-
+                    <Paper
+                        component="form"
+                        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+                    >
+                        <InputBase
+                            sx={{ ml: 1, flex: 1 }}
+                            placeholder="Search for Tasks"
+                            inputProps={{ 'aria-label': 'Search for Tasks' }}
+                            onChange={handleSearchField}
+                        />
+                        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                    </Paper>
                     {/* Task creation */}
                     <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
                     <Grid container columns={9} className={styles['task-board']}>
+                        <Grid item xs={1}>
+
+                        </Grid>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
                         <Grid item xs={2}><h4>In Progress</h4></Grid>
                         <Grid item xs={2}><h4>In Review</h4></Grid>
