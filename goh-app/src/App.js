@@ -61,12 +61,6 @@ function App() {
               element={ user ? <ProjectCreate/> : <Navigate to = "/login"/>} 
               />        
 
-              {/* Redirect to add task */}
-              {/* <Route
-              path = '/task/taskcreate'
-              element={ user ? <TaskCreate/> : <Navigate to = "/login"/>} 
-              /> */}
-
               <Route
               path = '/project/:projectId'
               element={ user ? <Project/> : <Navigate to = "/login"/>}
@@ -74,7 +68,7 @@ function App() {
 
               <Route
               path = '/notification'
-              element={ user ? <Notification/> : <Navigate to = "/notification"/>}
+              element={ user ? <Notification/> : <Navigate to = "/login"/>}
               />
 
               <Route
