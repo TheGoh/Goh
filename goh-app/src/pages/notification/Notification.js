@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { getAuth } from 'firebase/auth'
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 
@@ -116,9 +115,6 @@ export default function Notification() {
         setcurText( event.target.value); 
         }
 
-
-    //todo 获取用户列表信息
-
     return(
         <div class='notify'>
         <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -157,8 +153,8 @@ export default function Notification() {
 
         </List>
 {
-  //只有当点击用户时，才会出现对话框
-// curUser == ''? '':
+    //只有当点击用户时，才会出现对话框
+    // curUser == ''? '':
     <Box  sx={{ width:'50%'}}   class='notify_box'>
     <div class='notify_box_content'>
     <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -196,11 +192,10 @@ export default function Notification() {
 
     </div>
     <textarea sx={{ visibility: 'hidden' }} class='notify_box_text' value={curText} onChange={handleChange}></textarea>
-    <Button sx={{ visibility: 'hidden' }}  onClick={submitText}  className='notify_box_button' sx={{width: '10%'}} variant="contained" type="submit">submit</Button> 
+    <Button sx={{ visibility: 'hidden' , width: '10%'}}  onClick={submitText}  className='notify_box_button' variant="contained" type="submit">submit</Button> 
   </Box>
 }
         
-        </div>
+      </div>
     )
-
 }
