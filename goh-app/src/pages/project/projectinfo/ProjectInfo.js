@@ -358,8 +358,26 @@ export default function Project() {
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
                         <Grid container columns={1}>
-                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>Project Members</Grid>
-                            <Grid item xs={1}>Hi2</Grid>
+                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>People</Grid>
+                            <Grid item xs={1}>
+                                <Grid container columns={2}>
+                                    <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
+                                    <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
+                                        <Button variant="outlined" disabled className={styles['ppls-btn']}>owner</Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            {
+                                projectDtl.memberList.members.length > 0 && 
+                                projectDtl.memberList.members.map((index) => 
+                                    <Grid item xs={1}>
+                                        <Grid container columns={2}>{projectDtl.memberList.members[index].displayName}</Grid>
+                                        <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
+                                            <Button variant="outlined" disabled className={styles['ppls-btn']}>member</Button>
+                                        </Grid>
+                                    </Grid>
+                                )
+                            }
                         </Grid>
                     </Paper>
                 </Grid>

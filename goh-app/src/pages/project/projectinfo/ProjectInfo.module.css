@@ -32,3 +32,9 @@
 .item-box {
     margin-bottom: 20px;
 }
+
+.ppls-btn {
+    text-transform: none;
+    height: 50%;
+    width: 50%;
+}
