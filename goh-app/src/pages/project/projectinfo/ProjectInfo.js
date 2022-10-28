@@ -371,7 +371,7 @@ export default function Project() {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((index) => 
                                     <Grid item xs={1}>
-                                        <Grid container columns={2}>{projectDtl.memberList.members[index].displayName}</Grid>
+                                        <Grid container columns={2}>{index}</Grid>
                                         <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                             <Button variant="outlined" disabled className={styles['ppls-btn']}>member</Button>
                                         </Grid>
