@@ -61,10 +61,6 @@ export default function Notification() {
 
     //current user list
     const [userData,setUserData]=useState([
-      {'userName':'qifei',userId:1,
-      'newMessageTime': 12,'readMessageTime': 10},
-      {'userName':'ziyang',userId:2,
-      'newMessageTime': 12,'readMessageTime': 10}
     ])
     let myUSerId = 1;
 
@@ -72,44 +68,14 @@ export default function Notification() {
     const { user } = useAuthContext();
     const { documents: userDetail } = useFetchProject('users', user.uid );
     useEffect(() => {
-      let invitationList = {...userDetail?.invitations};
-      Object.values(invitationList).forEach(v => {
-        let msg = {
-          'userName': 'Project Invitation Notice',
-          'userId': 1,
-          'MessageTime': 12,
-          'text': v
-        };
-        let arr = talkList;
-        arr.push(msg);
-        settalkList(arr);
-      });
+      if(userDetail){
+        console.log(userDetail.my_message);
+      }
+
     });
 
-    //open dialog box
-      const openUserDialog = (userInfo) => {
-        setcurUser(userInfo.userId);
-        for (let index = 0; index < userData.length; index++) {
-          const element = userData[index];
-          if(element.userId == userInfo.userId){
-            element.readMessageTime =element.newMessageTime;
-          }
-        }
-        console.log(userData)
-        setUserData(userData)
-        //TODO，获取与该用户的对话记录
-      }
 
-      //send text
-      const submitText = (e) => {
-        let curTextData = {'userName':'qifei',userId:1,
-        'newMessageTime': +new Date(),text:curText}
-        settalkList(talkList.concat(curTextData))
-        //TODO 此处要调用发送到后端的接口信息
-        setcurText('');
-        e.preventDefault();
-        
-      }
+
 
       const handleChange = function(event) { 
         setcurText( event.target.value); 
@@ -123,23 +89,7 @@ export default function Notification() {
 
                   if(item.userId != myUSerId){
                     return     ( <React.Fragment> 
-                      <ListItem alignItems="flex-start" selected={curUser === item.userId} onClick={(e)=>{openUserDialog(item)}}>
-                    <ListItemAvatar>
-                      {
-                        item.newMessageTime <= item.readMessageTime ? (
-                          <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
-                        ) :(
-                          <StyledBadge
-                          overlap="circular"
-                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                          variant="dot"
-                        >
-                          <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
-                        </StyledBadge>
-                        )
-                      }
-                   
-                    </ListItemAvatar>
+                      <ListItem alignItems="flex-start" selected={curUser === item.userId}>
                     <ListItemText
                       primary={item.userName}
                     />
@@ -152,50 +102,6 @@ export default function Notification() {
 
 
         </List>
-{
-    //只有当点击用户时，才会出现对话框
-    // curUser == ''? '':
-    <Box  sx={{ width:'50%'}}   class='notify_box'>
-    <div class='notify_box_content'>
-    <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {
-                talkList.map((item,index)=>{
-                  if (item.userName == 'Project Invitation Notice') {
-                    return ( <React.Fragment> <ListItem alignItems="flex-start" >
-                      <ListItemAvatar sx={{ width:'20',height:'10%'}}>
-                        <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={item.userName}
-                        secondary={item.text}
-                      />
-                      <Link to="/invitation">more operations</Link>
-                    </ListItem>
-                    </React.Fragment>) 
-                  } 
-
-                  return ( <React.Fragment> <ListItem alignItems="flex-start" >
-                    <ListItemAvatar sx={{ width:'20',height:'10%'}}>
-                      <Avatar alt={item.userName} src="/static/images/avatar/1.jpg" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={item.userName}
-                      secondary={item.text}
-                    />
-                  </ListItem>
-                  </React.Fragment>) 
-                }
-                   
-                )
-            }
-        </List>
-
-    </div>
-    <textarea sx={{ visibility: 'hidden' }} class='notify_box_text' value={curText} onChange={handleChange}></textarea>
-    <Button sx={{ visibility: 'hidden' , width: '10%'}}  onClick={submitText}  className='notify_box_button' variant="contained" type="submit">submit</Button> 
-  </Box>
-}
-        
       </div>
     )
 }

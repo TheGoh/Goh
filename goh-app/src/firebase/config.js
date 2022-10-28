@@ -62,14 +62,15 @@ export const createUserDocumentFromAuth = async (userAuth, userid) => {
         const createdAt = new Date();
         const ownedProjects = [];
         const invitations = {}; // a list of project ids being invited to
-
+        const my_message = [];
         try {
             await setDoc(userDocRef, {
                 displayName : userid,
                 email,
                 createdAt,
                 ownedProjects,
-                invitations
+                invitations,
+                my_message
             });
         } catch (error) {
             console.log('error creating the user', error.message);

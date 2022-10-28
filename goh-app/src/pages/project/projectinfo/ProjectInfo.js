@@ -122,7 +122,21 @@ export default function Project() {
 
                         if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
                             invite_list[projectId] = projectDtl.projName
-                            updateDoc(currUserDoc, {invitations: invite_list});
+                            let message_list = doc.data().my_message;
+                            const time = new Date();
+
+                            const message = "Notification message " + projectDtl.projName;
+                            const new_message = {
+                                Sender: user.displayName,
+                                Time: time,
+                                message: message
+                            }
+                            message_list.push(new_message)
+                            updateDoc(currUserDoc, {
+                                invitations: invite_list,
+                                my_message: message_list
+                                }
+                            );
                         }
                         else {
                             console.log("error")
@@ -484,3 +498,5 @@ export default function Project() {
         </Box>
     )
 }
+
+
