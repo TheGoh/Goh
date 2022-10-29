@@ -163,9 +163,10 @@ export default function Project() {
     
     /* Task Search starts */
     const handleSearchField = (event) => {
+        event.preventDefault();
         const field = event.target.value.toLocaleLowerCase();
+        console.log(field);
         setSearchField(field);
-        console.log(searchField);
     }
 
     /* Task Search ends */
@@ -258,18 +259,16 @@ export default function Project() {
                         <Grid item xs={2}></Grid>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                     </Grid>
-                    <Paper
-                        component="form"
-                        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-                    >
-                        <InputBase
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder="Search for Tasks"
-                            inputProps={{ 'aria-label': 'Search for Tasks' }}
-                            onChange={handleSearchField}
-                        />
-                        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                    </Paper>
+                    <FormControl sx={{width: "90%"}}>
+                                <InputLabel htmlFor="component-outlined">Search Tasks</InputLabel>
+                                <OutlinedInput
+                                id="component-outlined"
+                                value={searchField}
+                                label="target"
+                                onChange = {handleSearchField}
+                                type="search"
+                                />
+                    </FormControl>
                     {/* Task creation */}
                     <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
                     <Grid container columns={9} className={styles['task-board']}>
