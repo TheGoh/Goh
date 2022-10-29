@@ -31,6 +31,8 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import TaskIcon from '@mui/icons-material/Task';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import InputBase from '@mui/material/InputBase';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -259,16 +261,14 @@ export default function Project() {
                         <Grid item xs={2}></Grid>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                     </Grid>
-                    <FormControl sx={{width: "90%"}}>
-                                <InputLabel htmlFor="component-outlined">Search Tasks</InputLabel>
-                                <OutlinedInput
-                                id="component-outlined"
-                                value={searchField}
-                                label="target"
-                                onChange = {handleSearchField}
-                                type="search"
-                                />
-                    </FormControl>
+                    <Autocomplete
+                    disablePortal
+                    id="Task Search"
+                    options={task_collections}
+                    getOptionLabel={(option)=>option.taskName}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Task Search" />}
+                    />
                     {/* Task creation */}
                     <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
                     <Grid container columns={9} className={styles['task-board']}>
