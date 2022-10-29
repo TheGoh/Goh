@@ -279,9 +279,6 @@ export default function Project() {
                     {/* Task creation */}
                     <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
                     <Grid container columns={9} className={styles['task-board']}>
-                        <Grid item xs={1}>
-
-                        </Grid>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
                         <Grid item xs={2}><h4>In Progress</h4></Grid>
                         <Grid item xs={2}><h4>In Review</h4></Grid>
