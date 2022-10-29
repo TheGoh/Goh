@@ -37,6 +37,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import DirectionsIcon from '@mui/icons-material/Directions';
+import { async } from '@firebase/util';
 
 
 
@@ -58,8 +59,19 @@ export default function Project() {
     const { createTask } = useTask();
     const currUserId = user.uid;
     const [searchField, setSearchField] = useState('');
-    const [filteredTasks, setFilteredTasks] = useState('');
-    
+    const [filteredTasks, setFilteredTasks] = useState([]);
+    const temp_tasks = task_collections;
+        //console.log(temp_tasks)
+    const filtered = [];
+    if (temp_tasks !== null) {
+        temp_tasks.forEach(task => {  
+            const tmp_task = task.taskName.toLocaleLowerCase().includes(searchField);
+            if (tmp_task === true) {
+                filtered.push(task);            
+            }   
+        });
+    }
+    console.log(filtered);
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
         //remove from projects collection
@@ -138,31 +150,9 @@ export default function Project() {
     /* Task Search starts */
     const handleSearchField = (event) => {
         const field = event.target.value.toLocaleLowerCase();
-        console.log(field);
         setSearchField(field);
+        console.log(searchField);
     }
-    useEffect(() => {
-        if (searchField) {
-            //update task_ids if task collection changes
-            const updateSearch = () => {
-                const temp_tasks = task_collections;
-                //console.log(temp_tasks)
-                const filtered = [];
-                if (temp_tasks !== null) {
-                    temp_tasks.forEach(task => {  
-                        const tmp_task = task.taskName.toLocaleLowerCase().includes(searchField);
-                        if (tmp_task === true) {
-                            filtered.push(task);            
-                        }
-                       
-                    });
-                }
-                setFilteredTasks(filtered);
-                //console.log(filteredTasks);
-            }
-            updateSearch();
-        }
-    }, [searchField]);
 
     /* Task Search ends */
 
