@@ -60,20 +60,8 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const { createTask } = useTask();
     const currUserId = user.uid;
-    const [searchField, setSearchField] = useState('');
-    const [filteredTasks, setFilteredTasks] = useState([]);
-    const temp_tasks = task_collections;
-        //console.log(temp_tasks)
-    const filtered = [];
-    if (temp_tasks !== null) {
-        temp_tasks.forEach(task => {  
-            const tmp_task = task.taskName.toLocaleLowerCase().includes(searchField);
-            if (tmp_task === true) {
-                filtered.push(task);            
-            }   
-        });
-    }
-    console.log(filtered);
+    const [currTaskId, setCurrTaskId] = useState('');
+    console.log(currTaskId)
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
         //remove from projects collection
@@ -162,16 +150,6 @@ export default function Project() {
             }); 
     }
     /* Project operations ends */
-    
-    /* Task Search starts */
-    const handleSearchField = (event) => {
-        event.preventDefault();
-        const field = event.target.value.toLocaleLowerCase();
-        console.log(field);
-        setSearchField(field);
-    }
-
-    /* Task Search ends */
 
     /* Task creation starts */
     const handleClickOpen = () => { //popup form
@@ -264,16 +242,22 @@ export default function Project() {
                         <Grid item xs={2}>
                         {/* Search bar */}
                             <Autocomplete
-                                freeSolo
                                 disablePortal
+                                autoComplete
+                                freeSolo
                                 id="Task Search"
                                 options={task_collections}
-                                getOptionLabel={(option)=>option.taskName}
+                                getOptionLabel={(option)=>(option.taskName ?? option)}
+                                onChange={(event, value)=>setCurrTaskId(value.taskId)}
                                 sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Task Search" />}
+                                renderInput={(params) => <TextField {...params} label="Task Search" />}        
                             />
                         </Grid>
-                        
+                        <Grid> 
+                            <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
+                            Enter
+                            </Button>      
+                        </Grid>
                     </Grid>
                     
                     {/* Task creation */}
