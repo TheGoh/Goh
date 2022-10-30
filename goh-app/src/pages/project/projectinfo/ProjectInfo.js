@@ -253,10 +253,17 @@ export default function Project() {
                                 renderInput={(params) => <TextField {...params} label="Task Search" />}        
                             />
                         </Grid>
-                        <Grid> 
-                            <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
-                            Enter
-                            </Button>      
+                        <Grid>
+                            {task_ids.includes(currTaskId) ?
+                                <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
+                                    Enter
+                                </Button>
+                                :
+                                <Button variant="contained" disabled component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
+                                    Enter
+                                </Button>
+                            }
+                                  
                         </Grid>
                     </Grid>
                     
