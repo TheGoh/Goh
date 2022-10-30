@@ -239,8 +239,8 @@ export default function Project() {
                         <Grid item xs={2}></Grid>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                         <Grid item xs={2}></Grid>
-                        <Grid item xs={2}>
-                        {/* Search bar */}
+                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                            {/* Search bar */}
                             <Autocomplete
                                 disablePortal
                                 autoComplete
@@ -252,8 +252,7 @@ export default function Project() {
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params} label="Task Search" />}        
                             />
-                        </Grid>
-                        <Grid>
+                            <Grid item xs={1}>
                             {task_ids.includes(currTaskId) ?
                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
                                     Enter
@@ -265,6 +264,8 @@ export default function Project() {
                             }
                                   
                         </Grid>
+                        </Grid>
+                       
                     </Grid>
                     
                     {/* Task creation */}
