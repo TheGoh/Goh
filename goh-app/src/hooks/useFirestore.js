@@ -23,7 +23,7 @@ export const useFirestore = () => {
                 displayName: user.displayName
             }
             const memberList = { "owner": [obj], "members":[] };
-            const roleTags = ["Programmer", "Engineer", "UI Designer"];
+            const roleTags = [];
             try {
                 await setDoc(projDocRef, {
                     id: projid,
