@@ -231,6 +231,7 @@ export default function Project() {
     //         });
     //      })
     // }
+    }
 
     const handleReview = (task) => {
         const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
