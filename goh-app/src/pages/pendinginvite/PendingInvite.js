@@ -67,13 +67,18 @@ export default function PendingInvite() {
 
                 //STEP2: add user id into project memberList
                 let MemList = {...projSnapshot.data().memberList}
+                let tempRoleList = projSnapshot.data().roleTags;
+                tempRoleList.push(assign.role);
                 const obj = {
                     id: user.uid,
-                    displayName: user.displayName
+                    displayName: user.displayName,
+                    RoleTag: assign.role
                 }
+                
                 MemList["members"].push(obj)
                 updateDoc(projDocRef, {
-                    memberList: MemList
+                    memberList: MemList,
+                    roleTags: tempRoleList
                 })
 
             } else {
