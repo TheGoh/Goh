@@ -135,6 +135,14 @@ export const useFirestore = () => {
         
     }
 
+    /* 
+        NOTICE：
+        
+        Add more function if needed, and also add the function name into the "return"
+    
+    
+    */
+
 
     return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, error}
 }
