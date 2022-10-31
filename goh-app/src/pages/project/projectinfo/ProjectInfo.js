@@ -61,7 +61,7 @@ export default function Project() {
     const { createTask } = useTask();
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
-    console.log(currTaskId)
+
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
         //remove from projects collection
@@ -245,7 +245,7 @@ export default function Project() {
         //notification
         //TODO
         //need to find task owner ID
-        const currUserDoc = doc(firedb, `users`, );
+        //const currUserDoc = doc(firedb, `users`, );
             
         // getDoc(currUserDoc)
         //     .then ((doc) => {
