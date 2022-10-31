@@ -57,6 +57,7 @@ export default function Project() {
 
     /* Invitation and RoleTags */
     const [open2, setOpen2] = useState(''); // form dialog open/close
+    const [roleTag, setRole] = useState('');
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -119,10 +120,17 @@ export default function Project() {
                         let invite_list = doc.data().invitations;
 
                         if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
-                            invite_list[projectId] = projectDtl.projName
-                            let message_list = doc.data().my_message;
-                            const time = new Date();
 
+                            //assign role Tag
+                            console.log("roleTag:   ", roleTag)
+                            invite_list[projectId] = {
+                                projName: projectDtl.projName,
+                                roleTag: roleTag
+                            }
+                            
+                            //notification
+                            let message_list = doc.data().my_message;  
+                            const time = new Date();
                             const message = "Notification message " + projectDtl.projName;
                             const new_message = {
                                 Sender: user.displayName,
@@ -130,6 +138,8 @@ export default function Project() {
                                 message: message
                             }
                             message_list.push(new_message)
+
+                            //update user metadata
                             updateDoc(currUserDoc, {
                                 invitations: invite_list,
                                 my_message: message_list
@@ -154,13 +164,14 @@ export default function Project() {
     };
 
     /* user invitation form */
-    const handleClickOpen2 = () => { //popup form
+    const handleClickOpen2 = () => { //popup invitation form
         setOpen2(true);
         console.log(projectDtl.memberList);
     }
 
-    const handleClose2 = () => {
+    const handleClose2 = () => { //clear invitation form
         setInvite('');
+        setRole('')
         setOpen2(false);
     }
 
@@ -169,6 +180,7 @@ export default function Project() {
         setTaskDescr('');
         setOpen(false);
     }
+
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
@@ -500,18 +512,20 @@ export default function Project() {
                             />
                             </FormControl>
                         </Grid>
-                        {/* <Grid item xs={1}>
+                        <Grid item xs={1}>
                             <FormControl sx={{width: "100%"}}>
-                            <InputLabel htmlFor="component-outlined">Task Description</InputLabel>
-                            <OutlinedInput
-                            id="component-outlined"
-                            value={taskDescr}
-                            label="TaskDescription"
-                            onChange = {(e)=>setTaskDescr(e.target.value)}
-                            type="text"
-                            />
+                                <Autocomplete
+                                    disablePortal
+                                    autoComplete
+                                    freeSolo
+                                    id="Roles"
+                                    options={projectDtl.roleTags}
+                                    onInputChange={(event, value)=>setRole(value)}
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField {...params} label="Roles" />}        
+                                />
                             </FormControl>
-                        </Grid> */}
+                        </Grid>
                         </Grid>
                     </DialogContent>
                     <DialogActions>

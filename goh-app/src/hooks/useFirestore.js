@@ -23,6 +23,7 @@ export const useFirestore = () => {
                 displayName: user.displayName
             }
             const memberList = { "owner": [obj], "members":[] };
+            const roleTags = ["Programmer", "Engineer", "UI Designer"];
             try {
                 await setDoc(projDocRef, {
                     id: projid,
@@ -31,6 +32,7 @@ export const useFirestore = () => {
                     projDescr,
                     createdAt,
                     memberList: memberList,
+                    roleTags: roleTags,
                 });
             } catch (error) {
                 console.log('error creating the project', error.message);

@@ -23,7 +23,7 @@ export default function PendingInvite() {
                 let result = inviteList;
                 Object.keys(userDetail.invitations).forEach(item => {
                     if (!result.some( e => e.value == item)) {
-                        result.push({value:item, label: userDetail.invitations[item],  id: item});
+                        result.push({value:item, label: userDetail.invitations[item].projName,  id: item, role: userDetail.invitations[item].roleTag});
                     }
                 })
                 
