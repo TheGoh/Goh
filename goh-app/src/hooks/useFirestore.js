@@ -7,6 +7,9 @@ export const useFirestore = () => {
     const [error, setError] = useState(null);
     const { user } = useAuthContext();
 
+
+
+    /* *** FUNCTION TO CREATE A NEW PROJECT INTO PROJECTS COLLECTION *** */
     const createProject = async (ownerid, projid, projName, projDescr) => {
         setError(null)
         const projDocRef = doc(firedb, `projects`, projid);
@@ -51,6 +54,10 @@ export const useFirestore = () => {
 
     }
 
+
+
+
+    /* *** FUNCTION TO CREATE A NEW TASK IN SPECIFIC PROJECT *** */
     const createTask = async (
         projId, 
         ownerid,
@@ -85,23 +92,11 @@ export const useFirestore = () => {
             }
         }
     }
+    
 
-    const addDoc = async (ref, id, struct) => {
-        setError(null)
 
-        const docRef = doc(firedb, ref, id);
-        const snapshot = await getDoc(docRef);
-        if (!snapshot.exists()) {
-            try {
-                await setDoc(docRef, {
-                    struct
-                });
-            } catch (error) {
-                console.log('error creating collection', error.message)
-            }
-        } 
-    }
 
+    /* *** FUNCTION TO DELETE A SPECIFIC DOCUMENT IN DATABASE *** */
     const deleteDocument = async(docRef, id) => {
         let ref = doc(firedb, docRef, id)
 
@@ -111,6 +106,10 @@ export const useFirestore = () => {
             })
     }
 
+
+
+
+    /* *** FUNCTION TO MODIFY A DOCUMENT METADATA *** */
     const modifyDocument = (docRef, id, projName, projDescr) => {
         let ref = doc(firedb, docRef, id)
         updateDoc(ref, {projName: projName }).catch(error => {
@@ -122,6 +121,9 @@ export const useFirestore = () => {
         
     }
 
+
+
+    /* *** FUNCTION TO MODIFY A TASK METADATA *** */
     const modifyTask = (docRef, id, taskName, taskDescr) => {
         let ref = doc(firedb, docRef, id)
         updateDoc(ref, {taskName: taskName }).catch(error => {
@@ -134,5 +136,5 @@ export const useFirestore = () => {
     }
 
 
-    return { createProject, createTask, addDoc, deleteDocument, modifyDocument, modifyTask, error}
+    return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, error}
 }
