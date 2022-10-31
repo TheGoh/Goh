@@ -135,6 +135,19 @@ export const useFirestore = () => {
         
     }
 
+    const sendMsg = (recv_id, message) => {
+        const ref = doc(firedb, `users`, recv_id);
+        getDoc(ref)
+            .then((doc) => {
+                let msg_temp_list = doc.data().my_message;
+                msg_temp_list.push(message);
+                console.log(msg_temp_list)
+                updateDoc(ref, {
+                    my_message: msg_temp_list
+                });
+            })
+    }
+
     /* 
         NOTICE：
         
@@ -143,6 +156,5 @@ export const useFirestore = () => {
     
     */
 
-
-    return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, error}
+    return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, sendMsg, error}
 }

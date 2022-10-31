@@ -39,7 +39,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 export default function Project() {
     /* Project information variables */
     let { projectId } = useParams();
-    const { deleteDocument } = useFirestore();
+    const { deleteDocument, sendMsg, createTask } = useFirestore();
     const { documents: projectDtl } = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
@@ -51,7 +51,6 @@ export default function Project() {
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
-    const { createTask } = useFirestore();
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
 
@@ -205,25 +204,16 @@ export default function Project() {
             });
         });
         //notification -- send to project owner
-        //getDoc
-    //     const currUserDoc = doc(firedb, `users`, user.uid);
-    //     getDoc(currUserDoc)
-    //     .then ((doc) => {
-    //         let message_list = doc.data.my_message;
-    //         const time = new Date();
-    //         const message = "task " + task_dict[task].taskName + " is ready to review"
-    //         const new_message = {
-    //             Sender: user.displayName,
-    //             Time: time,
-    //             message: message
-    //         }
-    //         message_list.push(message)
-    //         console.log(message_list)
-    //         updateDoc(currUserDoc, {
-    //             my_message: message_list
-    //         });
-    //      })
-    // }
+        
+        const time = new Date();
+        const message = "task " + task_dict[task].taskName + " is ready to review"
+        const new_message = {
+            Sender: user.displayName,
+            Time: time,
+            message: message
+        }
+
+        sendMsg(projectDtl.ownerid, new_message);
     }
 
     const handleReview = (task) => {
@@ -242,7 +232,7 @@ export default function Project() {
             
         // getDoc(currUserDoc)
         //     .then ((doc) => {
-        //         let message_list = doc.data.my_message;
+        //         let message_list = doc.data().my_message;
         //         const time = new Date();
         //         const message = "task " + task_dict[task].taskName + " status changes to Completed"
         //         const new_message = {
