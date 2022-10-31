@@ -16,7 +16,6 @@ import Notification from './pages/notification/Notification'
 import Project from './pages/project/projectinfo/ProjectInfo'
 import Modify from './pages/project/projectmodify/ProjectModify'
 import TModify from './pages/project/taskmodify/TaskModify'
-import Task from './pages/project/taskcreate/TaskCreate'
 import PendingInvite from './pages/pendinginvite/PendingInvite'
 import TaskInfo from './pages/project/taskinfo/TaskInfo'
 
@@ -78,12 +77,6 @@ function App() {
               <Route
               path = '/project/taskmodify/:projectId/:taskId'
               element={ user ? <TModify/> : <Navigate to = "/login"/>}
-              />
-
-              <Route
-              path = '/project/taskcreate/:projectId/:userUid'
-              element={ user ? <Task/> : <Navigate to = "/login"/>}
-
               />
 
               <Route

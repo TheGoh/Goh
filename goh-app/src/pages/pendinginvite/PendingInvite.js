@@ -4,7 +4,7 @@ import Select from 'react-select'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { firedb } from '../../firebase/config';
 import { doc, getDoc, onSnapshot,updateDoc } from "firebase/firestore";
-import { useFetchProject } from '../../hooks/useFetchProject';
+import { useDocument } from '../../hooks/useDocument';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 export default function PendingInvite() {
     const { user } = useAuthContext()
     const [ inviteList, setinviteList ] = useState([])
-    const { documents: userDetail } = useFetchProject('users', user.uid )
+    const { documents: userDetail } = useDocument('users', user.uid )
     const [ assign, setAssign ] = useState('')
 
     

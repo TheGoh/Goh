@@ -4,8 +4,8 @@
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../hooks/useAuthContext';
 import { useCollection } from '../../../hooks/useCollection';
-import { useFetchProject } from '../../../hooks/useFetchProject';
-import { useProject } from '../../../hooks/useProject';
+import { useDocument } from '../../../hooks/useDocument';
+import { useFirestore } from '../../../hooks/useFirestore';
 import { v4 as uuid } from 'uuid';
 
 //routing
@@ -34,9 +34,9 @@ export default function ProjectCreate() {
     const [all_projects_dict, setAllProjectsDict] = useState('');
 
     const { user } = useAuthContext()
-    const { createProject, projid, error } = useProject();
+    const { createProject, error } = useFirestore();
     /* Fetch the current user document*/
-    const { documents: userDetail } = useFetchProject('users', user.uid);
+    const { documents: userDetail } = useDocument('users', user.uid);
     const { documents: allProjects , error2} = useCollection('projects', null);
     
     

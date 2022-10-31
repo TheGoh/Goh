@@ -1,12 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { useFetchProject } from '../../../hooks/useFetchProject';
-import { useCollection } from '../../../hooks/useCollection';
-import { useSetDoc } from '../../../hooks/useModifyDoc';
-import { firedb } from '../../../firebase/config';
-import { useAuthContext } from '../../../hooks/useAuthContext';
+import { useDocument } from '../../../hooks/useDocument';
+import { useFirestore } from '../../../hooks/useFirestore';
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore"
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -17,14 +13,12 @@ import Button from '@mui/material/Button';
 
 export default function Modify() {
     let { projectId } = useParams();
-    const { setDocument } = useSetDoc();
-    const { documents: projectDtl } = useFetchProject('projects', projectId);
-    const { user } = useAuthContext();
+    const { documents: projectDtl } = useDocument('projects', projectId);
     const [projDescr, setProjDescr] = useState('');
     const [projName, setProjName] = useState('');
     const [projDescrSet, setDescr] = useState(false);
     const [projNameSet, setName] = useState(false);
-    const { modifyDocument } = useSetDoc();
+    const { modifyDocument } = useFirestore();
 
     if (!projectDtl) {
         return <div> Loading... </div>

@@ -2,13 +2,7 @@ import {
   getAuth,       
   updatePassword, 
   updateEmail, 
-  updateProfile,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  onAuthStateChanged,
-  EmailAuthCredential,
   reauthenticateWithCredential,
-  signInWithEmailAndPassword,
   EmailAuthProvider
 } from "firebase/auth";
 import React from "react";

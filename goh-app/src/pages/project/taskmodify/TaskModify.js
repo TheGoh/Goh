@@ -1,12 +1,9 @@
 import { useParams } from 'react-router-dom';
-import { useFetchProject } from '../../../hooks/useFetchProject';
-import { useCollection } from '../../../hooks/useCollection';
-import { useSetTask } from '../../../hooks/useModifyTask';
-import { firedb } from '../../../firebase/config';
-import { useAuthContext } from '../../../hooks/useAuthContext';
+import { useDocument } from '../../../hooks/useDocument';
+import { useFirestore } from '../../../hooks/useFirestore';
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -17,10 +14,10 @@ import Button from '@mui/material/Button';
 
 export default function TModify() {
     let { projectId, taskId } = useParams();
-    const { documents: taskDtl } = useFetchProject(`projects/${projectId}/tasks`, taskId);
+    const { documents: taskDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const [taskDescr, setTaskDescr] = useState('');
     const [taskName, setTaskName] = useState('');
-    const { modifyTask } = useSetTask();
+    const { modifyTask } = useFirestore();
 
     if (!taskDtl) {
         return <div> Loading... </div>

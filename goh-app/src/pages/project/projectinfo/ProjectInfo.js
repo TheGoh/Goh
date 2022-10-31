@@ -1,9 +1,8 @@
 /* Functionality dependencies */
 import { useParams } from 'react-router-dom';
-import { useFetchProject } from '../../../hooks/useFetchProject';
+import { useDocument } from '../../../hooks/useDocument';
 import { useCollection } from '../../../hooks/useCollection';
-import { useDeleteDoc } from '../../../hooks/useDeleteDoc';
-import { useTask } from '../../../hooks/useTask';
+import { useFirestore } from '../../../hooks/useFirestore';
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
@@ -33,21 +32,15 @@ import TaskIcon from '@mui/icons-material/Task';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import InputBase from '@mui/material/InputBase';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import { async } from '@firebase/util';
+
 
 
 
 export default function Project() {
     /* Project information variables */
     let { projectId } = useParams();
-    const { deleteDocument } = useDeleteDoc();
-    const { documents: projectDtl } = useFetchProject('projects', projectId);
+    const { deleteDocument } = useFirestore();
+    const { documents: projectDtl } = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
 
@@ -58,7 +51,7 @@ export default function Project() {
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
-    const { createTask } = useTask();
+    const { createTask } = useFirestore();
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
 

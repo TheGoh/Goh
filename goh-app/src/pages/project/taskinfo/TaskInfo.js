@@ -1,39 +1,21 @@
 
 //import './ProjectInfo.css'
 import { useParams } from 'react-router-dom';
-import { useFetchProject } from '../../../hooks/useFetchProject';
-import { useCollection } from '../../../hooks/useCollection';
-import { useDeleteDoc } from '../../../hooks/useDeleteDoc'
-import { firedb } from '../../../firebase/config';
+import { useDocument } from '../../../hooks/useDocument';
+import { useFirestore } from '../../../hooks/useFirestore'
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
-import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-
-import { 
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    updateDoc,
-    query,
-    where
-} from "firebase/firestore"
 
 export default function TaskInfo() {
     let { projectId, taskId } = useParams();
-    const { deleteDocument } = useDeleteDoc()
+    const { deleteDocument } = useFirestore()
     //console.log("here is target project id", projectId );
-    const { documents: projectDtl } = useFetchProject(`projects/${projectId}/tasks`, taskId);
+    const { documents: projectDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const { user } = useAuthContext()
     // console.log(projectDtl)
     // console.log("project page user id", user.uid)
@@ -68,7 +50,7 @@ export default function TaskInfo() {
                 </Grid>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     {user.uid === projectDtl.ownerid ?
-                        <Link to={`/project/taskcreate/${projectId}/${user.uid}`} onClick={handleDelete} key = {projectId}>
+                        <Link to={`/project/${projectId}`} onClick={handleDelete} key = {projectId}>
                         <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    
                         </Link>
                     :
