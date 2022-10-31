@@ -211,7 +211,26 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
-    }
+        //notification -- send to project owner
+        //getDoc
+    //     const currUserDoc = doc(firedb, `users`, user.uid);
+    //     getDoc(currUserDoc)
+    //     .then ((doc) => {
+    //         let message_list = doc.data.my_message;
+    //         const time = new Date();
+    //         const message = "task " + task_dict[task].taskName + " is ready to review"
+    //         const new_message = {
+    //             Sender: user.displayName,
+    //             Time: time,
+    //             message: message
+    //         }
+    //         message_list.push(message)
+    //         console.log(message_list)
+    //         updateDoc(currUserDoc, {
+    //             my_message: message_list
+    //         });
+    //      })
+    // }
 
     const handleReview = (task) => {
         const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
@@ -222,6 +241,28 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
+        //notification
+        //TODO
+        //need to find task owner ID
+        const currUserDoc = doc(firedb, `users`, );
+            
+        // getDoc(currUserDoc)
+        //     .then ((doc) => {
+        //         let message_list = doc.data.my_message;
+        //         const time = new Date();
+        //         const message = "task " + task_dict[task].taskName + " status changes to Completed"
+        //         const new_message = {
+        //             Sender: user.displayName,
+        //             Time: time,
+        //             message: message
+        //         }
+        //         message_list.push(message)
+        //         console.log(message_list)
+        //         updateDoc(currUserDoc, {
+        //             my_message: message_list
+        //         });
+        //     })    
+        //
     }
 
     /* Task creation ends */
