@@ -165,21 +165,16 @@ export default function Project() {
     useEffect(() => {
         if (task_collections) {
             //update task_ids if task collection changes
-            const updateList = async() => {
-                const temp_collection = await task_collections;
-                let temp_ids = [];
-                let temp_id_dict = {};
-                if (temp_collection !== null) {
-                    temp_collection.forEach(task => {
-                    temp_ids.push(task.id);
-                    temp_id_dict[task.id] = task;
-                    });
-                }
-                setTaskIds(temp_ids);
-                setTaskDict(temp_id_dict);
-            }
-            updateList();
+            let temp_ids = [];
+            let temp_id_dict = {};
+            task_collections.forEach(task => {
+                temp_ids.push(task.id);
+                temp_id_dict[task.id] = task;
+            })
+            setTaskIds(temp_ids);
+            setTaskDict(temp_id_dict);
         }
+
     }, [task_collections]);
 
     // Task state changes
@@ -226,27 +221,16 @@ export default function Project() {
             });
         });
         //notification
-        //TODO
-        //need to find task owner ID
-        //const currUserDoc = doc(firedb, `users`, );
-            
-        // getDoc(currUserDoc)
-        //     .then ((doc) => {
-        //         let message_list = doc.data().my_message;
-        //         const time = new Date();
-        //         const message = "task " + task_dict[task].taskName + " status changes to Completed"
-        //         const new_message = {
-        //             Sender: user.displayName,
-        //             Time: time,
-        //             message: message
-        //         }
-        //         message_list.push(message)
-        //         console.log(message_list)
-        //         updateDoc(currUserDoc, {
-        //             my_message: message_list
-        //         });
-        //     })    
-        //
+
+        const time = new Date();
+        const message = "task " + task_dict[task].taskName + " status change to complete"
+        const new_message = {
+            Sender: user.displayName,
+            Time: time,
+            message: message
+        }
+        sendMsg(task_dict[task].ownerid,new_message); 
+        
     }
 
     /* Task creation ends */
