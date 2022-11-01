@@ -233,7 +233,7 @@ export default function Project() {
             })
             setTaskIds(temp_ids);
             setTaskDict(temp_id_dict);
-
+            
             setProgress((projectDtl.completedTask / Object.keys(task_collections).length) * 100)
         }
 
@@ -284,13 +284,22 @@ export default function Project() {
             });
         });
 
+        //notification
 
+        const time = new Date();
+        const message = "task " + task_dict[task].taskName + " status change to complete"
+        const new_message = {
+            Sender: user.displayName,
+            Time: time,
+            message: message
+        }
+        sendMsg(task_dict[task].ownerid,new_message); 
+        
+        
         let tempCount = projectDtl.completedTask + 1;
         updateDoc(doc(firedb, `projects`,projectId), {
             completedTask: tempCount
         })
-
-        //notification TODO
     }
 
     /* Task creation ends */
