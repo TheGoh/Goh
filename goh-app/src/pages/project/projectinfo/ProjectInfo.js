@@ -172,10 +172,15 @@ export default function Project() {
             //update task_ids if task collection changes
             const updateList = async() => {
                 const temp_collection = await task_collections;
+                let sorted_collection = [];
                 let temp_ids = [];
                 let temp_id_dict = {};
                 if (temp_collection !== null) {
-                    temp_collection.forEach(task => {
+                    sorted_collection = temp_collection.sort((a,b) => {
+                        return a.taskName.localeCompare(b.taskName);
+                    })
+                    console.log(sorted_collection)
+                    sorted_collection.forEach(task => {
                     temp_ids.push(task.id);
                     temp_id_dict[task.id] = task;
                     });
@@ -314,7 +319,7 @@ export default function Project() {
                                 {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
-                                        }).map((task) => 
+                                        }).sort((a, b) => a.taskName - b.taskName).map((task) => 
                                         <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
                                             <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
