@@ -244,26 +244,19 @@ export default function Project() {
 
     // Task state changes
     const handleTakeTask = (task) => { //TODO to IN PROGRESS
-        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        getDoc(curProjDoc).then((doc) => {
-            let owner = doc.data().ownerid;
-            updateDoc(curProjDoc, {
-                taskState: "IN PROGRESS",
-                currUserId: currUserId,
-            });
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);  
+        updateDoc(currTaskDoc, {
+            taskState: "IN PROGRESS",
+            currUserId: currUserId,
         });
     }
 
     const handleMarkDone = (task) => { //IN PROGRESS to IN REVIEW
-        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        getDoc(curProjDoc).then((doc) => {
-            let owner = doc.data().ownerid;
-            updateDoc(curProjDoc, {
-                taskState: "IN REVIEW",
-                currUserId: currUserId,
-            });
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        updateDoc(currTaskDoc, {
+            taskState: "IN REVIEW",
         });
-
+        
         //notification -- send to project owner
         
         const time = new Date();
@@ -278,13 +271,9 @@ export default function Project() {
     }
 
     const handleReview = (task) => {
-        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        getDoc(curProjDoc).then((doc) => {
-            let owner = doc.data().ownerid;
-            updateDoc(curProjDoc, {
-                taskState: "COMPLETED",
-                currUserId: currUserId,
-            });
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        updateDoc(currTaskDoc, {
+            taskState: "COMPLETED",
         });
 
         //notification
