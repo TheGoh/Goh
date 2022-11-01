@@ -53,7 +53,11 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
-
+    const [currMemId, setCurrMemId] = useState('');
+    let memList = {};
+    if (projectDtl !== null) {
+        memList = projectDtl.memberList.members;
+    }
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
         //remove from projects collection
@@ -156,10 +160,11 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        
-        createTask(projectId, user.uid, taskid, taskName, taskDescr);
+        console.log(currMemId);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
         setTaskName('');
         setTaskDescr('');
+        setCurrMemId('');
         setOpen(false);
     }
     useEffect(() => {
@@ -497,6 +502,17 @@ export default function Project() {
                             />
                             </FormControl>
                         </Grid>
+                        <Autocomplete
+                            disablePortal
+                            autoComplete
+                            freeSolo
+                            id="Assign Task"
+                            options={memList}
+                            getOptionLabel={(option)=>(option.displayName ?? option)}
+                            onChange={(event, value)=>setCurrMemId(value.id)}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Assign Task" />}        
+                        />
                         </Grid>
                     </DialogContent>
                     <DialogActions>

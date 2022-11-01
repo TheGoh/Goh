@@ -61,6 +61,7 @@ export const useFirestore = () => {
     const createTask = async (
         projId, 
         ownerid,
+        currMemId,
         taskId,
         taskName,
         taskDescr
@@ -74,22 +75,41 @@ export const useFirestore = () => {
         const taskSnapshot = await getDoc(taskDocRef);
         if (!taskSnapshot.exists()) {
             const createdAt = new Date();
-            const taskState = "TODO";
-            const currUserId = "";
-            try {
-                await setDoc(taskDocRef, {
-                    taskId,
-                    projId,
-                    ownerid,
-                    currUserId,
-                    taskName,
-                    taskDescr,
-                    createdAt,
-                    taskState
-                });
-            } catch (error) {
-                console.log('error creating the task', error.message);
+            let taskState = "TODO";
+            const currUserId = currMemId;
+            if (currUserId !== '') {
+                taskState = "IN PROGRESS"
+                try {
+                    await setDoc(taskDocRef, {
+                        taskId,
+                        projId,
+                        ownerid,
+                        currUserId,
+                        taskName,
+                        taskDescr,
+                        createdAt,
+                        taskState
+                    });
+                } catch (error) {
+                    console.log('error creating the task', error.message);
+                }
+            } else {
+                try {
+                    await setDoc(taskDocRef, {
+                        taskId,
+                        projId,
+                        ownerid,
+                        currUserId,
+                        taskName,
+                        taskDescr,
+                        createdAt,
+                        taskState
+                    });
+                } catch (error) {
+                    console.log('error creating the task', error.message);
+                }
             }
+            
         }
     }
     
