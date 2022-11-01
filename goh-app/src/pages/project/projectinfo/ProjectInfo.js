@@ -33,7 +33,30 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
+/* invitation form */
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+
+/* Progress Bar */
+function LinearProgressWithLabel(props) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box sx={{ minWidth: 55 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(props.value,)}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
+  
+  LinearProgressWithLabel.propTypes = {
+    value: PropTypes.number.isRequired,
+  };
 
 
 export default function Project() {
@@ -43,6 +66,7 @@ export default function Project() {
     const { documents: projectDtl } = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
+    const [progress, setProgress] = useState(0);
 
     /* Task creation variables */
     const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
@@ -53,6 +77,17 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
+
+    const [currMemId, setCurrMemId] = useState('');
+    let memList = {};
+    if (projectDtl !== null) {
+        memList = projectDtl.memberList.members;
+    }
+
+
+    /* Invitation and RoleTags */
+    const [open2, setOpen2] = useState(''); // form dialog open/close
+    const [roleTag, setRole] = useState('');
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -115,10 +150,17 @@ export default function Project() {
                         let invite_list = doc.data().invitations;
 
                         if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
-                            invite_list[projectId] = projectDtl.projName
-                            let message_list = doc.data().my_message;
-                            const time = new Date();
 
+                            //assign role Tag
+                            console.log("roleTag:   ", roleTag)
+                            invite_list[projectId] = {
+                                projName: projectDtl.projName,
+                                roleTag: roleTag
+                            }
+                            
+                            //notification
+                            let message_list = doc.data().my_message;  
+                            const time = new Date();
                             const message = "Notification message " + projectDtl.projName;
                             const new_message = {
                                 Sender: user.displayName,
@@ -126,6 +168,8 @@ export default function Project() {
                                 message: message
                             }
                             message_list.push(new_message)
+
+                            //update user metadata
                             updateDoc(currUserDoc, {
                                 invitations: invite_list,
                                 my_message: message_list
@@ -148,20 +192,36 @@ export default function Project() {
         setOpen(true);
         console.log(projectDtl);
     };
+
+    /* user invitation form */
+    const handleClickOpen2 = () => { //popup invitation form
+        setOpen2(true);
+        console.log(projectDtl.memberList);
+    }
+
+    const handleClose2 = () => { //clear invitation form
+        setInvite('');
+        setRole('')
+        setOpen2(false);
+    }
+
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
         setOpen(false);
     }
+
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        
-        createTask(projectId, user.uid, taskid, taskName, taskDescr);
+        console.log(currMemId);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
         setTaskName('');
         setTaskDescr('');
+        setCurrMemId('');
         setOpen(false);
     }
+
     useEffect(() => {
         if (task_collections) {
             //update task_ids if task collection changes
@@ -173,6 +233,8 @@ export default function Project() {
             })
             setTaskIds(temp_ids);
             setTaskDict(temp_id_dict);
+            
+            setProgress((projectDtl.completedTask / Object.keys(task_collections).length) * 100)
         }
 
     }, [task_collections]);
@@ -198,6 +260,7 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
+
         //notification -- send to project owner
         
         const time = new Date();
@@ -220,6 +283,7 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
+
         //notification
 
         const time = new Date();
@@ -231,6 +295,11 @@ export default function Project() {
         }
         sendMsg(task_dict[task].ownerid,new_message); 
         
+        
+        let tempCount = projectDtl.completedTask + 1;
+        updateDoc(doc(firedb, `projects`,projectId), {
+            completedTask: tempCount
+        })
     }
 
     /* Task creation ends */
@@ -248,6 +317,12 @@ export default function Project() {
                         <Grid item xs={2}></Grid>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                         <Grid item xs={2}></Grid>
+
+                        {/* Progress Bar */}
+                        <Box sx={{ width: '80%' }}>
+                            <LinearProgressWithLabel value={progress} />
+                        </Box>
+
                         <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             {/* Search bar */}
                             <Autocomplete
@@ -278,7 +353,13 @@ export default function Project() {
                     </Grid>
                     
                     {/* Task creation */}
-                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
+                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px', height: '500px'}}>
+                    {task_ids.length === 0 ? 
+
+                    <Grid sx={{direction: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                        <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
+                    </Grid> 
+                    :
                     <Grid container columns={9} className={styles['task-board']}>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
                         <Grid item xs={2}><h4>In Progress</h4></Grid>
@@ -293,8 +374,9 @@ export default function Project() {
                                 {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
+
                                         }).map((task) => 
-                                        <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                        <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                             <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                         {task_dict[task].taskName}
@@ -335,7 +417,7 @@ export default function Project() {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "IN REVIEW") {return task;}
                                             }).map((task) => 
-                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                            <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
@@ -369,27 +451,8 @@ export default function Project() {
                             </Grid>
                         </Grid>
                     </Grid>
+                    }
                     </Paper>
-
-
-                    {/* Invitation */}
-                    <Grid container columns={5} sx={{display: 'flex', justifyContent: "flex-start", width: '95%', margin: 'auto'}}>
-                        <Grid item xs={2} sx={{display: 'flex', justifyContent: "flex-start"}}>
-                            <FormControl sx={{width: "90%"}}>
-                                <InputLabel htmlFor="component-outlined">Email</InputLabel>
-                                <OutlinedInput
-                                id="component-outlined"
-                                value={invite}
-                                label="target"
-                                onChange = {(e)=>setInvite(e.target.value)}
-                                type="email"
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                            <Button variant='outlined' onClick={handleProjectInvitation} endIcon={<SendIcon/>}>Send invitation</Button>
-                        </Grid>
-                    </Grid>
 
                     {/* Project operations */}
                     <Grid container columns={5} sx={{width: '95%', margin: 'auto', paddingTop: '30px'}}>
@@ -419,9 +482,13 @@ export default function Project() {
                 {/* Users in projects */}
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
-                        <Grid container columns={1}>
-                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>People</Grid>
-                            <Grid item xs={1}>
+                        <Grid container columns={3}>
+                            <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
+                                People
+                            </Grid>
+                            <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
+                                    
+                            <Grid item xs={3}>
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
@@ -432,7 +499,7 @@ export default function Project() {
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 
-                                    <Grid item xs={1}>
+                                    <Grid item xs={1} key = {member} >
                                         <Grid container columns={2}>
                                             <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
@@ -481,13 +548,67 @@ export default function Project() {
                             />
                             </FormControl>
                         </Grid>
+                        <Autocomplete
+                            disablePortal
+                            autoComplete
+                            freeSolo
+                            id="Assign Task"
+                            options={memList}
+                            getOptionLabel={(option)=>(option.displayName ?? option)}
+                            onChange={(event, value)=>setCurrMemId(value.id)}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Assign Task" />}        
+                        />
                         </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={handleTaskCreation}>Create</Button> 
                     </DialogActions>
-                </Dialog>
+            </Dialog>
+
+            {/* invitation form */}
+            <Dialog open={Boolean(open2)} onClose={handleClose2}>
+                <DialogTitle>Invite collabrators</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            Invite members to your project by email. Role assigning is optional.
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                        <Grid item xs={1} sx={{marginBottom: '20px'}}>
+                            <FormControl sx={{width: "100%"}}>
+                            <InputLabel htmlFor="component-outlined">EMAIL ADDRESS</InputLabel>
+                            <OutlinedInput
+                            id="component-outlined"
+                            value={invite}
+                            label="email"
+                            onChange = {(e)=>setInvite(e.target.value)}
+                            type="text"
+                            />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <FormControl sx={{width: "100%"}}>
+                                <Autocomplete
+                                    disablePortal
+                                    autoComplete
+                                    freeSolo
+                                    id="Roles"
+                                    options={projectDtl.roleTags}
+                                    onInputChange={(event, value)=>setRole(value)}
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField {...params} label="Roles" />}        
+                                />
+                            </FormControl>
+                        </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose2}>Cancel</Button>
+                        <Button onClick={handleProjectInvitation}>Invite</Button> 
+                    </DialogActions>
+            </Dialog>
             
         </Box>
     )
