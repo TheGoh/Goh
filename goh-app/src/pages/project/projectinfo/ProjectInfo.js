@@ -75,7 +75,6 @@ export default function Project() {
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
-    const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
     const [currMemId, setCurrMemId] = useState('');
     let memList = {};
@@ -247,7 +246,7 @@ export default function Project() {
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);  
         updateDoc(currTaskDoc, {
             taskState: "IN PROGRESS",
-            currUserId: currUserId,
+            currUserId: user.uid,
         });
     }
 
@@ -277,7 +276,6 @@ export default function Project() {
         });
 
         //notification
-
         const time = new Date();
         const message = "task " + task_dict[task].taskName + " status change to complete"
         const new_message = {
@@ -359,7 +357,11 @@ export default function Project() {
                     {task_ids.length === 0 ? 
 
                     <Grid sx={{direction: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                        <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
+                        {
+                            user.uid === projectDtl.ownerid && 
+                            <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
+                        }
+                        
                     </Grid> 
                     :
                     <Grid container columns={9} className={styles['task-board']}>
@@ -368,7 +370,10 @@ export default function Project() {
                         <Grid item xs={2}><h4>In Review</h4></Grid>
                         <Grid item xs={2}><h4>Completed</h4></Grid>
                         <Grid item xs={1}>
-                            <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
+                            {
+                                user.uid === projectDtl.ownerid && 
+                                <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
+                            }
                         </Grid>
 
                         <Grid item xs={2}>
@@ -402,8 +407,11 @@ export default function Project() {
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
-                                                    </Button>
-                                                    <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
+                                                    </Button> 
+                                                    {
+                                                        user.uid === task_dict[task].ownerid &&
+                                                        <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
+                                                    }
                                                 </Paper>
                                             </Grid>
                                         )
@@ -424,7 +432,9 @@ export default function Project() {
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
                                                     </Button>
-                                                    <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>
+                                                    { user.uid === projectDtl.ownerid &&
+                                                        <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>    
+                                                    }
                                                 </Paper>
                                             </Grid>
                                         )
