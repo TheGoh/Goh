@@ -33,7 +33,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-
+/* invitation form */
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 
 export default function Project() {
@@ -53,6 +54,10 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
+
+    /* Invitation and RoleTags */
+    const [open2, setOpen2] = useState(''); // form dialog open/close
+    const [roleTag, setRole] = useState('');
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -115,10 +120,17 @@ export default function Project() {
                         let invite_list = doc.data().invitations;
 
                         if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
-                            invite_list[projectId] = projectDtl.projName
-                            let message_list = doc.data().my_message;
-                            const time = new Date();
 
+                            //assign role Tag
+                            console.log("roleTag:   ", roleTag)
+                            invite_list[projectId] = {
+                                projName: projectDtl.projName,
+                                roleTag: roleTag
+                            }
+                            
+                            //notification
+                            let message_list = doc.data().my_message;  
+                            const time = new Date();
                             const message = "Notification message " + projectDtl.projName;
                             const new_message = {
                                 Sender: user.displayName,
@@ -126,6 +138,8 @@ export default function Project() {
                                 message: message
                             }
                             message_list.push(new_message)
+
+                            //update user metadata
                             updateDoc(currUserDoc, {
                                 invitations: invite_list,
                                 my_message: message_list
@@ -148,11 +162,25 @@ export default function Project() {
         setOpen(true);
         console.log(projectDtl);
     };
+
+    /* user invitation form */
+    const handleClickOpen2 = () => { //popup invitation form
+        setOpen2(true);
+        console.log(projectDtl.memberList);
+    }
+
+    const handleClose2 = () => { //clear invitation form
+        setInvite('');
+        setRole('')
+        setOpen2(false);
+    }
+
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
         setOpen(false);
     }
+
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
@@ -165,21 +193,16 @@ export default function Project() {
     useEffect(() => {
         if (task_collections) {
             //update task_ids if task collection changes
-            const updateList = async() => {
-                const temp_collection = await task_collections;
-                let temp_ids = [];
-                let temp_id_dict = {};
-                if (temp_collection !== null) {
-                    temp_collection.forEach(task => {
-                    temp_ids.push(task.id);
-                    temp_id_dict[task.id] = task;
-                    });
-                }
-                setTaskIds(temp_ids);
-                setTaskDict(temp_id_dict);
-            }
-            updateList();
+            let temp_ids = [];
+            let temp_id_dict = {};
+            task_collections.forEach(task => {
+                temp_ids.push(task.id);
+                temp_id_dict[task.id] = task;
+            })
+            setTaskIds(temp_ids);
+            setTaskDict(temp_id_dict);
         }
+
     }, [task_collections]);
 
     // Task state changes
@@ -225,28 +248,7 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
-        //notification
-        //TODO
-        //need to find task owner ID
-        //const currUserDoc = doc(firedb, `users`, );
-            
-        // getDoc(currUserDoc)
-        //     .then ((doc) => {
-        //         let message_list = doc.data().my_message;
-        //         const time = new Date();
-        //         const message = "task " + task_dict[task].taskName + " status changes to Completed"
-        //         const new_message = {
-        //             Sender: user.displayName,
-        //             Time: time,
-        //             message: message
-        //         }
-        //         message_list.push(message)
-        //         console.log(message_list)
-        //         updateDoc(currUserDoc, {
-        //             my_message: message_list
-        //         });
-        //     })    
-        //
+        //notification TODO
     }
 
     /* Task creation ends */
@@ -310,7 +312,7 @@ export default function Project() {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
                                         }).map((task) => 
-                                        <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                        <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                             <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                         {task_dict[task].taskName}
@@ -351,7 +353,7 @@ export default function Project() {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "IN REVIEW") {return task;}
                                             }).map((task) => 
-                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                            <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
@@ -387,26 +389,6 @@ export default function Project() {
                     </Grid>
                     </Paper>
 
-
-                    {/* Invitation */}
-                    <Grid container columns={5} sx={{display: 'flex', justifyContent: "flex-start", width: '95%', margin: 'auto'}}>
-                        <Grid item xs={2} sx={{display: 'flex', justifyContent: "flex-start"}}>
-                            <FormControl sx={{width: "90%"}}>
-                                <InputLabel htmlFor="component-outlined">Email</InputLabel>
-                                <OutlinedInput
-                                id="component-outlined"
-                                value={invite}
-                                label="target"
-                                onChange = {(e)=>setInvite(e.target.value)}
-                                type="email"
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                            <Button variant='outlined' onClick={handleProjectInvitation} endIcon={<SendIcon/>}>Send invitation</Button>
-                        </Grid>
-                    </Grid>
-
                     {/* Project operations */}
                     <Grid container columns={5} sx={{width: '95%', margin: 'auto', paddingTop: '30px'}}>
                         {user.uid === projectDtl.ownerid ?
@@ -436,7 +418,11 @@ export default function Project() {
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
                         <Grid container columns={1}>
-                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>People</Grid>
+                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
+                                People
+                                <Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button>
+                                </Grid>
+                                    
                             <Grid item xs={1}>
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
@@ -448,7 +434,7 @@ export default function Project() {
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 
-                                    <Grid item xs={1}>
+                                    <Grid item xs={1} key = {member} >
                                         <Grid container columns={2}>
                                             <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
@@ -503,7 +489,50 @@ export default function Project() {
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={handleTaskCreation}>Create</Button> 
                     </DialogActions>
-                </Dialog>
+            </Dialog>
+
+            {/* invitation form */}
+            <Dialog open={Boolean(open2)} onClose={handleClose2}>
+                <DialogTitle>ADD USER</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            TODO: ADD DESCRIPTION
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                        <Grid item xs={1} sx={{marginBottom: '20px'}}>
+                            <FormControl sx={{width: "100%"}}>
+                            <InputLabel htmlFor="component-outlined">EMAIL ADDRESS</InputLabel>
+                            <OutlinedInput
+                            id="component-outlined"
+                            value={invite}
+                            label="email"
+                            onChange = {(e)=>setInvite(e.target.value)}
+                            type="text"
+                            />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <FormControl sx={{width: "100%"}}>
+                                <Autocomplete
+                                    disablePortal
+                                    autoComplete
+                                    freeSolo
+                                    id="Roles"
+                                    options={projectDtl.roleTags}
+                                    onInputChange={(event, value)=>setRole(value)}
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField {...params} label="Roles" />}        
+                                />
+                            </FormControl>
+                        </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose2}>Cancel</Button>
+                        <Button onClick={handleProjectInvitation}>Invite</Button> 
+                    </DialogActions>
+            </Dialog>
             
         </Box>
     )

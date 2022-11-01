@@ -23,7 +23,7 @@ export default function PendingInvite() {
                 let result = inviteList;
                 Object.keys(userDetail.invitations).forEach(item => {
                     if (!result.some( e => e.value == item)) {
-                        result.push({value:item, label: userDetail.invitations[item],  id: item});
+                        result.push({value:item, label: userDetail.invitations[item].projName,  id: item, role: userDetail.invitations[item].roleTag});
                     }
                 })
                 
@@ -67,13 +67,20 @@ export default function PendingInvite() {
 
                 //STEP2: add user id into project memberList
                 let MemList = {...projSnapshot.data().memberList}
+                let tempRoleList = projSnapshot.data().roleTags;
+                if (!tempRoleList.includes(assign.id)) {
+                    tempRoleList.push(assign.role);
+                }
                 const obj = {
                     id: user.uid,
-                    displayName: user.displayName
+                    displayName: user.displayName,
+                    RoleTag: assign.role
                 }
+
                 MemList["members"].push(obj)
                 updateDoc(projDocRef, {
-                    memberList: MemList
+                    memberList: MemList,
+                    roleTags: tempRoleList
                 })
 
             } else {
