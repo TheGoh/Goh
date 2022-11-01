@@ -77,7 +77,6 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
-    console.log(currTaskId);
     const [currMemId, setCurrMemId] = useState('');
     let memList = {};
     if (projectDtl !== null) {

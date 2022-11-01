@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs, query, where , collection} from "firebase/firestore"
 import { useAuthContext } from '../hooks/useAuthContext'
 import { firedb } from '../firebase/config';
 
@@ -72,11 +72,20 @@ export const useFirestore = () => {
         ) => {
         setError(null)
 
+
         const pid = projId;
-        
+
+        const checkRef = collection(firedb, `projects/${pid}/tasks`);
+        const q = query(checkRef, where("taskName", "==", taskName));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.size) {
+            setError("Duplicated TaskName")
+            return;
+        }
+
         const taskDocRef = doc(firedb, `projects/${pid}/tasks`, taskId);
-        //const currUserDoc = doc(firedb, `users`, ownerid);
         const taskSnapshot = await getDoc(taskDocRef);
+
         if (!taskSnapshot.exists()) {
             const createdAt = new Date();
             let taskState = "TODO";
