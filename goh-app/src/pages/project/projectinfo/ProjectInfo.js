@@ -497,8 +497,13 @@ export default function Project() {
                             <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
                                 People
                             </Grid>
-                            <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
-                                    
+                            
+                            {user.uid === projectDtl.ownerid ?
+                                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
+                                :
+                                // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+
+                              
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
@@ -507,6 +512,7 @@ export default function Project() {
                                     </Grid>
                                 </Grid>
                             </Grid>
+                                }
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 
