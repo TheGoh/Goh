@@ -225,9 +225,14 @@ export default function Project() {
     useEffect(() => {
         if (task_collections) {
             //update task_ids if task collection changes
+            let temp_collection = task_collections;
+            let sorted_collection = {};
+            sorted_collection = temp_collection.sort((a,b) => {
+                return a.taskName.localeCompare(b.taskName);
+            })
             let temp_ids = [];
             let temp_id_dict = {};
-            task_collections.forEach(task => {
+            sorted_collection.forEach(task => {
                 temp_ids.push(task.id);
                 temp_id_dict[task.id] = task;
             })
