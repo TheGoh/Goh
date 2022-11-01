@@ -108,6 +108,7 @@ export default function PendingInvite() {
             })
     
             updateDoc(doc(firedb, `users`, user.uid), { invitations:returnList});
+            setAssign('')
         }
 
         

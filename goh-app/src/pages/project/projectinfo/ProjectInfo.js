@@ -149,11 +149,14 @@ export default function Project() {
 
                         if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
 
-                            //assign role Tag
-                            console.log("roleTag:   ", roleTag)
+                            let tempRole = roleTag
+                            if (!roleTag) {
+                                tempRole = "member"
+                            }
+                
                             invite_list[projectId] = {
                                 projName: projectDtl.projName,
-                                roleTag: roleTag
+                                roleTag: tempRole
                             }
                             
                             //notification
@@ -520,11 +523,11 @@ export default function Project() {
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 
-                                    <Grid item xs={1} key = {member} >
+                                    <Grid item xs={1} key = {member.id} >
                                         <Grid container columns={2}>
                                             <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                                                <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>member</Button>
+                                                <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>{member.RoleTag}</Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>
