@@ -32,9 +32,30 @@ import TaskIcon from '@mui/icons-material/Task';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
 /* invitation form */
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+
+/* Progress Bar */
+function LinearProgressWithLabel(props) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box sx={{ minWidth: 55 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(props.value,)}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
+  
+  LinearProgressWithLabel.propTypes = {
+    value: PropTypes.number.isRequired,
+  };
 
 
 export default function Project() {
@@ -44,6 +65,7 @@ export default function Project() {
     const { documents: projectDtl } = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
+    const [progress, setProgress] = useState(0);
 
     /* Task creation variables */
     const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
@@ -58,6 +80,8 @@ export default function Project() {
     /* Invitation and RoleTags */
     const [open2, setOpen2] = useState(''); // form dialog open/close
     const [roleTag, setRole] = useState('');
+
+
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -190,6 +214,7 @@ export default function Project() {
         setTaskDescr('');
         setOpen(false);
     }
+
     useEffect(() => {
         if (task_collections) {
             //update task_ids if task collection changes
@@ -201,6 +226,8 @@ export default function Project() {
             })
             setTaskIds(temp_ids);
             setTaskDict(temp_id_dict);
+
+            setProgress((projectDtl.completedTask / Object.keys(task_collections).length) * 100)
         }
 
     }, [task_collections]);
@@ -226,6 +253,7 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
+
         //notification -- send to project owner
         
         const time = new Date();
@@ -248,6 +276,13 @@ export default function Project() {
                 currUserId: currUserId,
             });
         });
+
+
+        let tempCount = projectDtl.completedTask + 1;
+        updateDoc(doc(firedb, `projects`,projectId), {
+            completedTask: tempCount
+        })
+
         //notification TODO
     }
 
@@ -266,6 +301,12 @@ export default function Project() {
                         <Grid item xs={2}></Grid>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
                         <Grid item xs={2}></Grid>
+
+                        {/* Progress Bar */}
+                        <Box sx={{ width: '80%' }}>
+                            <LinearProgressWithLabel value={progress} />
+                        </Box>
+
                         <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             {/* Search bar */}
                             <Autocomplete
