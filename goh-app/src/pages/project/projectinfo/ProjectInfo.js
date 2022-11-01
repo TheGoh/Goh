@@ -438,7 +438,7 @@ export default function Project() {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "COMPLETED") {return task;}
                                             }).map((task) => 
-                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                            <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}} color="success">
                                                             {task_dict[task].taskName}
