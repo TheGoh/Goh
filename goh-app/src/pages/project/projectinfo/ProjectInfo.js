@@ -213,7 +213,6 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        console.log(currMemId);
         createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
         setTaskName('');
         setTaskDescr('');
@@ -308,7 +307,7 @@ export default function Project() {
 
     /* Task creation ends */
 
-    if (!projectDtl && task_ids == []) {
+    if (!projectDtl || !task_collections) {
         return <div> Loading... </div>
     }
     return (
@@ -328,8 +327,9 @@ export default function Project() {
                         </Box>
 
                         <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                            {/* Search bar */}
-                            <Autocomplete
+                            {/* Search bar */} {
+                                task_collections && 
+                                <Autocomplete
                                 disablePortal
                                 autoComplete
                                 freeSolo
@@ -347,6 +347,8 @@ export default function Project() {
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params} label="Task Search" />}        
                             />
+                            }
+                            
                             <Grid item xs={1}>
                             {task_ids.includes(currTaskId) ?
                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
@@ -407,7 +409,7 @@ export default function Project() {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "IN PROGRESS") {return task;}
                                         }).map((task) => 
-                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                            <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
@@ -497,11 +499,14 @@ export default function Project() {
                             <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
                                 People
                             </Grid>
+
+                                {   user.uid === projectDtl.ownerid && 
+                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
+                                }
                             
-                            {user.uid === projectDtl.ownerid ?
-                                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
-                                :
-                                // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                               
+                                
+                                {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
 
                               
                             <Grid item xs={3}>
@@ -512,7 +517,7 @@ export default function Project() {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                                }
+                                
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 

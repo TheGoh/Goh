@@ -90,7 +90,6 @@ export const useFirestore = () => {
             const createdAt = new Date();
             let taskState = "TODO";
             const currUserId = currMemId;
-            console.log(currUserId)
             if (currUserId !== '') {
                 taskState = "IN PROGRESS"
             }
