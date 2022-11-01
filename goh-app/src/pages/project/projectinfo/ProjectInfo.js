@@ -32,6 +32,7 @@ import TaskIcon from '@mui/icons-material/Task';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
@@ -337,7 +338,13 @@ export default function Project() {
                     </Grid>
                     
                     {/* Task creation */}
-                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '25px'}}>
+                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px', height: '500px'}}>
+                    {task_ids.length === 0 ? 
+
+                    <Grid sx={{direction: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                        <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
+                    </Grid> 
+                    :
                     <Grid container columns={9} className={styles['task-board']}>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
                         <Grid item xs={2}><h4>In Progress</h4></Grid>
@@ -428,6 +435,7 @@ export default function Project() {
                             </Grid>
                         </Grid>
                     </Grid>
+                    }
                     </Paper>
 
                     {/* Project operations */}
@@ -458,13 +466,13 @@ export default function Project() {
                 {/* Users in projects */}
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
-                        <Grid container columns={1}>
-                            <Grid item xs={1} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
+                        <Grid container columns={3}>
+                            <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
                                 People
-                                <Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button>
-                                </Grid>
+                            </Grid>
+                            <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
                                     
-                            <Grid item xs={1}>
+                            <Grid item xs={3}>
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
@@ -534,10 +542,10 @@ export default function Project() {
 
             {/* invitation form */}
             <Dialog open={Boolean(open2)} onClose={handleClose2}>
-                <DialogTitle>ADD USER</DialogTitle>
+                <DialogTitle>Invite collabrators</DialogTitle>
                     <DialogContent>
                         <DialogContentText sx={{textIndent:'0px'}}>
-                            TODO: ADD DESCRIPTION
+                            Invite members to your project by email. Role assigning is optional.
                         </DialogContentText>
 
                         <Grid container sx={{marginTop: '20px'}} columns={1}>
