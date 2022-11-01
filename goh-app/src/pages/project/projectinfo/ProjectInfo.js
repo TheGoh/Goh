@@ -78,11 +78,16 @@ export default function Project() {
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
 
+    const [currMemId, setCurrMemId] = useState('');
+    let memList = {};
+    if (projectDtl !== null) {
+        memList = projectDtl.memberList.members;
+    }
+
+
     /* Invitation and RoleTags */
     const [open2, setOpen2] = useState(''); // form dialog open/close
     const [roleTag, setRole] = useState('');
-
-
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -209,10 +214,11 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        
-        createTask(projectId, user.uid, taskid, taskName, taskDescr);
+        console.log(currMemId);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
         setTaskName('');
         setTaskDescr('');
+        setCurrMemId('');
         setOpen(false);
     }
 
@@ -359,6 +365,7 @@ export default function Project() {
                                 {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
+
                                         }).map((task) => 
                                         <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                             <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
@@ -532,6 +539,17 @@ export default function Project() {
                             />
                             </FormControl>
                         </Grid>
+                        <Autocomplete
+                            disablePortal
+                            autoComplete
+                            freeSolo
+                            id="Assign Task"
+                            options={memList}
+                            getOptionLabel={(option)=>(option.displayName ?? option)}
+                            onChange={(event, value)=>setCurrMemId(value.id)}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Assign Task" />}        
+                        />
                         </Grid>
                     </DialogContent>
                     <DialogActions>
