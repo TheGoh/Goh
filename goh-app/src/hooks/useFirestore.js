@@ -81,37 +81,23 @@ export const useFirestore = () => {
             const createdAt = new Date();
             let taskState = "TODO";
             const currUserId = currMemId;
+            console.log(currUserId)
             if (currUserId !== '') {
                 taskState = "IN PROGRESS"
-                try {
-                    await setDoc(taskDocRef, {
-                        taskId,
-                        projId,
-                        ownerid,
-                        currUserId,
-                        taskName,
-                        taskDescr,
-                        createdAt,
-                        taskState
-                    });
-                } catch (error) {
-                    console.log('error creating the task', error.message);
-                }
-            } else {
-                try {
-                    await setDoc(taskDocRef, {
-                        taskId,
-                        projId,
-                        ownerid,
-                        currUserId,
-                        taskName,
-                        taskDescr,
-                        createdAt,
-                        taskState
-                    });
-                } catch (error) {
-                    console.log('error creating the task', error.message);
-                }
+            }
+            try {
+                await setDoc(taskDocRef, {
+                    taskId,
+                    projId,
+                    ownerid,
+                    currUserId,
+                    taskName,
+                    taskDescr,
+                    createdAt,
+                    taskState
+                });
+            } catch (error) {
+                console.log('error creating the task', error.message);
             }
             
         }

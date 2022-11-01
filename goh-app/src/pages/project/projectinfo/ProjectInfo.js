@@ -77,7 +77,7 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
-
+    console.log(currTaskId);
     const [currMemId, setCurrMemId] = useState('');
     let memList = {};
     if (projectDtl !== null) {
@@ -336,8 +336,15 @@ export default function Project() {
                                 freeSolo
                                 id="Task Search"
                                 options={task_collections}
-                                getOptionLabel={(option)=>(option.taskName ?? option)}
-                                onChange={(event, value)=>setCurrTaskId(value.taskId)}
+                                getOptionLabel={(option)=>(option.taskName)}
+                                onChange={(event, value)=>{
+                                    if (value !== null) {
+                                        setCurrTaskId(value.taskId)
+                                    } else {
+                                        setCurrTaskId('')
+                                    }
+                                    
+                                }}
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params} label="Task Search" />}        
                             />
@@ -560,7 +567,15 @@ export default function Project() {
                             id="Assign Task"
                             options={memList}
                             getOptionLabel={(option)=>(option.displayName ?? option)}
-                            onChange={(event, value)=>setCurrMemId(value.id)}
+                            onChange={(event, value)=>
+                            {   
+                                if (value !== null) {
+                                    setCurrMemId(value.id)
+                                } else {
+                                    setCurrMemId('')
+                                }
+                                
+                            }}
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Assign Task" />}        
                         />
