@@ -12,22 +12,32 @@ import styles from './Notification.module.css'
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 
 export default function Notification() {
-
-
-    // get task status
     const { user } = useAuthContext();
     const { documents: userDetail } = useDocument('users', user.uid );
+    const [ inviteList, setinviteList ] = useState([]);
+    const [ assign, setAssign ] = useState('');
+    const {sendMsg} = useFirestore();
+
     useEffect(() => {
-      if(userDetail){
-        console.log(userDetail.my_message)
-      }
-    },[userDetail]);
+      if (userDetail) {
+        if (inviteList.length !== Object.keys(userDetail.invitations).length) {
+          let result = inviteList;
+          Object.keys(userDetail.invitations).forEach(item => {
+            if (!result.some( e => e.value == item)) {
+              result.push({value:item, label: userDetail.invitations[item].projName,  id: item, role: userDetail.invitations[item].roleTag});
+            }
+          })
+          
+          setinviteList(result)
+          console.log("myList: ", inviteList)
+        } 
+    }
+    },[userDetail, inviteList]);
 
     const handleClear = async(e) => {
       e.preventDefault();
@@ -35,16 +45,110 @@ export default function Notification() {
         let clear = [];
         await updateDoc(doc(firedb, `users`, user.uid),{
           my_message:clear
-        })
-        
+        }) 
       }
-
     }
+
+    const handleAccept = async(e) => {
+      e.preventDefault()
+      console.log(assign.id)
+      //extract current project and invitations
+      let tempList = {};
+      let returnList = {};
+      if (userDetail) {
+          let tempOwnedProjects = userDetail.ownedProjects;
+          tempList = {...userDetail.invitations}
+          
+          Object.keys(tempList).forEach(item => {
+              
+              if (item != assign.id) {
+                  console.log(item)
+                  returnList[item] = tempList[item]
+              }
+          })
+
+          //fetch the target project from database
+          const projDocRef = doc(firedb, `projects`, assign.id);
+          const projSnapshot = await getDoc(projDocRef);
+
+          //Check if the database has this project
+          if (projSnapshot.exists()) {
+
+              //STEP1: push the project id into user ownproject list
+              tempOwnedProjects.push(assign.id);
+              updateDoc(doc(firedb, `users`, user.uid), { 
+                  ownedProjects: tempOwnedProjects,
+                  invitations:returnList
+              })
+
+              //STEP2: add user id into project memberList
+              let MemList = {...projSnapshot.data().memberList}
+              let tempRoleList = projSnapshot.data().roleTags;
+              if (!tempRoleList.includes(assign.id)) {
+                  tempRoleList.push(assign.role);
+              }
+              const obj = {
+                  id: user.uid,
+                  displayName: user.displayName,
+                  RoleTag: assign.role
+              }
+
+              MemList["members"].push(obj)
+              updateDoc(projDocRef, {
+                  memberList: MemList,
+                  roleTags: tempRoleList
+              })
+
+          } else {
+              //If project doesnt't exist, simply remove the project from the invitation list.
+              updateDoc(doc(firedb, `users`, user.uid), { 
+                  invitations:returnList
+              })
+          }
+          //notification
+          const time = new Date();
+          const message = "user " + user.displayName + " accept to join " + projSnapshot.data().projName
+          const new_message = {
+              Sender: user.displayName,
+              Time: time,
+              message: message
+          }
+          sendMsg(projSnapshot.data().ownerid, new_message);        
+      }        
+  }
+
+  const handleDecline = async(e) => {
+      e.preventDefault();
+      console.log(assign.id)
+
+      const projDocRef = doc(firedb, `projects`, assign.id);
+      const projSnapshot = await getDoc(projDocRef);
+
+      let returnList = {};
+      if (userDetail) {
+          let tempList = {...userDetail.invitations}
+          Object.keys(tempList).forEach(item => {        
+              if (item != assign.id) {
+                  console.log(item)
+                  returnList[item] = tempList[item]
+              }
+          })
+          updateDoc(doc(firedb, `users`, user.uid), { invitations:returnList});
+          const time = new Date();
+          const message = "user " + user.displayName + " reject to join " + projSnapshot.data().projName
+          const new_message = {
+              Sender: user.displayName,
+              Time: time,
+              message: message
+          }
+          sendMsg(projSnapshot.data().ownerid, new_message);  
+          setAssign('')
+      }
+  }
 
     if (!userDetail) {
       return <div> Loading... </div>
     }
-
     return(
       
       // <div class='notify'>
@@ -79,6 +183,7 @@ export default function Notification() {
                 <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
                   <h3 className={styles['uniheader']}>Message received: {userDetail.my_message.length}</h3>
                 </Grid>
+                
 
                 {
                   userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
@@ -93,9 +198,36 @@ export default function Notification() {
                     </Grid>
                   ))
                 }
+
+                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
+                  <Button onClick={handleClear} variant="contained" endIcon={<ClearAllIcon/>}>Clear messages</Button>
+                </Grid>
               </Grid>
             </Grid>
 
+            {/* Invitations */}
+            <Grid item xs={2}>
+              <Grid container columns={2}>
+                <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}>
+                  <Paper sx={{width:'80%'}} elevation={0}><h1 className={styles['uniheader']}>Invitations</h1></Paper>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Select
+                    onChange={(option) => setAssign(option)}
+                    options = {inviteList}    
+                  />
+                </Grid>
+
+                <Grid item xs={1} sx={{marginTop: '20px'}}>
+                  <Button onClick={handleAccept}>Accept</Button>
+                </Grid>
+                <Grid item xs={1} sx={{marginTop: '20px'}}>
+                  <Button onClick={handleDecline}>Decline</Button>
+                </Grid>
+
+              </Grid>
+            </Grid>
 
           </Grid>
         </Box>
