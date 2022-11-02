@@ -164,7 +164,7 @@ export default function Project() {
                             //notification
                             let message_list = doc.data().my_message;  
                             const time = new Date();
-                            const message = "Notification message " + projectDtl.projName;
+                            const message = user.displayName + "invite you to join " + projectDtl.projName;
                             const new_message = {
                                 Sender: user.displayName,
                                 Time: time,
@@ -516,25 +516,24 @@ export default function Project() {
                             <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
                                 People
                             </Grid>
+                            
 
                                 {   user.uid === projectDtl.ownerid && 
                                      <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
                                 }
                             
-                               
-                                
+                                                       
                                 {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
-
                               
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                                        <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>
+                                        <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>     
                                     </Grid>
                                 </Grid>
                             </Grid>
-                                
+
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 

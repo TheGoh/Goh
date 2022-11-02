@@ -12,7 +12,7 @@ export const useDocument = (collect, id) => {
     useEffect(() => {
         let ref = doc(firedb, collect, id)
 
-        onSnapshot(ref, (doc) => {
+        const unsub = onSnapshot(ref, (doc) => {
             setDocuments({...doc.data(), id: doc.id})
         },
         
@@ -20,7 +20,7 @@ export const useDocument = (collect, id) => {
             setError(error.message)
         })
         
-              
+        return () => unsub() 
     }, [collect, id])
 
     return {documents, error}
