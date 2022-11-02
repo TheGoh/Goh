@@ -607,25 +607,28 @@ export default function Project() {
                             />
                             </FormControl>
                         </Grid>
-                        <Autocomplete
-                            disablePortal
-                            autoComplete
-                            freeSolo
-                            id="Assign Task"
-                            options={memList}
-                            getOptionLabel={(option)=>(option.displayName ?? option)}
-                            onChange={(event, value)=>
-                            {   
-                                if (value !== null) {
-                                    setCurrMemId(value.id)
-                                } else {
-                                    setCurrMemId('')
-                                }
-                                
-                            }}
-                            sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Assign Task" />}        
-                        />
+                        <Grid item xs={1} sx={{marginTop: '20px'}}>
+                            <Autocomplete
+                                disablePortal
+                                autoComplete
+                                freeSolo
+                                id="Assign Task"
+                                options={memList}
+                                getOptionLabel={(option)=>(option.displayName ?? option)}
+                                onChange={(event, value)=>
+                                {   
+                                    if (value !== null) {
+                                        setCurrMemId(value.id)
+                                    } else {
+                                        setCurrMemId('')
+                                    }
+                                    
+                                }}
+                                sx={{ width: 300 }}
+                                renderInput={(params) => <TextField {...params} label="Assign Task" />}        
+                            />
+                        </Grid>
+                        
                         </Grid>
                     </DialogContent>
                     <DialogActions>
