@@ -151,13 +151,13 @@ export const useFirestore = () => {
         
     }
 
-    const sendMsg = (recv_id, message) => {
+    const sendMsg = async (recv_id, message) => {
         const ref = doc(firedb, `users`, recv_id);
-        getDoc(ref)
-            .then((doc) => {
+        await getDoc(ref)
+            .then(async (doc) => {
                 let msg_temp_list = doc.data().my_message;
                 msg_temp_list.push(message);
-                updateDoc(ref, {
+                await updateDoc(ref, {
                     my_message: msg_temp_list
                 });
             })

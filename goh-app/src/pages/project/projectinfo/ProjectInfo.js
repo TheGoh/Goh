@@ -253,14 +253,6 @@ export default function Project() {
 
     }, [task_collections]);
 
-    useEffect(() => {
-        if (progress == 100) {
-            console.log("hello you reach 100% progress!!!")
-        }
-
-    },[progress])
-    
-
     // Task state changes
     const handleTakeTask = (task) => { //TODO to IN PROGRESS
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);  
@@ -289,9 +281,9 @@ export default function Project() {
         sendMsg(projectDtl.ownerid, new_message);
     }
 
-    const handleReview = (task) => {
+    const handleReview = async (task) => { //IN REVIEW TO COMPLETED
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        updateDoc(currTaskDoc, {
+        await updateDoc(currTaskDoc, {
             taskState: "COMPLETED",
         });
 
@@ -303,7 +295,21 @@ export default function Project() {
             Time: time,
             message: message
         }
-        sendMsg(task_dict[task].ownerid,new_message); 
+        await sendMsg(task_dict[task].ownerid,new_message);
+
+        //100% notification
+        if ((Object.keys(task_collections).length - 1) / Object.keys(task_collections).length === progress / 100) {
+            const message = "You all finish the entire project!!! Congrat"
+            console.log(message);
+            const time2 = new Date();
+            const msg2 = {
+                Sender: projectDtl.memberList.owner[0].displayName,
+                Time: time2,
+                message: message
+            }
+
+            await sendMsg(projectDtl.ownerid, msg2);
+        }
     }
 
     const handleRejectResult = (task) => {
@@ -312,7 +318,8 @@ export default function Project() {
             taskState: "IN PROGRESS",
         });
 
-        //NOTIFICATION
+        //NOTIFICATION send back to task owner
+
     }
 
     /* Task creation ends */
