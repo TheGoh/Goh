@@ -288,27 +288,22 @@ export default function Project() {
         });
 
         //notification
-        const time = new Date();
-        const message = "task " + task_dict[task].taskName + " status change to complete"
         const new_message = {
             Sender: user.displayName,
-            Time: time,
-            message: message
+            Time: new Date(),
+            message: "task " + task_dict[task].taskName + " status change to complete"
         }
-        await sendMsg(task_dict[task].ownerid,new_message);
+        await sendMsg(task_dict[task].ownerid, new_message);
 
         //100% notification
+        //console.log(progress + "    " + (Object.keys(task_collections).length - 1) / Object.keys(task_collections).length)
         if ((Object.keys(task_collections).length - 1) / Object.keys(task_collections).length === progress / 100) {
-            const message = "You all finish the entire project!!! Congrat"
-            console.log(message);
-            const time2 = new Date();
             const msg2 = {
                 Sender: projectDtl.memberList.owner[0].displayName,
-                Time: time2,
-                message: message
+                Time: new Date(),
+                message: "You all finish the entire project!!! Congrat"
             }
-
-            await sendMsg(projectDtl.ownerid, msg2);
+            sendMsg(projectDtl.ownerid, msg2);
         }
     }
 
