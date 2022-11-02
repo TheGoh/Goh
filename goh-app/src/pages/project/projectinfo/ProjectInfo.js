@@ -253,6 +253,12 @@ export default function Project() {
 
     }, [task_collections]);
 
+    useEffect(() => {
+        if (progress == 100) {
+            console.log("hello you reach 100% progress!!!")
+        }
+
+    },[progress])
     
 
     // Task state changes
