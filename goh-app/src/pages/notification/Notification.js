@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import * as React from 'react';
 
+import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+
 
 import { useDocument } from '../../hooks/useDocument';
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -20,9 +22,6 @@ export default function Notification() {
     useEffect(() => {
       if(userDetail){
         console.log(userDetail.my_message)
-        // userDetail.my_message.forEach(msg => {
-        //   console.log(msg.message)
-        // })
       }
     },[userDetail]);
 
@@ -44,11 +43,20 @@ export default function Notification() {
 
     return(
       
-      <div className="notify_box">
-            <div>Message Number: {userDetail.my_message.length}</div>
+      <div class='notify'>
+            <ListItem>Message Number: {userDetail.my_message.length}</ListItem>
             {
               userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
-                <div className = "notify_box_text" key = {msg.Time}> {msg.message} </div>
+                
+                <ListItem className = "notify_box_text" key = {msg.Time}>
+                  <Typography variant="body1" gutterBottom>
+                    {msg.Time.toDate().toString()}<br></br>
+                    Sender: {msg.Sender}<br></br> 
+                    Message:{msg.message}<br></br>
+                    ------------------------------------------------------------------------------------------
+                    
+                  </Typography>              
+                </ListItem>
               ))
             }
             <Button onClick={handleClear}>Clear Messages</Button>
