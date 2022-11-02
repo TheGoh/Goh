@@ -15,27 +15,23 @@ import Button from '@mui/material/Button';
 export default function TModify() {
     let { projectId, taskId } = useParams();
     const { documents: taskDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
-    const [taskDescr, setTaskDescr] = useState('');
     const [taskName, setTaskName] = useState('');
+    const [taskDescr, setTaskDescr] = useState('');
     const { modifyTask } = useFirestore();
 
-    if (!taskDtl) {
-        return <div> Loading... </div>
-    }
-    const tname = taskDtl.taskName
-    const tdescr = taskDtl.taskDescr
+
+    
+
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleModify = () => {
         //remove from projects collection
-        if (taskName !== '' && taskDescr !== '') {
-            modifyTask(`projects/${projectId}/tasks`, taskId, taskName, taskDescr);
-        } else if (taskName !== '') {
-            modifyTask(`projects/${projectId}/tasks`, taskId, taskName, tdescr);
-        } else if (taskDescr !== '') {
-            modifyTask(`projects/${projectId}/tasks`, taskId, tname, taskDescr);
-        } else {
-            modifyTask(`projects/${projectId}/tasks`, taskId, tname, tdescr);
-        }
+        const tempName = (taskName) ? taskName : taskDtl.taskName
+        const tempDescr = (taskDescr) ? taskDescr : taskDtl.taskDescr
+        modifyTask(`projects/${projectId}/tasks`, taskId, tempName, tempDescr);
+    }
+
+    if (!taskDtl) {
+        return <div> Loading... </div>
     }
     
     return (

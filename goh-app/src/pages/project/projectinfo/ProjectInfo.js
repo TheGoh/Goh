@@ -180,11 +180,16 @@ export default function Project() {
                             );
                         }
                         else {
-                            console.log("error")
+                            console.log("already in this group")
                         }                
                     })
+                setRole('')
+                setInvite('')
+                setOpen2(false)
             })
             .catch((err) => {
+                setRole('')
+                setInvite('')
                 console.error("Invalid User");
             }); 
     }
