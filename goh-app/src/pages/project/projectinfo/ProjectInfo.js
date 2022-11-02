@@ -274,6 +274,7 @@ export default function Project() {
         sendMsg(projectDtl.ownerid, new_message);
     }
 
+    //IN REVIEW to IN COMPLETE
     const handleReview = (task) => {
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
         updateDoc(currTaskDoc, {
@@ -282,7 +283,7 @@ export default function Project() {
 
         //notification
         const time = new Date();
-        const message = "task " + task_dict[task].taskName + " status change to complete"
+        const message = "task " + task_dict[task].taskName + " status change from In Review to Complete"
         const new_message = {
             Sender: user.displayName,
             Time: time,
@@ -295,8 +296,24 @@ export default function Project() {
         updateDoc(doc(firedb, `projects`,projectId), {
             completedTask: tempCount
         })
+        if(tempCount === task_collections.length){
+            const time = new Date();
+            const message1 = "Congrats, all tasks has finished"
+            const new_message1 = {
+                Sender: user.displayName,
+                Time: time,
+                message: message1
+            }
+            projectDtl.memberList.members.forEach(member =>{
+                sendMsg(member.id, new_message1);
+            })
+            ///消息会被挤掉
+            sendMsg(projectDtl.ownerid, new_message1);
+            
+        }
     }
 
+    //INREVIEW to IN RPOGRESS
     const handleRejectResult = (task) => {
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
         updateDoc(currTaskDoc, {
@@ -304,6 +321,14 @@ export default function Project() {
         });
 
         //NOTIFICATION
+        const time = new Date();
+        const message = "task " + task_dict[task].taskName + " status change from In Review to In Progress"
+        const new_message = {
+            Sender: user.displayName,
+            Time: time,
+            message: message
+        }
+        sendMsg(task_dict[task].ownerid,new_message);
     }
 
     /* Task creation ends */
