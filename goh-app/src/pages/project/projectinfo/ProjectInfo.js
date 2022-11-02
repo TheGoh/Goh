@@ -65,7 +65,7 @@ export default function Project() {
     /* Project information variables */
     let { projectId } = useParams();
     const { deleteDocument, sendMsg, createTask } = useFirestore();
-    const { documents: projectDtl } = useDocument('projects', projectId);
+    const { documents: projectDtl , error} = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
     const [progress, setProgress] = useState(0);
@@ -307,6 +307,10 @@ export default function Project() {
     }
 
     /* Task creation ends */
+
+    if (error) {
+        return <div className = "error">{error}</div>
+    }
 
     if (!projectDtl || !task_collections) {
         return <div> Loading... </div>

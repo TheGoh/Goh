@@ -13,10 +13,17 @@ export const useDocument = (collect, id) => {
         let ref = doc(firedb, collect, id)
 
         const unsub = onSnapshot(ref, (doc) => {
-            setDocuments({...doc.data(), id: doc.id})
+            if (doc.data()) {
+                setDocuments({...doc.data(), id: doc.id})
+                setError(null)
+            }
+            else {
+                setError("PROJECT HAD BEEN REMOVED!!!")
+            }
         },
         
         (error) => {
+            console.log("fail to fetch the document!!!")
             setError(error.message)
         })
         
