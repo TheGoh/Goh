@@ -300,8 +300,10 @@ export default function Project() {
     const handleRejectResult = (task) => {
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
         updateDoc(currTaskDoc, {
-            taskState: "TODO",
+            taskState: "IN PROGRESS",
         });
+
+        //NOTIFICATION
     }
 
     /* Task creation ends */
