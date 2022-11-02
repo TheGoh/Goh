@@ -32,6 +32,7 @@ import TaskIcon from '@mui/icons-material/Task';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
@@ -39,6 +40,7 @@ import PropTypes from 'prop-types';
 
 /* invitation form */
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { ButtonGroup } from '@mui/material';
 
 /* Progress Bar */
 function LinearProgressWithLabel(props) {
@@ -295,6 +297,13 @@ export default function Project() {
         })
     }
 
+    const handleRejectResult = (task) => {
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        updateDoc(currTaskDoc, {
+            taskState: "TODO",
+        });
+    }
+
     /* Task creation ends */
 
     if (!projectDtl || !task_collections) {
@@ -435,8 +444,14 @@ export default function Project() {
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
                                                     </Button>
-                                                    { user.uid === projectDtl.ownerid &&
-                                                        <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>    
+                                                    { user.uid === projectDtl.ownerid ?
+                                                        <ButtonGroup>
+                                                            <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button> 
+                                                            <Button onClick={() => {handleRejectResult(task)}}><ThumbDownOffAltIcon/></Button>   
+                                                        </ButtonGroup>
+                                                        
+                                                        :
+                                                        <Button></Button>
                                                     }
                                                 </Paper>
                                             </Grid>

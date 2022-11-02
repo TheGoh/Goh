@@ -41,18 +41,14 @@ export default function TaskInfo() {
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
                 <Grid item xs={1}>
                     {user.uid === projectDtl.ownerid ?
-                        <Link to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId}>
-                        <Button variant="contained">Change Task information</Button>
-                        </Link>
+                        <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained">Change Task information</Button>
                         :
                         <div></div>
                     }
                 </Grid>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     {user.uid === projectDtl.ownerid ?
-                        <Link to={`/project/${projectId}`} onClick={handleDelete} key = {projectId}>
-                        <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    
-                        </Link>
+                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    
                     :
                         <div></div>
                     }
