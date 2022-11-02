@@ -24,7 +24,6 @@ export const useFirestore = () => {
             }
             const memberList = { "owner": [obj], "members":[] };
             const roleTags = [];
-            const completedTask = 0;
             try {
                 await setDoc(projDocRef, {
                     id: projid,
@@ -34,7 +33,6 @@ export const useFirestore = () => {
                     createdAt,
                     memberList: memberList,
                     roleTags: roleTags,
-                    completedTask: completedTask
                 });
             } catch (error) {
                 console.log('error creating the project', error.message);
@@ -159,7 +157,6 @@ export const useFirestore = () => {
             .then((doc) => {
                 let msg_temp_list = doc.data().my_message;
                 msg_temp_list.push(message);
-                console.log(msg_temp_list)
                 updateDoc(ref, {
                     my_message: msg_temp_list
                 });

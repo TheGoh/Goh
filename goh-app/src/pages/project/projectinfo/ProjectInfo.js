@@ -239,17 +239,21 @@ export default function Project() {
             })
             let temp_ids = [];
             let temp_id_dict = {};
+            let count = 0;
             sorted_collection.forEach(task => {
+                if (task.taskState == "COMPLETED") count++;
                 temp_ids.push(task.id);
                 temp_id_dict[task.id] = task;
             })
             setTaskIds(temp_ids);
             setTaskDict(temp_id_dict);
-            
-            setProgress((projectDtl.completedTask / Object.keys(task_collections).length) * 100)
+
+            setProgress((count / Object.keys(task_collections).length) * 100)
         }
 
     }, [task_collections]);
+
+    
 
     // Task state changes
     const handleTakeTask = (task) => { //TODO to IN PROGRESS
