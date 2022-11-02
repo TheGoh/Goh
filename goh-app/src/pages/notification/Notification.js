@@ -187,7 +187,7 @@ export default function Notification() {
 
                 {
                   userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
-                    <Grid item xs ={1} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
+                    <Grid item xs ={1} key = {msg.Time} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
                       <Paper sx={{ width: "80%"}}>
                         <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
                           <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>{msg.Time.toDate().toString()}</Grid>
