@@ -304,12 +304,6 @@ export default function Project() {
             message: message
         }
         sendMsg(task_dict[task].ownerid,new_message); 
-        
-        
-        let tempCount = projectDtl.completedTask + 1;
-        updateDoc(doc(firedb, `projects`,projectId), {
-            completedTask: tempCount
-        })
     }
 
     const handleRejectResult = (task) => {
