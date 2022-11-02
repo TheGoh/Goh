@@ -26,7 +26,21 @@ export default function Notification() {
     // get task status
     const { user } = useAuthContext();
     const { documents: userDetail } = useDocument('users', user.uid );
-    
+    // let { documents: task_collections } = useCollection(`projects/${userDetail?.ownedProjects[0].id}/tasks`, null);
+
+    // if (task_collections && task_collections.length > 0) {
+    //   let arr = talkList;
+    //   task_collections.forEach((t, i) => {
+    //     let curTextData = {
+    //       userName: t.taskName,
+    //       userId: i+1,
+    //       newMessageTime: new Date().toLocaleTimeString(),
+    //       text: t.taskState
+    //     };
+    //     arr.push(curTextData);
+    //   });
+    //   settalkList(arr);
+    // }
     useEffect(() => {
       if(userDetail){
         console.log(userDetail.my_message);

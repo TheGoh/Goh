@@ -14,7 +14,7 @@ import { useFirestore } from '../hooks/useFirestore';
 export default function Nav() {
     const { logout } = useLogout()
     const { user } = useAuthContext()
-    const { notification } = useFirestore()
+    // const { notification } = useFirestore()
     useEffect(() => {
 
     }, [user])
@@ -37,8 +37,8 @@ export default function Nav() {
                         {/* <li><Link to="/task/taskcreate">Add task</Link></li> */}
                         <li><Link to="/accountInfo">Hey, {user.displayName} Account Settings</Link></li>
                         <li><Link to="/invitation">My Invitations</Link></li>
-                        <li><a onClick={ notification}> Notification</a></li>
-                        {/* <li><Link to="/notification">Notification</Link></li> */}
+                        {/* <li><a onClick={ notification}> Notification</a></li> */}
+                        <li><Link to="/notification">Notification</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
                         </>
                 )}
