@@ -523,7 +523,7 @@ export default function Project() {
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 
-                                    <Grid item xs={1} key = {member.id} >
+                                    <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
                                             <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
