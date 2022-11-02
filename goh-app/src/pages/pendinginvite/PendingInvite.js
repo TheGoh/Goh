@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 import { useAuthContext } from '../../hooks/useAuthContext'
@@ -9,14 +8,14 @@ import { useDocument } from '../../hooks/useDocument';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import { useFirestore } from '../../hooks/useFirestore';
 
 export default function PendingInvite() {
     const { user } = useAuthContext()
     const [ inviteList, setinviteList ] = useState([])
     const { documents: userDetail } = useDocument('users', user.uid )
     const [ assign, setAssign ] = useState('')
-
-    
+    const {sendMsg} = useFirestore();
     useEffect(() => {
         if (userDetail) {
             if (inviteList.length !== Object.keys(userDetail.invitations).length) {
@@ -88,13 +87,25 @@ export default function PendingInvite() {
                 updateDoc(doc(firedb, `users`, user.uid), { 
                     invitations:returnList
                 })
-            }        
+            }
+            //notification
+            const time = new Date();
+            const message = "user " + user.displayName + " accept to join " + projSnapshot.data().projName
+            const new_message = {
+                Sender: user.displayName,
+                Time: time,
+                message: message
+            }
+            sendMsg(projSnapshot.data().ownerid, new_message);        
         }        
     }
 
-    const handleDecline = (e) => {
+    const handleDecline = async(e) => {
         e.preventDefault();
         console.log(assign.id)
+
+        const projDocRef = doc(firedb, `projects`, assign.id);
+        const projSnapshot = await getDoc(projDocRef);
 
         let returnList = {};
         if (userDetail) {
@@ -108,7 +119,18 @@ export default function PendingInvite() {
             })
     
             updateDoc(doc(firedb, `users`, user.uid), { invitations:returnList});
+
+            const time = new Date();
+            const message = "user " + user.displayName + " reject to join " + projSnapshot.data().projName
+            const new_message = {
+                Sender: user.displayName,
+                Time: time,
+                message: message
+            }
+            sendMsg(projSnapshot.data().ownerid, new_message);  
+
             setAssign('')
+
         }
 
         
