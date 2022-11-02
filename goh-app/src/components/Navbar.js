@@ -34,7 +34,6 @@ export default function Nav() {
                 {user && (
                     <>
                         <li><Link to="/project/projectcreate">My Projects</Link></li>
-                        {/* <li><Link to="/task/taskcreate">Add task</Link></li> */}
                         <li><Link to="/accountInfo">Hey, {user.displayName} Account Settings</Link></li>
                         <li><Link to="/invitation">My Invitations</Link></li>
                         {/* <li><a onClick={ notification}> Notification</a></li> */}

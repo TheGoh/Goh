@@ -90,8 +90,9 @@ export default function ProjectCreate() {
                     
                     <Grid item xs={1} key = {item}>
                     {
+                        
                         all_projects_dict[item] === undefined ? 
-                        <div></div>
+                        <></>
                         :
                         <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id} style={{ textDecoration: 'none' }}>
                             <Button variant="contained" className={styles['project-grid-button']}>

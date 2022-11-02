@@ -119,6 +119,7 @@ export default function PendingInvite() {
             })
     
             updateDoc(doc(firedb, `users`, user.uid), { invitations:returnList});
+
             const time = new Date();
             const message = "user " + user.displayName + " reject to join " + projSnapshot.data().projName
             const new_message = {
@@ -127,6 +128,9 @@ export default function PendingInvite() {
                 message: message
             }
             sendMsg(projSnapshot.data().ownerid, new_message);  
+
+            setAssign('')
+
         }
 
         

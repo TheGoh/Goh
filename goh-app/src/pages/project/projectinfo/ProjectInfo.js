@@ -75,7 +75,6 @@ export default function Project() {
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
-    const currUserId = user.uid;
     const [currTaskId, setCurrTaskId] = useState('');
     const [currMemId, setCurrMemId] = useState('');
     let memList = {};
@@ -150,11 +149,14 @@ export default function Project() {
 
                         if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
 
-                            //assign role Tag
-                            console.log("roleTag:   ", roleTag)
+                            let tempRole = roleTag
+                            if (!roleTag) {
+                                tempRole = "member"
+                            }
+                
                             invite_list[projectId] = {
                                 projName: projectDtl.projName,
-                                roleTag: roleTag
+                                roleTag: tempRole
                             }
                             
                             //notification
@@ -213,7 +215,6 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        console.log(currMemId);
         createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
         setTaskName('');
         setTaskDescr('');
@@ -245,26 +246,19 @@ export default function Project() {
 
     // Task state changes
     const handleTakeTask = (task) => { //TODO to IN PROGRESS
-        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        getDoc(curProjDoc).then((doc) => {
-            let owner = doc.data().ownerid;
-            updateDoc(curProjDoc, {
-                taskState: "IN PROGRESS",
-                currUserId: currUserId,
-            });
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);  
+        updateDoc(currTaskDoc, {
+            taskState: "IN PROGRESS",
+            currUserId: user.uid,
         });
     }
 
     const handleMarkDone = (task) => { //IN PROGRESS to IN REVIEW
-        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        getDoc(curProjDoc).then((doc) => {
-            let owner = doc.data().ownerid;
-            updateDoc(curProjDoc, {
-                taskState: "IN REVIEW",
-                currUserId: currUserId,
-            });
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        updateDoc(currTaskDoc, {
+            taskState: "IN REVIEW",
         });
-
+        
         //notification -- send to project owner
         
         const time = new Date();
@@ -279,17 +273,12 @@ export default function Project() {
     }
 
     const handleReview = (task) => {
-        const curProjDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
-        getDoc(curProjDoc).then((doc) => {
-            let owner = doc.data().ownerid;
-            updateDoc(curProjDoc, {
-                taskState: "COMPLETED",
-                currUserId: currUserId,
-            });
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
+        updateDoc(currTaskDoc, {
+            taskState: "COMPLETED",
         });
 
         //notification
-
         const time = new Date();
         const message = "task " + task_dict[task].taskName + " status change to complete"
         const new_message = {
@@ -308,7 +297,7 @@ export default function Project() {
 
     /* Task creation ends */
 
-    if (!projectDtl && task_ids == []) {
+    if (!projectDtl || !task_collections) {
         return <div> Loading... </div>
     }
     return (
@@ -328,8 +317,9 @@ export default function Project() {
                         </Box>
 
                         <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                            {/* Search bar */}
-                            <Autocomplete
+                            {/* Search bar */} {
+                                task_collections && 
+                                <Autocomplete
                                 disablePortal
                                 autoComplete
                                 freeSolo
@@ -347,6 +337,8 @@ export default function Project() {
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params} label="Task Search" />}        
                             />
+                            }
+                            
                             <Grid item xs={1}>
                             {task_ids.includes(currTaskId) ?
                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
@@ -368,7 +360,11 @@ export default function Project() {
                     {task_ids.length === 0 ? 
 
                     <Grid sx={{direction: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                        <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
+                        {
+                            user.uid === projectDtl.ownerid && 
+                            <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
+                        }
+                        
                     </Grid> 
                     :
                     <Grid container columns={9} className={styles['task-board']}>
@@ -377,7 +373,10 @@ export default function Project() {
                         <Grid item xs={2}><h4>In Review</h4></Grid>
                         <Grid item xs={2}><h4>Completed</h4></Grid>
                         <Grid item xs={1}>
-                            <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
+                            {
+                                user.uid === projectDtl.ownerid && 
+                                <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
+                            }
                         </Grid>
 
                         <Grid item xs={2}>
@@ -407,12 +406,15 @@ export default function Project() {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "IN PROGRESS") {return task;}
                                         }).map((task) => 
-                                            <Grid item xs={1} sx={{width: '100%', marginBottom: '5px'}}>
+                                            <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
-                                                    </Button>
-                                                    <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
+                                                    </Button> 
+                                                    {
+                                                        user.uid === task_dict[task].ownerid &&
+                                                        <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
+                                                    }
                                                 </Paper>
                                             </Grid>
                                         )
@@ -433,7 +435,9 @@ export default function Project() {
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
                                                     </Button>
-                                                    <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>
+                                                    { user.uid === projectDtl.ownerid &&
+                                                        <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>    
+                                                    }
                                                 </Paper>
                                             </Grid>
                                         )
@@ -497,9 +501,13 @@ export default function Project() {
                             <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
                                 People
                             </Grid>
+
+                                {   user.uid === projectDtl.ownerid && 
+                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
+                                }
                             
-                            <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
-                                
+                                                       
+                                {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
                               
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
@@ -508,15 +516,16 @@ export default function Project() {
                                         <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>     
                                     </Grid>
                                 </Grid>
-                            </Grid>                 
+                            </Grid>
+
                             {
                                 projectDtl.memberList.members.length > 0 && 
                                 projectDtl.memberList.members.map((member) => 
-                                    <Grid item xs={1} key = {member} >
+                                    <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
                                             <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                                                <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>member</Button>
+                                                <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>{member.RoleTag}</Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>
