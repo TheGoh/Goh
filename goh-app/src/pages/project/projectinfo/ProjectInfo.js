@@ -223,6 +223,16 @@ export default function Project() {
         //event.preventDefault();
         const taskid = uuid();
         createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
+        if(currMemId !== ''){
+            const time = new Date();
+            const message = "task " + taskName + " has been assigned to you"
+            const new_message = {
+                Sender: user.displayName,
+                Time: time,
+                message: message
+            }
+            sendMsg(currMemId, new_message); 
+        }
         setTaskName('');
         setTaskDescr('');
         setCurrMemId('');
@@ -291,12 +301,11 @@ export default function Project() {
         const new_message = {
             Sender: user.displayName,
             Time: new Date(),
-            message: "task " + task_dict[task].taskName + " status change to complete"
+            message: "task " + task_dict[task].taskName + " status change from In Review to Complete"
         }
         await sendMsg(task_dict[task].ownerid, new_message);
 
         //100% notification
-        //console.log(progress + "    " + (Object.keys(task_collections).length - 1) / Object.keys(task_collections).length)
         if ((Object.keys(task_collections).length - 1) / Object.keys(task_collections).length === progress / 100) {
             const msg2 = {
                 Sender: projectDtl.memberList.owner[0].displayName,
@@ -304,6 +313,9 @@ export default function Project() {
                 message: "You all finish the entire project!!! Congrat"
             }
             sendMsg(projectDtl.ownerid, msg2);
+            projectDtl.memberList.members.forEach(member =>{
+                sendMsg(member.id, msg2);
+            })
         }
     }
 
@@ -314,6 +326,13 @@ export default function Project() {
         });
 
         //NOTIFICATION send back to task owner
+       
+        const new_message = {
+            Sender: user.displayName,
+            Time: new Date(),
+            message: "task " + task_dict[task].taskName + " status change from In Review to In Progress"
+        }
+        sendMsg(task_dict[task].ownerid,new_message);
 
     }
 
