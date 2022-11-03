@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import * as React from 'react';
-import Select from 'react-select'
 
 import { useDocument } from '../../hooks/useDocument';
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -14,30 +13,27 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
+import { ButtonGroup } from '@mui/material';
 
 
 export default function Notification() {
     const { user } = useAuthContext();
     const { documents: userDetail } = useDocument('users', user.uid );
-    const [ inviteList, setinviteList ] = useState([]);
-    const [ assign, setAssign ] = useState('');
-    const {sendMsg} = useFirestore();
+    const [ inviteList, setinviteList ] = useState('');
+    const { sendMsg } = useFirestore();
 
     useEffect(() => {
       if (userDetail) {
-        if (inviteList.length !== Object.keys(userDetail.invitations).length) {
-          let result = inviteList;
-          Object.keys(userDetail.invitations).forEach(item => {
-            if (!result.some( e => e.value == item)) {
-              result.push({value:item, label: userDetail.invitations[item].projName,  id: item, role: userDetail.invitations[item].roleTag});
-            }
+        let result = []
+          Object.keys(userDetail.invitations).forEach(item => {           
+            result.push({label: userDetail.invitations[item].projName,  id: item, role: userDetail.invitations[item].roleTag});        
           })
-          
           setinviteList(result)
           console.log("myList: ", inviteList)
-        } 
     }
-    },[userDetail, inviteList]);
+    },[userDetail]);
 
     const handleClear = async(e) => {
       e.preventDefault();
@@ -49,8 +45,7 @@ export default function Notification() {
       }
     }
 
-    const handleAccept = async(e) => {
-      e.preventDefault()
+    const handleAccept = async(assign) => {
       console.log(assign.id)
       //extract current project and invitations
       let tempList = {};
@@ -117,8 +112,7 @@ export default function Notification() {
       }        
   }
 
-  const handleDecline = async(e) => {
-      e.preventDefault();
+  const handleDecline = async(assign) => {
       console.log(assign.id)
 
       const projDocRef = doc(firedb, `projects`, assign.id);
@@ -142,7 +136,6 @@ export default function Notification() {
               message: message
           }
           sendMsg(projSnapshot.data().ownerid, new_message);  
-          setAssign('')
       }
   }
 
@@ -150,26 +143,6 @@ export default function Notification() {
       return <div> Loading... </div>
     }
     return(
-      
-      // <div class='notify'>
-      //       <ListItem>Message Number: {userDetail.my_message.length}</ListItem>
-      //       {
-      //         userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
-                
-      //           <ListItem className = "notify_box_text" key = {msg.Time}>
-      //             <Typography variant="body1" gutterBottom>
-      //               {msg.Time.toDate().toString()}<br></br>
-      //               Sender: {msg.Sender}<br></br> 
-      //               Message:{msg.message}<br></br>
-      //               ------------------------------------------------------------------------------------------
-                    
-      //             </Typography>              
-      //           </ListItem>
-      //         ))
-      //       }
-      //       <Button onClick={handleClear}>Clear Messages</Button>
-      // </div>
-      
       <Box>
         <Box sx={{width:'85%', margin: 'auto', paddingTop:'20px'}}>
           <Grid container columns={4}>
@@ -212,20 +185,31 @@ export default function Notification() {
                   <Paper sx={{width:'80%'}} elevation={0}><h1 className={styles['uniheader']}>Invitations</h1></Paper>
                 </Grid>
 
-                <Grid item xs={2}>
+                {/* <Grid item xs={2}>
                   <Select
                     onChange={(option) => setAssign(option)}
                     options = {inviteList}    
                   />
-                </Grid>
-
-                <Grid item xs={1} sx={{marginTop: '20px'}}>
-                  <Button onClick={handleAccept}>Accept</Button>
-                </Grid>
-                <Grid item xs={1} sx={{marginTop: '20px'}}>
-                  <Button onClick={handleDecline}>Decline</Button>
-                </Grid>
-
+                </Grid> */}
+                  <Grid item xs={2}>
+                            <Grid container columns={1}>
+                                <Grid container columns={1} sx={{width: '100%'}}>
+                                    {
+                                        inviteList.length > 0 && inviteList.map((invitation) => 
+                                            <Grid item xs={1} key = {invitation.id} sx={{width: '100%', marginBottom: '5px'}}>
+                                                <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
+                                                        <Grid variant="contained"  sx={{width: '85%'}}>{invitation.label}</Grid>
+                                                        <ButtonGroup>
+                                                            <Button onClick={() => {handleAccept(invitation)}}><CheckIcon/></Button> 
+                                                            <Button onClick={() => {handleDecline(invitation)}}><CloseIcon/></Button>   
+                                                        </ButtonGroup>                                                    
+                                                </Paper>
+                                            </Grid>
+                                        )
+                                    }
+                                </Grid>
+                            </Grid>
+                        </Grid>
               </Grid>
             </Grid>
 
