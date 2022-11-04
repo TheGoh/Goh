@@ -198,7 +198,7 @@ export default function Notification() {
                                         inviteList.length > 0 && inviteList.map((invitation) => 
                                             <Grid item xs={1} key = {invitation.id} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                        <Grid variant="contained"  sx={{width: '85%'}}>{invitation.label}</Grid>
+                                                        <Grid variant="contained"  sx={{width: '85%'}}>From Project: {invitation.label} |   Your Role: {invitation.role}</Grid>
                                                         <ButtonGroup>
                                                             <Button onClick={() => {handleAccept(invitation)}}><CheckIcon/></Button> 
                                                             <Button onClick={() => {handleDecline(invitation)}}><CloseIcon/></Button>   
