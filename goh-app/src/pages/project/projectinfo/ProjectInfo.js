@@ -303,7 +303,7 @@ export default function Project() {
     }
 
     //IN REVIEW to IN COMPLETE
-    const handleReview = (task) => {
+    const handleReview = async(task) => {
         const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
         await updateDoc(currTaskDoc, {
             taskState: "COMPLETED",
