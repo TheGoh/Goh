@@ -1,7 +1,6 @@
 //import { useAuthContext } from '../../hooks/useAuthContext'
 
 // styles
-import styles from './Home.module.css'
 
 // components
 

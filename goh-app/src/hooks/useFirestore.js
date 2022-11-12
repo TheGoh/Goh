@@ -24,7 +24,6 @@ export const useFirestore = () => {
             }
             const memberList = { "owner": [obj], "members":[] };
             const roleTags = [];
-            const completedTask = 0;
             try {
                 await setDoc(projDocRef, {
                     id: projid,
@@ -34,25 +33,24 @@ export const useFirestore = () => {
                     createdAt,
                     memberList: memberList,
                     roleTags: roleTags,
-                    completedTask: completedTask
                 });
             } catch (error) {
                 console.log('error creating the project', error.message);
             }
         }
 
-        
+
         getDoc(currUserDoc)
         .then ((doc) => {
             let tempOwnedProjects = doc.data().ownedProjects;
             tempOwnedProjects.push(projid);
-            
+
             updateDoc(currUserDoc, {
                 ownedProjects: tempOwnedProjects
             })
             .then(() => {
                 //console.log("update successfully!!!",doc.data().ownedProjects)
-                
+
             })
         })
 
@@ -63,12 +61,13 @@ export const useFirestore = () => {
 
     /* *** FUNCTION TO CREATE A NEW TASK IN SPECIFIC PROJECT *** */
     const createTask = async (
-        projId, 
+        projId,
         ownerid,
         currMemId,
         taskId,
         taskName,
-        taskDescr
+        taskDescr,
+        dueDate
         ) => {
         setError(null)
 
@@ -102,15 +101,16 @@ export const useFirestore = () => {
                     taskName,
                     taskDescr,
                     createdAt,
-                    taskState
+                    taskState,
+                    dueDate
                 });
             } catch (error) {
                 console.log('error creating the task', error.message);
             }
-            
+
         }
     }
-    
+
 
 
 
@@ -136,7 +136,7 @@ export const useFirestore = () => {
         updateDoc(ref, {projDescr: projDescr}).catch(error => {
                 setError(error.message)
             })
-        
+
     }
 
 
@@ -150,28 +150,27 @@ export const useFirestore = () => {
         updateDoc(ref, {taskDescr: taskDescr}).catch(error => {
                 setError(error.message)
             })
-        
+
     }
 
-    const sendMsg = (recv_id, message) => {
+    const sendMsg = async (recv_id, message) => {
         const ref = doc(firedb, `users`, recv_id);
-        getDoc(ref)
-            .then((doc) => {
+        await getDoc(ref)
+            .then(async (doc) => {
                 let msg_temp_list = doc.data().my_message;
                 msg_temp_list.push(message);
-                console.log(msg_temp_list)
-                updateDoc(ref, {
+                await updateDoc(ref, {
                     my_message: msg_temp_list
                 });
             })
     }
 
-    /* 
+    /*
         NOTICE：
-        
+
         Add more function if needed, and also add the function name into the "return"
-    
-    
+
+
     */
 
     return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, sendMsg, error}

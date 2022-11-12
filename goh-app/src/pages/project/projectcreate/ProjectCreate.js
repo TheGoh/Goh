@@ -86,26 +86,20 @@ export default function ProjectCreate() {
                         <AddIcon fontSize="large"/>
                     </Button>
                 </Grid>
-                {userDetail.ownedProjects.length > 0 && userDetail.ownedProjects.map((item) => 
+                {userDetail.ownedProjects.length > 0 && userDetail.ownedProjects.map((item) => (
                     
-                    <Grid item xs={1} key = {item}>
-                    {
-                        
-                        all_projects_dict[item] === undefined ? 
-                        <></>
-                        :
+                    all_projects_dict[item] === (undefined) ? ""
+                    :
+                    <Grid item xs={1} key = {item}>   
                         <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id} style={{ textDecoration: 'none' }}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
                                     all_projects_dict[item].projName
                                 }
                             </Button>
-                        </Link>
-                    }
-                    
-                </Grid>
-                    
-                )}
+                        </Link>          
+                    </Grid>
+                ))}
             </Grid>
 
             {/* Popup form */}
