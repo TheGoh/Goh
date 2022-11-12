@@ -453,12 +453,19 @@ export default function Project() {
                                         }).map((task) => 
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                    <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
-                                                            {task_dict[task].taskName}
-                                                    </Button> 
+                                                    
                                                     {
-                                                        user.uid === task_dict[task].ownerid &&
-                                                        <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
+                                                        user.uid === task_dict[task].ownerid ?
+                                                        <ButtonGroup sx={{width: '100%'}}>
+                                                            <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                                {task_dict[task].taskName}
+                                                            </Button> 
+                                                            <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
+                                                        </ButtonGroup>
+                                                        :
+                                                        <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
+                                                            {task_dict[task].taskName}
+                                                        </Button> 
                                                     }
                                                 </Paper>
                                             </Grid>
@@ -477,17 +484,18 @@ export default function Project() {
                                             }).map((task) => 
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                    <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
-                                                            {task_dict[task].taskName}
-                                                    </Button>
                                                     { user.uid === projectDtl.ownerid ?
-                                                        <ButtonGroup>
-                                                            <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button> 
-                                                            <Button onClick={() => {handleRejectResult(task)}}><ThumbDownOffAltIcon/></Button>   
+                                                        <ButtonGroup sx={{width: '100%'}}>
+                                                            <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '70%'}}>
+                                                                {task_dict[task].taskName}
+                                                            </Button>
+                                                            <Button onClick={() => {handleReview(task)}} sx={{width: '15%'}}><VisibilityIcon/></Button> 
+                                                            <Button onClick={() => {handleRejectResult(task)}} sx={{width: '15%'}}><ThumbDownOffAltIcon/></Button>   
                                                         </ButtonGroup>
-                                                        
                                                         :
-                                                        <Button></Button>
+                                                        <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
+                                                            {task_dict[task].taskName}
+                                                        </Button>
                                                     }
                                                 </Paper>
                                             </Grid>
