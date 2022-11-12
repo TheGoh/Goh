@@ -26,6 +26,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import TaskIcon from '@mui/icons-material/Task';
@@ -37,10 +39,13 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-
+import dayjs from 'dayjs';
+import moment from "moment";
 /* invitation form */
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { ButtonGroup } from '@mui/material';
+
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 /* Progress Bar */
 function LinearProgressWithLabel(props) {
@@ -55,7 +60,7 @@ function LinearProgressWithLabel(props) {
       </Box>
     );
   }
-  
+
   LinearProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
   };
@@ -74,6 +79,7 @@ export default function Project() {
     const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
+    const [dueDate, setDueDate] = useState(null);
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
@@ -105,8 +111,8 @@ export default function Project() {
                      ownedProjects: tempList
                 })
             })
-        
-        /* Delete project id from member project id list */     
+
+        /* Delete project id from member project id list */
         projectDtl.memberList["members"].forEach(async(member) => {
             const ref2 = doc(firedb, `users`, member.id)
             //remove from user's project id entry
@@ -124,7 +130,7 @@ export default function Project() {
 
         deleteDocument(`projects`, projectId)
     }
-    
+
 
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
@@ -133,18 +139,18 @@ export default function Project() {
         if (invite) {
             ref = query(ref, where("email", "==", invite));
         }
-        
+
         await getDocs(ref)
             .then((snapshot) => {
                 let result = [];
                 snapshot.docs.forEach(doc => {
                     result.push({...doc.data(), id: doc.id});
                 });
-                
+
                 const receiver_uid = result[0].id;
                 const currUserDoc = doc(firedb, `users`, receiver_uid);
-                
-                //update user's invitation list 
+
+                //update user's invitation list
                 getDoc(currUserDoc)
                     .then ((doc) => {
                         let invite_list = doc.data().invitations;
@@ -155,14 +161,14 @@ export default function Project() {
                             if (!roleTag) {
                                 tempRole = "member"
                             }
-                
+
                             invite_list[projectId] = {
                                 projName: projectDtl.projName,
                                 roleTag: tempRole
                             }
-                            
+
                             //notification
-                            let message_list = doc.data().my_message;  
+                            let message_list = doc.data().my_message;
                             const time = new Date();
                             const message = user.displayName + "invite you to join " + projectDtl.projName;
                             const new_message = {
@@ -181,7 +187,7 @@ export default function Project() {
                         }
                         else {
                             console.log("already in this group")
-                        }                
+                        }
                     })
                 setRole('')
                 setInvite('')
@@ -191,7 +197,7 @@ export default function Project() {
                 setRole('')
                 setInvite('')
                 console.error("Invalid User");
-            }); 
+            });
     }
     /* Project operations ends */
 
@@ -213,6 +219,11 @@ export default function Project() {
         setOpen2(false);
     }
 
+    const handleDueDateChange = (tValue,keyboardInputValue) => {
+        console.log(dayjs(tValue).format("MM/DD/YYYY"));
+        setDueDate(dayjs(tValue).format("MM/DD/YYYY"));
+    };
+
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
@@ -222,7 +233,7 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr,dueDate);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
@@ -231,7 +242,7 @@ export default function Project() {
                 Time: time,
                 message: message
             }
-            sendMsg(currMemId, new_message); 
+            sendMsg(currMemId, new_message);
         }
         setTaskName('');
         setTaskDescr('');
@@ -265,7 +276,7 @@ export default function Project() {
 
     // Task state changes
     const handleTakeTask = (task) => { //TODO to IN PROGRESS
-        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);  
+        const currTaskDoc = doc(firedb, `projects/${projectId}/tasks`, task_dict[task].taskId);
         updateDoc(currTaskDoc, {
             taskState: "IN PROGRESS",
             currUserId: user.uid,
@@ -277,9 +288,9 @@ export default function Project() {
         updateDoc(currTaskDoc, {
             taskState: "IN REVIEW",
         });
-        
+
         //notification -- send to project owner
-        
+
         const time = new Date();
         const message = "task " + task_dict[task].taskName + " is ready to review"
         const new_message = {
@@ -326,7 +337,7 @@ export default function Project() {
         });
 
         //NOTIFICATION send back to task owner
-       
+
         const new_message = {
             Sender: user.displayName,
             Time: new Date(),
@@ -363,7 +374,7 @@ export default function Project() {
 
                         <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             {/* Search bar */} {
-                                task_collections && 
+                                task_collections &&
                                 <Autocomplete
                                 disablePortal
                                 autoComplete
@@ -377,13 +388,13 @@ export default function Project() {
                                     } else {
                                         setCurrTaskId('')
                                     }
-                                    
+
                                 }}
                                 sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Task Search" />}        
+                                renderInput={(params) => <TextField {...params} label="Task Search" />}
                             />
                             }
-                            
+
                             <Grid item xs={1}>
                             {task_ids.includes(currTaskId) ?
                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${currTaskId}`} sx={{width: '10%'}} color="success">
@@ -394,23 +405,23 @@ export default function Project() {
                                     Enter
                                 </Button>
                             }
-                                  
+
                         </Grid>
                         </Grid>
-                       
+
                     </Grid>
-                    
+
                     {/* Task creation */}
                     <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px', height: '500px'}}>
-                    {task_ids.length === 0 ? 
+                    {task_ids.length === 0 ?
 
                     <Grid sx={{direction: 'column', alignItems: 'center', justifyContent: 'center'}}>
                         {
-                            user.uid === projectDtl.ownerid && 
+                            user.uid === projectDtl.ownerid &&
                             <Button variant="text" onClick={handleClickOpen} sx={{marginTop: "225px"}}><LibraryAddIcon fontSize="large"/></Button>
                         }
-                        
-                    </Grid> 
+
+                    </Grid>
                     :
                     <Grid container columns={9} className={styles['task-board']}>
                         <Grid item xs={2}><h4>TODO</h4></Grid>
@@ -419,7 +430,7 @@ export default function Project() {
                         <Grid item xs={2}><h4>Completed</h4></Grid>
                         <Grid item xs={1}>
                             {
-                                user.uid === projectDtl.ownerid && 
+                                user.uid === projectDtl.ownerid &&
                                 <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
                             }
                         </Grid>
@@ -430,7 +441,7 @@ export default function Project() {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
 
-                                        }).map((task) => 
+                                        }).map((task) =>
                                         <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                             <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                 <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
@@ -450,12 +461,12 @@ export default function Project() {
                                     {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "IN PROGRESS") {return task;}
-                                        }).map((task) => 
+                                        }).map((task) =>
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                             {task_dict[task].taskName}
-                                                    </Button> 
+                                                    </Button>
                                                     {
                                                         user.uid === task_dict[task].ownerid &&
                                                         <Button onClick={() => {handleMarkDone(task)}}><TaskIcon/></Button>
@@ -474,7 +485,7 @@ export default function Project() {
                                     {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "IN REVIEW") {return task;}
-                                            }).map((task) => 
+                                            }).map((task) =>
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
@@ -482,10 +493,10 @@ export default function Project() {
                                                     </Button>
                                                     { user.uid === projectDtl.ownerid ?
                                                         <ButtonGroup>
-                                                            <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button> 
-                                                            <Button onClick={() => {handleRejectResult(task)}}><ThumbDownOffAltIcon/></Button>   
+                                                            <Button onClick={() => {handleReview(task)}}><VisibilityIcon/></Button>
+                                                            <Button onClick={() => {handleRejectResult(task)}}><ThumbDownOffAltIcon/></Button>
                                                         </ButtonGroup>
-                                                        
+
                                                         :
                                                         <Button></Button>
                                                     }
@@ -503,7 +514,7 @@ export default function Project() {
                                     {
                                         task_ids.length > 0 && task_ids.filter(task => {
                                                 if (task_dict[task]['taskState'] === "COMPLETED") {return task;}
-                                            }).map((task) => 
+                                            }).map((task) =>
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}} color="success">
@@ -532,13 +543,13 @@ export default function Project() {
                             <Grid item xs={1}>
                             </Grid>
                         }
-                        {user.uid === projectDtl.ownerid ? 
+                        {user.uid === projectDtl.ownerid ?
                             <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
                                 <Link to="/project/projectcreate" onClick={handleProjectDelete} style={{ textDecoration: 'none' }}>
                                     <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete Project</Button>
                                 </Link>
-                            </Grid> 
-                            : 
+                            </Grid>
+                            :
                             <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             </Grid>
                         }
@@ -552,27 +563,27 @@ export default function Project() {
                             <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
                                 People
                             </Grid>
-                            
 
-                                {   user.uid === projectDtl.ownerid && 
+
+                                {   user.uid === projectDtl.ownerid &&
                                      <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
                                 }
-                            
-                                                       
+
+
                                 {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
-                              
+
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
                                     <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                                        <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>     
+                                        <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
 
                             {
-                                projectDtl.memberList.members.length > 0 && 
-                                projectDtl.memberList.members.map((member) => 
+                                projectDtl.memberList.members.length > 0 &&
+                                projectDtl.memberList.members.map((member) =>
                                     <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
                                             <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
@@ -623,6 +634,19 @@ export default function Project() {
                             </FormControl>
                         </Grid>
                         <Grid item xs={1} sx={{marginTop: '20px'}}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <FormControl sx={{width: "100%"}}>
+                                <DesktopDatePicker
+                                    label="Due Date"
+                                    inputFormat="MM/DD/YYYY"
+                                    value={dueDate}
+                                    onChange={handleDueDateChange}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </FormControl>
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={1} sx={{marginTop: '20px'}}>
                             <Autocomplete
                                 disablePortal
                                 autoComplete
@@ -631,24 +655,24 @@ export default function Project() {
                                 options={memList}
                                 getOptionLabel={(option)=>(option.displayName ?? option)}
                                 onChange={(event, value)=>
-                                {   
+                                {
                                     if (value !== null) {
                                         setCurrMemId(value.id)
                                     } else {
                                         setCurrMemId('')
                                     }
-                                    
+
                                 }}
                                 sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Assign Task" />}        
+                                renderInput={(params) => <TextField {...params} label="Assign Task" />}
                             />
                         </Grid>
-                        
+
                         </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleTaskCreation}>Create</Button> 
+                        <Button onClick={handleTaskCreation}>Create</Button>
                     </DialogActions>
             </Dialog>
 
@@ -683,7 +707,7 @@ export default function Project() {
                                     options={projectDtl.roleTags}
                                     onInputChange={(event, value)=>setRole(value)}
                                     sx={{ width: 300 }}
-                                    renderInput={(params) => <TextField {...params} label="Roles" />}        
+                                    renderInput={(params) => <TextField {...params} label="Roles" />}
                                 />
                             </FormControl>
                         </Grid>
@@ -691,10 +715,10 @@ export default function Project() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose2}>Cancel</Button>
-                        <Button onClick={handleProjectInvitation}>Invite</Button> 
+                        <Button onClick={handleProjectInvitation}>Invite</Button>
                     </DialogActions>
             </Dialog>
-            
+
         </Box>
     )
 }
