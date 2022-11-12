@@ -4,12 +4,23 @@ import { useParams } from 'react-router-dom';
 import { useDocument } from '../../../hooks/useDocument';
 import { useFirestore } from '../../../hooks/useFirestore'
 import { useAuthContext } from '../../../hooks/useAuthContext'
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { firedb } from '../../../firebase/config';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
 export default function TaskInfo() {
     let { projectId, taskId } = useParams();
@@ -17,20 +28,69 @@ export default function TaskInfo() {
     //console.log("here is target project id", projectId );
     const { documents: projectDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const { user } = useAuthContext()
+    const [ open, setOpen ] = useState('')
+    const [ commentList, setCommentList ] = useState('');
+    const [ comment, setComment ] = useState('')
     // console.log(projectDtl)
     // console.log("project page user id", user.uid)
-
-    if (!projectDtl) {
-        return <div> Loading... </div>
-    }
-
+    useEffect(() => {
+        if (projectDtl) {
+            let all_Comments = []
+            Object.keys(projectDtl.comments).forEach(item => {
+                const date = new Date()          
+                all_Comments.push({comment: projectDtl.comments[item].comment, time: date, resolved: projectDtl.comments[item].resolved});        
+            })
+            setCommentList(all_Comments);
+        }
+    }, [projectDtl]);
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleDelete = async(e) => {
         //remove from projects collection
         deleteDocument(`projects/${projectId}/tasks`, taskId)
     }
+    const handleComment = async(e) => {
+        e.preventDefault();
+        const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
+        await getDoc(ref).then((doc) => {
+            let comment_list = doc.data().comments;
+            const time = new Date();
+            const isResolved = "UNRESOLVED";
+            const new_comment = {
+                Sender: user.displayName,
+                Time: time,
+                comment: comment,
+                resolved: isResolved
+            }
+            if (comment_list) {
+                
+                comment_list.push(new_comment)
+                updateDoc(ref, {
+                    comments: comment_list
+                }); 
+            } else {
+                let new_list = [];
+                new_list.push(new_comment);
+                updateDoc(ref, {
+                    comments: new_list
+                }); 
+            }
+            setComment('');
+            setOpen(false);
+        })
 
+    }
+    const handleOpen = () => {
+        console.log("my Comments: ", commentList);
 
+        setOpen(true);
+    }
+    const handleClose = () => { //close form and clear inputs
+        setComment('');
+        setOpen(false);
+    }
+    if (!projectDtl) {
+        return <div> Loading... </div>
+    }
     return (
         <Box>
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
@@ -54,8 +114,38 @@ export default function TaskInfo() {
                     }
                     
                 </Grid>
-                
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
+                </Grid>
             </Grid>
+            {/* Comments Popup */}
+            <Dialog open={Boolean(open)} onClose={handleClose}>
+                <DialogTitle>Add Comment</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            Please enter your comments
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                        <Grid item xs={1} sx={{marginBottom: '20px'}}>
+                            <FormControl sx={{width: "100%"}}>
+                            <InputLabel htmlFor="component-outlined">Comments</InputLabel>
+                            <OutlinedInput
+                            id="component-outlined"
+                            value={comment}
+                            label="Comment"
+                            onChange = {(e)=>setComment(e.target.value)}
+                            type="text"
+                            />
+                            </FormControl>
+                        </Grid>                    
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleComment}>Comment</Button> 
+                    </DialogActions>
+            </Dialog>
         </Box>
     )
 }
