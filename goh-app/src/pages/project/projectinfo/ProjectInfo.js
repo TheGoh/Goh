@@ -457,12 +457,20 @@ export default function Project() {
                                         }).map((task) => 
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                    <ButtonGroup sx={{width: '100%'}}>
-                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                    
+                                                    {
+                                                        user.uid === task_dict[task].ownerid ?
+                                                        <ButtonGroup sx={{width: '100%'}}>
+                                                            <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                                {task_dict[task].taskName}
+                                                            </Button> 
+                                                            <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
+                                                        </ButtonGroup>
+                                                        :
+                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
                                                             {task_dict[task].taskName}
                                                         </Button> 
-                                                        <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
-                                                    </ButtonGroup>
+                                                    }
                                                 </Paper>
                                             </Grid>
                                         )
