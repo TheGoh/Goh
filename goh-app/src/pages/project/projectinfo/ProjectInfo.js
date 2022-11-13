@@ -400,6 +400,21 @@ export default function Project() {
                        
                     </Grid>
                     
+                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px'}}>
+                    <Grid container columns={9} className={styles['task-board']}>
+                        <Grid item xs={2}><h4>TODO</h4></Grid>
+                        <Grid item xs={2}><h4>In Progress</h4></Grid>
+                        <Grid item xs={2}><h4>In Review</h4></Grid>
+                        <Grid item xs={2}><h4>Completed</h4></Grid>
+                        <Grid item xs={1}>
+                            {
+                                user.uid === projectDtl.ownerid && 
+                                <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
+                            }
+                        </Grid>
+                    </Grid>
+                    </Paper>
+                    
                     {/* Task creation */}
                     <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px', height: '500px', overflow: 'auto'}}>
                     {task_ids.length === 0 ? 
@@ -413,17 +428,6 @@ export default function Project() {
                     </Grid> 
                     :
                     <Grid container columns={9} className={styles['task-board']}>
-                        <Grid item xs={2}><h4>TODO</h4></Grid>
-                        <Grid item xs={2}><h4>In Progress</h4></Grid>
-                        <Grid item xs={2}><h4>In Review</h4></Grid>
-                        <Grid item xs={2}><h4>Completed</h4></Grid>
-                        <Grid item xs={1}>
-                            {
-                                user.uid === projectDtl.ownerid && 
-                                <Button variant="text" onClick={handleClickOpen} sx={{display: 'flex', alignItems: 'center'}}><LibraryAddIcon/></Button>
-                            }
-                        </Grid>
-
                         <Grid item xs={2}>
                             <Grid container columns={1} sx={{width: '100%', overflowY: 'auto'}}>
                                 {
