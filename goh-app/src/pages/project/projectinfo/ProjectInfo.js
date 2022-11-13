@@ -470,8 +470,10 @@ export default function Project() {
                                                             <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
                                                         </ButtonGroup>
                                                         :
-                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
-                                                            {task_dict[task].taskName}
+                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%', height: '80px'}}>
+                                                            {task_dict[task].taskName}<br></br>
+                                                            Owner: {TASK_OWNER}<br></br>
+                                                            Due on: {task_dict[task].createdAt.toDate().toLocaleString().split(",")[0]}
                                                         </Button> 
                                                     }
                                                 </Paper>
