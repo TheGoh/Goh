@@ -42,3 +42,7 @@
 .task-btn {
     text-transform: none;
 }
+
+.overflow-handle {
+    overflow-y: scroll;
+}

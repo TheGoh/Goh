@@ -401,7 +401,7 @@ export default function Project() {
                     </Grid>
                     
                     {/* Task creation */}
-                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px', height: '500px'}}>
+                    <Paper sx={{width: '95%', margin: 'auto', marginBottom: '15px', height: '500px', overflow: 'auto'}}>
                     {task_ids.length === 0 ? 
 
                     <Grid sx={{direction: 'column', alignItems: 'center', justifyContent: 'center'}}>
@@ -425,7 +425,7 @@ export default function Project() {
                         </Grid>
 
                         <Grid item xs={2}>
-                            <Grid container columns={1} sx={{width: '100%'}}>
+                            <Grid container columns={1} sx={{width: '100%', overflowY: 'auto'}}>
                                 {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
