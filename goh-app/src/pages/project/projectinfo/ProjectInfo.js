@@ -433,7 +433,7 @@ export default function Project() {
                                         }).map((task) => 
                                         <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                             <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                         {task_dict[task].taskName}
                                                 </Button>
                                                 <Button onClick={() => {handleTakeTask(task)}}><PlaylistAddIcon/></Button>
@@ -457,13 +457,13 @@ export default function Project() {
                                                     {
                                                         user.uid === task_dict[task].ownerid ?
                                                         <ButtonGroup sx={{width: '100%'}}>
-                                                            <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
+                                                            <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
                                                                 {task_dict[task].taskName}
                                                             </Button> 
                                                             <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
                                                         </ButtonGroup>
                                                         :
-                                                        <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
+                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
                                                             {task_dict[task].taskName}
                                                         </Button> 
                                                     }
@@ -486,14 +486,14 @@ export default function Project() {
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
                                                     { user.uid === projectDtl.ownerid ?
                                                         <ButtonGroup sx={{width: '100%'}}>
-                                                            <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '70%'}}>
+                                                            <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '70%'}}>
                                                                 {task_dict[task].taskName}
                                                             </Button>
                                                             <Button onClick={() => {handleReview(task)}} sx={{width: '15%'}}><VisibilityIcon/></Button> 
                                                             <Button onClick={() => {handleRejectResult(task)}} sx={{width: '15%'}}><ThumbDownOffAltIcon/></Button>   
                                                         </ButtonGroup>
                                                         :
-                                                        <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
+                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
                                                             {task_dict[task].taskName}
                                                         </Button>
                                                     }
@@ -514,7 +514,7 @@ export default function Project() {
                                             }).map((task) => 
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                    <Button variant="contained" component={Link} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}} color="success">
+                                                    <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}} color="success">
                                                             {task_dict[task].taskName}
                                                     </Button>
                                                 </Paper>
