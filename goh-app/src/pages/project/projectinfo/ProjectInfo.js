@@ -69,6 +69,7 @@ export default function Project() {
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
     const [progress, setProgress] = useState(0);
+    let TASK_OWNER = "OWNER"
 
     /* Task creation variables */
     const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
@@ -257,7 +258,7 @@ export default function Project() {
             })
             setTaskIds(temp_ids);
             setTaskDict(temp_id_dict);
-
+            
             setProgress((count / Object.keys(task_collections).length) * 100)
         }
 
@@ -460,9 +461,11 @@ export default function Project() {
                                                     
                                                     {
                                                         user.uid === task_dict[task].ownerid ?
-                                                        <ButtonGroup sx={{width: '100%'}}>
+                                                        <ButtonGroup sx={{width: '100%', height: '80px'}}>
                                                             <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
-                                                                {task_dict[task].taskName}
+                                                                {task_dict[task].taskName}<br></br>
+                                                                Owner: {TASK_OWNER}<br></br>
+                                                                Due on: {task_dict[task].createdAt.toDate().toLocaleString().split(",")[0]}
                                                             </Button> 
                                                             <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
                                                         </ButtonGroup>
