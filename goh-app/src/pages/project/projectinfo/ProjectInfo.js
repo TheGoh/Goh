@@ -33,6 +33,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ChatIcon from '@mui/icons-material/Chat';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
@@ -333,7 +334,6 @@ export default function Project() {
             message: "task " + task_dict[task].taskName + " status change from In Review to In Progress"
         }
         sendMsg(task_dict[task].ownerid,new_message);
-
     }
 
     /* Task creation ends */
@@ -542,6 +542,13 @@ export default function Project() {
                             <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             </Grid>
                         }
+
+                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
+                            <Link to={`/project/${projectId}/chat`}  key={projectId} style={{ textDecoration: 'none' }}>
+                                <Button variant='contained' endIcon={<ChatIcon />} >Chat Room</Button>
+                            </Link>
+                        </Grid> 
+
                     </Grid>
                 </Grid>
 
