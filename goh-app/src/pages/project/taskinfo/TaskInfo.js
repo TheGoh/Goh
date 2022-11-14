@@ -146,7 +146,7 @@ export default function TaskInfo() {
                     <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
                       <Paper sx={{ width: "80%"}}>
                         <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                            {comment.status.includes("UNRESOLVED") ?
+                            {(comment.resolved.includes("UNRESOLVED")) ?
                                 <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
                                 :
                                 <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
