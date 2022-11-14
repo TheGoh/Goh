@@ -140,12 +140,18 @@ export default function TaskInfo() {
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
                 </Grid>
+                {/* Comments List */}
                 {
                   projectDtl.comments.length > 0 && projectDtl.comments.map(comment => (
                     <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
                       <Paper sx={{ width: "80%"}}>
                         <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                            <Button onClick={() => {handleResolved(comment)}}>{comment.comment}</Button> 
+                            {comment.status.includes("UNRESOLVED") ?
+                                <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
+                                :
+                                <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
+                            }
+                            
                         </Grid>
                       </Paper>
                     </Grid>
