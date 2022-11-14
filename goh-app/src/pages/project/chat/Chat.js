@@ -6,12 +6,8 @@ import { useAuthContext } from '../../../hooks/useAuthContext'
 import { useState, useEffect } from 'react';
 import { useFirestore } from '../../../hooks/useFirestore';
 
-
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import SendIcon from '@mui/icons-material/Send';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import ScrollToBottom from "react-scroll-to-bottom";
+import styles from './Chat.module.css'
 
 export default function Chat() {
     let { projectId } = useParams();
@@ -27,11 +23,7 @@ export default function Chat() {
     
 
     const handleSend = () => {
-        //console.log(msg);
-        //call firestore function
-        //console.log(projectId, user.uid, user.displayName, msg)
        sendChatMsg(projectId, user.uid, user.displayName, msg);
-       // setMsg('');
         
     }
 
@@ -50,33 +42,46 @@ export default function Chat() {
     }
 
     return (
-        
-        <div>
-            <h2>Chat Room</h2>
-
-            {
-                  chatLog.length > 0 && chatLog.map(msg => (
-                    <Grid item xs ={1} key = {msg.Time} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
-                      <Paper sx={{ width: "80%"}}>
-                        <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                          <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>{msg.createAt.toDate().toLocaleString()}</Grid>
-                          <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>Sender: {msg.senderName}</Grid>
-                          <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>Message:{msg.message}</Grid>
-                        </Grid>
-                      </Paper>
-                    </Grid>
-                  ))
-                }
-            
-            <TextareaAutosize
-            aria-label="minimum height"
-            minRows={3}
-            onChange = {(e)=>setMsg(e.target.value)}
-            placeholder="send message"
-            style={{ width: 200 }}
-            />
-
-            <Button variant='contained' onClick={handleSend} endIcon={<SendIcon />} >Send</Button>
-        </div>
+        <div className={styles['chat-window']}>
+          <div className={styles['chat-header']}>
+            <p>Live Chat</p>
+          </div>
+          <div className={styles['chat-body']}>
+            <ScrollToBottom className={styles['message-container']}>
+              {chatLog.length > 0 && chatLog.map((msg) => {
+                return (
+                  <div
+                    className={styles['message']}
+                    id={user.uid === msg.senderId ? styles['other'] : styles['you']}
+                  >
+                    <div>
+                      <div className={styles['message-content']}>
+                        <p>{msg.message}</p>
+                      </div>
+                      <div className={styles['message-meta']}>
+                        <p id="time">{msg.createAt.toDate().toLocaleString()}: </p>
+                        <p id="author">{msg.senderName}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </ScrollToBottom>
+          </div>
+      <div className={styles['chat-footer']}>
+        <input
+          type="text"
+          value={msg}
+          placeholder="Hey..."
+          onChange={(event) => {
+            setMsg(event.target.value);
+          }}
+          onKeyPress={(event) => {
+            event.key === "Enter" && handleSend();
+          }}
+        />
+        <button onClick={handleSend}>&#9658;</button>
+      </div>
+    </div>
     )
 }
