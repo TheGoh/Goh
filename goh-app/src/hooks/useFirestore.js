@@ -39,18 +39,15 @@ export const useFirestore = () => {
             }
         }
 
-        
         getDoc(currUserDoc)
         .then ((doc) => {
             let tempOwnedProjects = doc.data().ownedProjects;
             tempOwnedProjects.push(projid);
-            
             updateDoc(currUserDoc, {
                 ownedProjects: tempOwnedProjects
             })
             .then(() => {
                 //console.log("update successfully!!!",doc.data().ownedProjects)
-                
             })
         })
 
@@ -61,12 +58,13 @@ export const useFirestore = () => {
 
     /* *** FUNCTION TO CREATE A NEW TASK IN SPECIFIC PROJECT *** */
     const createTask = async (
-        projId, 
+        projId,
         ownerid,
         currMemId,
         taskId,
         taskName,
-        taskDescr
+        taskDescr,
+        dueDate
         ) => {
         setError(null)
 
@@ -88,7 +86,6 @@ export const useFirestore = () => {
             const createdAt = new Date();
             let taskState = "TODO";
             const currUserId = currMemId;
-            const comments = [];
             if (currUserId !== '') {
                 taskState = "IN PROGRESS"
             }
@@ -102,15 +99,15 @@ export const useFirestore = () => {
                     taskDescr,
                     createdAt,
                     taskState,
-                    comments
+                    dueDate
                 });
             } catch (error) {
                 console.log('error creating the task', error.message);
             }
-            
+
         }
     }
-    
+
 
 
 
@@ -136,7 +133,7 @@ export const useFirestore = () => {
         updateDoc(ref, {projDescr: projDescr}).catch(error => {
                 setError(error.message)
             })
-        
+
     }
 
 
@@ -150,7 +147,7 @@ export const useFirestore = () => {
         updateDoc(ref, {taskDescr: taskDescr}).catch(error => {
                 setError(error.message)
             })
-        
+
     }
 
     const sendMsg = async (recv_id, message) => {
@@ -165,12 +162,12 @@ export const useFirestore = () => {
             })
     }
 
-    /* 
+    /*
         NOTICE：
-        
+
         Add more function if needed, and also add the function name into the "return"
-    
-    
+
+
     */
 
     return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, sendMsg, error}
