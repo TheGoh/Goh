@@ -10,6 +10,7 @@ import { firedb } from '../../../firebase/config';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
@@ -21,6 +22,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import { handleBreakpoints } from '@mui/system';
 
 export default function TaskInfo() {
     let { projectId, taskId } = useParams();
@@ -38,7 +40,7 @@ export default function TaskInfo() {
             let all_Comments = []
             Object.keys(projectDtl.comments).forEach(item => {
                 const date = new Date()          
-                all_Comments.push({comment: projectDtl.comments[item].comment, time: date, resolved: projectDtl.comments[item].resolved});        
+                all_Comments.push({comment: projectDtl.comments[item].comment, id:projectDtl.comments[item].id, time: date, resolved: projectDtl.comments[item].resolved});        
             })
             setCommentList(all_Comments);
         }
@@ -48,18 +50,39 @@ export default function TaskInfo() {
         //remove from projects collection
         deleteDocument(`projects/${projectId}/tasks`, taskId)
     }
+    const handleResolved = (comment) => {
+        const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
+        const id = comment.id;
+        
+        let comments_list = commentList;
+        console.log(comments_list);
+        //console.log(comments_list);
+        let resolved = comments_list[id].resolved;
+        if (resolved === "UNRESOLVED") {
+            resolved = "RESOLVED";
+        } else {
+            resolved = "UNRESOLVED";
+        }
+        comments_list[id].resolved = resolved;
+        updateDoc(ref, {
+            comments: comments_list
+        })
+
+    }
     const handleComment = async(e) => {
         e.preventDefault();
         const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
         await getDoc(ref).then((doc) => {
             let comment_list = doc.data().comments;
             const time = new Date();
+            const id = comment_list.length;
             const isResolved = "UNRESOLVED";
             const new_comment = {
                 Sender: user.displayName,
                 Time: time,
                 comment: comment,
-                resolved: isResolved
+                resolved: isResolved,
+                id: id
             }
             if (comment_list) {
                 
@@ -117,6 +140,17 @@ export default function TaskInfo() {
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
                 </Grid>
+                {
+                  projectDtl.comments.length > 0 && projectDtl.comments.map(comment => (
+                    <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
+                      <Paper sx={{ width: "80%"}}>
+                        <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
+                            <Button onClick={() => {handleResolved(comment)}}>{comment.comment}</Button> 
+                        </Grid>
+                      </Paper>
+                    </Grid>
+                  ))
+                }
             </Grid>
             {/* Comments Popup */}
             <Dialog open={Boolean(open)} onClose={handleClose}>
