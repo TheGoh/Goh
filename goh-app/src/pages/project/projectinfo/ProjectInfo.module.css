@@ -38,3 +38,11 @@
     height: 50%;
     width: 50%;
 }
+
+.task-btn {
+    text-transform: none;
+}
+
+.overflow-handle {
+    overflow-y: scroll;
+}
