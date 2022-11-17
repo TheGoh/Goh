@@ -184,13 +184,6 @@ export default function Notification() {
                 <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}>
                   <Paper sx={{width:'80%'}} elevation={0}><h1 className={styles['uniheader']}>Invitations</h1></Paper>
                 </Grid>
-
-                {/* <Grid item xs={2}>
-                  <Select
-                    onChange={(option) => setAssign(option)}
-                    options = {inviteList}    
-                  />
-                </Grid> */}
                   <Grid item xs={2}>
                             <Grid container columns={1}>
                                 <Grid container columns={1} sx={{width: '100%'}}>
@@ -210,9 +203,8 @@ export default function Notification() {
                                 </Grid>
                             </Grid>
                         </Grid>
+                </Grid>
               </Grid>
-            </Grid>
-
           </Grid>
         </Box>
       </Box>

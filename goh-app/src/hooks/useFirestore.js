@@ -53,7 +53,28 @@ export const useFirestore = () => {
 
     }
 
+    /* FUNCTION TO SEND A MESSAGE */
+    const sendChatMsg = async(projid, senderId, senderName, message) => {
+        setError(null)
 
+        const createAt = new Date();
+        const chatCollection = doc(firedb, `projects/${projid}/chats`,createAt.toString());
+        const chatSnapShot = await getDoc(chatCollection);
+        console.log("chat snapshot")
+        if (!chatSnapShot.exists()) {
+            await setDoc(chatCollection, {
+                createAt,
+                senderId,
+                senderName,
+                message
+            })
+            .then(()=> {console.log("Update messages!!!")})
+            .catch(error => {
+                console.log(error.message)
+                setError(error.message)
+            })
+        }
+    }
 
 
     /* *** FUNCTION TO CREATE A NEW TASK IN SPECIFIC PROJECT *** */
@@ -172,5 +193,5 @@ export const useFirestore = () => {
 
     */
 
-    return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, sendMsg, error}
+    return { createProject, createTask , deleteDocument, modifyDocument, modifyTask, sendMsg, sendChatMsg, error}
 }
