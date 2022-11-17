@@ -1,4 +1,6 @@
 import firebase from "firebase/app"
+import { getStorage } from "firebase/storage";
+
 /* Firestore documentation functionality */
 import { 
     getFirestore,
@@ -42,10 +44,10 @@ const app = initializeApp(firebaseConfig);
 //initialize firestore
 const firedb = getFirestore();
 const auth = getAuth();
-
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
-
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(app);
 
 
 //timestamp
