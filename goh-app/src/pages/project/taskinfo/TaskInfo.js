@@ -122,6 +122,7 @@ export default function TaskInfo() {
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
                 <Grid item xs={3}><h1>{projectDtl.taskName}</h1></Grid>
                 <Grid item xs={3}><h3>{projectDtl.taskDescr}</h3></Grid>
+                <Grid item xs={3}><h4>{projectDtl.dueDate}</h4></Grid>
             </Grid>
 
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
@@ -134,8 +135,7 @@ export default function TaskInfo() {
                 </Grid>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     {user.uid === projectDtl.ownerid ?
-                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    
-                    :
+                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    :
                         <div></div>
                     }
                     
