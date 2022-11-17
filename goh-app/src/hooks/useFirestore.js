@@ -86,6 +86,7 @@ export const useFirestore = () => {
             const createdAt = new Date();
             let taskState = "TODO";
             const currUserId = currMemId;
+            const comments = [];
             if (currUserId !== '') {
                 taskState = "IN PROGRESS"
             }
@@ -99,6 +100,7 @@ export const useFirestore = () => {
                     taskDescr,
                     createdAt,
                     taskState,
+                    comments,
                     dueDate
                 });
             } catch (error) {
