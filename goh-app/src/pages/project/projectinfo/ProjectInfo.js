@@ -156,6 +156,17 @@ export default function Project() {
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
 
+        //judge invite limit
+        const size = projectDtl.memberList.members.length;
+        debugger
+        if(projectDtl.membersLimit){
+            const memberLimit = projectDtl.membersLimit;
+            if(size >= memberLimit){
+                alert("members exceeds the limitation");
+                return
+            }
+        }
+
         let ref = collection (firedb, 'users')
         if (invite) {
             ref = query(ref, where("email", "==", invite));
@@ -250,7 +261,7 @@ export default function Project() {
         setTaskDescr('');
         setDueDate(null);
         setTaskPrio(0);
-        setOpen(false); 
+        setOpen(false);
     }
 
     const handleTaskCreation = (event) => {
@@ -507,7 +518,7 @@ export default function Project() {
                                                                 {task_dict[task].taskName}<br></br>
                                                                 Owner: {TASK_OWNER}<br></br>
                                                                 Due on: {task_dict[task].createdAt.toDate().toLocaleString().split(",")[0]}
-                                                            </Button> 
+                                                            </Button>
                                                             <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
                                                         </ButtonGroup>
                                                         :
@@ -515,7 +526,7 @@ export default function Project() {
                                                             {task_dict[task].taskName}<br></br>
                                                             Owner: {TASK_OWNER}<br></br>
                                                             Due on: {task_dict[task].createdAt.toDate().toLocaleString().split(",")[0]}
-                                                        </Button> 
+                                                        </Button>
                                                     }
                                                 </Paper>
                                             </Grid>
@@ -605,7 +616,7 @@ export default function Project() {
                             <Link to={`/project/${projectId}/chat`}  key={projectId} style={{ textDecoration: 'none' }}>
                                 <Button variant='contained' endIcon={<ChatIcon />} >Chat Room</Button>
                             </Link>
-                        </Grid> 
+                        </Grid>
 
                     </Grid>
                 </Grid>
