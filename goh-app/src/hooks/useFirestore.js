@@ -85,7 +85,8 @@ export const useFirestore = () => {
         taskId,
         taskName,
         taskDescr,
-        dueDate
+        dueDate,
+        prio
         ) => {
         setError(null)
 
@@ -122,7 +123,8 @@ export const useFirestore = () => {
                     createdAt,
                     taskState,
                     comments,
-                    dueDate
+                    dueDate,
+                    prio
                 });
             } catch (error) {
                 console.log('error creating the task', error.message);
@@ -136,11 +138,11 @@ export const useFirestore = () => {
 
     /* *** FUNCTION TO DELETE A SPECIFIC DOCUMENT IN DATABASE *** */
     const deleteDocument = async(docRef, id) => {
-        let ref = doc(firedb, docRef, id)
+        let ref = doc(firedb, docRef, id);
 
         await deleteDoc(ref)
             .catch(error => {
-                setError(error.message)
+                setError(error.message);
             })
     }
 
@@ -151,25 +153,28 @@ export const useFirestore = () => {
     const modifyDocument = (docRef, id, projName, projDescr) => {
         let ref = doc(firedb, docRef, id)
         updateDoc(ref, {projName: projName }).catch(error => {
-                setError(error.message)
-            })
+            setError(error.message);
+        })
         updateDoc(ref, {projDescr: projDescr}).catch(error => {
-                setError(error.message)
-            })
+            setError(error.message)
+        });
 
     }
 
 
 
     /* *** FUNCTION TO MODIFY A TASK METADATA *** */
-    const modifyTask = (docRef, id, taskName, taskDescr) => {
-        let ref = doc(firedb, docRef, id)
+    const modifyTask = (docRef, id, taskName, taskDescr, prio) => {
+        let ref = doc(firedb, docRef, id);
         updateDoc(ref, {taskName: taskName }).catch(error => {
-                setError(error.message)
-            })
+            setError(error.message);
+        });
         updateDoc(ref, {taskDescr: taskDescr}).catch(error => {
-                setError(error.message)
-            })
+            setError(error.message);
+        })
+        updateDoc(ref, {prio: prio}).catch(error => {
+            setError(error.message);
+        })
 
     }
 

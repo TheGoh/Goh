@@ -24,7 +24,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
@@ -34,6 +33,10 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import NativeSelect from '@mui/material/NativeSelect';
+
 
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
@@ -45,9 +48,9 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 /* invitation form */
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import { ButtonGroup } from '@mui/material';
+import { ButtonGroup, Menu } from '@mui/material';
 
-/* theming */
+/* Priority and relative theming */
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 
@@ -58,6 +61,8 @@ const PRIM_THEME = createTheme({
         },
     },
 });
+
+
 
 
 /* Progress Bar */
@@ -95,6 +100,7 @@ export default function Project() {
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
     const [dueDate, setDueDate] = useState(null);
+    const [taskPrio, setTaskPrio] = useState('');
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
     const [open, setOpen] = useState(''); // form dialog open/close
@@ -242,14 +248,18 @@ export default function Project() {
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
-        setDueDate(null)
-        setOpen(false);
+        setDueDate(null);
+        setTaskPrio(0);
+        setOpen(false); 
     }
 
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr,dueDate);
+        if (taskPrio === undefined || taskPrio === null || taskPrio === "") {
+            setTaskPrio(0);
+        }
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, taskPrio);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
@@ -264,7 +274,12 @@ export default function Project() {
         setTaskDescr('');
         setDueDate(null)
         setCurrMemId('');
+        setTaskPrio(0);
         setOpen(false);
+    }
+
+    const handleTaskPrio = (event) => {
+        setTaskPrio(event.target.value);
     }
 
     useEffect(() => {
@@ -685,7 +700,7 @@ export default function Project() {
                                 </FormControl>
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item xs={1} sx={{marginTop: '20px'}}>
+                        <Grid item xs={0.6} sx={{marginTop: '20px'}}>
                             <Autocomplete
                                 disablePortal
                                 autoComplete
@@ -705,6 +720,22 @@ export default function Project() {
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params} label="Assign Task" />}
                             />
+                        </Grid>
+                        <Grid item xs={0.4} sx={{marginTop: '20px'}}>
+                            <FormControl sx={{width:'100%'}}>
+                                <InputLabel id="prio-label">Priority</InputLabel>
+                                <Select
+                                    labelId="prio-lable"
+                                    id="prio-select"
+                                    value={taskPrio}
+                                    onChange={handleTaskPrio}
+                                    label="Priority"
+                                >
+                                    <MenuItem value={0}>Casual</MenuItem>
+                                    <MenuItem value={1}>Important</MenuItem>
+                                    <MenuItem value={2}>Urgent</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
 
                         </Grid>
@@ -726,7 +757,7 @@ export default function Project() {
                         <Grid container sx={{marginTop: '20px'}} columns={1}>
                         <Grid item xs={1} sx={{marginBottom: '20px'}}>
                             <FormControl sx={{width: "100%"}}>
-                            <InputLabel htmlFor="component-outlined">EMAIL ADDRESS</InputLabel>
+                            <InputLabel htmlFor="component-outlined">Email</InputLabel>
                             <OutlinedInput
                             id="component-outlined"
                             value={invite}
@@ -736,7 +767,7 @@ export default function Project() {
                             />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={1}>
+                        <Grid item xs={0.5}>
                             <FormControl sx={{width: "100%"}}>
                                 <Autocomplete
                                     disablePortal
