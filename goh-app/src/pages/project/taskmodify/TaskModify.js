@@ -18,9 +18,7 @@ export default function TModify() {
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
     const { modifyTask } = useFirestore();
-
-
-    
+    const [taskPrio, setTaskPrio] = useState('');
 
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleModify = () => {

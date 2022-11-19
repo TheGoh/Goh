@@ -47,6 +47,19 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { ButtonGroup } from '@mui/material';
 
+/* theming */
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { orange } from '@mui/material/colors';
+
+const PRIM_THEME = createTheme({
+    palette: {
+        primary: {
+            main: orange[500],
+        },
+    },
+});
+
+
 /* Progress Bar */
 function LinearProgressWithLabel(props) {
     return (
