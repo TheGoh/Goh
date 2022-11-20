@@ -10,7 +10,7 @@ export const useFirestore = () => {
 
 
     /* *** FUNCTION TO CREATE A NEW PROJECT INTO PROJECTS COLLECTION *** */
-    const createProject = async (ownerid, projid, projName, projDescr) => {
+    const createProject = async (ownerid, projid, projName, projDescr,membersLimit) => {
         setError(null)
         const projDocRef = doc(firedb, `projects`, projid);
         const currUserDoc = doc(firedb, `users`, ownerid);
@@ -30,6 +30,7 @@ export const useFirestore = () => {
                     ownerid,
                     projName,
                     projDescr,
+                    membersLimit,
                     createdAt,
                     memberList: memberList,
                     roleTags: roleTags,
