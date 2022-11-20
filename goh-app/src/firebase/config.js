@@ -1,4 +1,5 @@
-import firebase from "firebase/app"
+/* Initialize firebase */
+import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
 /* Firestore documentation functionality */
@@ -12,14 +13,10 @@ import {
 
 import {
     getAuth,
-    signInWithRedirect,
     signInWithPopup,
     GoogleAuthProvider,
 } from "firebase/auth"
 /* uniqueid functionality */
-
-/* Initialize firebase */
-import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD_ggcS56acnFfWBjZhi414bV2DWTVHqZg",
@@ -48,10 +45,6 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(app);
-
-
-//timestamp
-//const timestamp = firebase.firestore.Timestamp
 
 export {storage, firedb, auth}
 /* *** FUNCTION TO ADD NEW UID TO FIRESTORE *** */

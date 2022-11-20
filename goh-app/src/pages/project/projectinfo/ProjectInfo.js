@@ -35,7 +35,6 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import NativeSelect from '@mui/material/NativeSelect';
 
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -316,7 +315,7 @@ export default function Project() {
             let temp_id_dict = {};
             let count = 0;
             sorted_collection.forEach(task => {
-                if (task.taskState == "COMPLETED") count++;
+                if (task.taskState === "COMPLETED") count++;
                 temp_ids.push(task.id);
                 temp_id_dict[task.id] = task;
             })
