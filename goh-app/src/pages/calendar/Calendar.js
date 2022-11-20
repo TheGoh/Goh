@@ -58,7 +58,8 @@ export default function Calendar() {
         onSnapshot(ref, (snapshot) => {
             snapshot.docs.forEach(doc => {
                 const monthStart = new Date(dayjs().startOf('month').format('MM/DD/YYYY'));
-                const taskRef = query(collection(firedb,"projects/"+ doc.id + "/tasks"),where("dueDateTime",">=", monthStart));
+                const monthEnd = new Date(dayjs().endOf('month').format('MM/DD/YYYY'));
+                const taskRef = query(collection(firedb,"projects/"+ doc.id + "/tasks"),where("dueDateTime",">=", monthStart),where("dueDateTime","<=", monthEnd));
                 onSnapshot(taskRef,(snapshot) => {
                     snapshot.docs.forEach(tk => {
                         const data = tk.data();
