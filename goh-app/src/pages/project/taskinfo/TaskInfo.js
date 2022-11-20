@@ -117,12 +117,31 @@ export default function TaskInfo() {
         setOpen(false);
     }
 
+    function taskPrio(task) {
+        if (task.prio === 0) {
+            return (
+                <h4>Casual</h4>
+            )
+        }
+        else if (task.prio === 1) {
+            return (
+                <h4>Important</h4>
+            )
+        }
+        else {
+            return (
+                <h4>Urgent</h4>
+            )
+        }
+    }
+
     return (
         <Box>
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
                 <Grid item xs={3}><h1>{projectDtl.taskName}</h1></Grid>
                 <Grid item xs={3}><h3>{projectDtl.taskDescr}</h3></Grid>
                 <Grid item xs={3}><h4>{projectDtl.dueDate}</h4></Grid>
+                <Grid item xs={3}>{taskPrio(projectDtl)}</Grid>
             </Grid>
 
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
