@@ -173,10 +173,8 @@ export default function Project() {
         const size = projectDtl.memberList.members.length;
         if(projectDtl.membersLimit){
             const memberLimit = projectDtl.membersLimit;
-            console.log("memeber list:" + memberLimit)
-            if(size >= memberLimit){
+            if(size >= memberLimit - 1){
                 alert("members exceeds the limitation");
-                return
             }
         }
 
