@@ -35,6 +35,9 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
+import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
 
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -127,6 +130,9 @@ export default function Project() {
     /* Invitation and RoleTags */
     const [open2, setOpen2] = useState(''); // form dialog open/close
     const [roleTag, setRole] = useState('');
+
+    /* profile page icon */ 
+    const [openProf, setopenProf] = useState(false);
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -272,6 +278,15 @@ export default function Project() {
         setDueDate(null);
         setTaskPrio(0);
         setOpen(false);
+    }
+
+    const handleOpenProfile = () => {
+        console.log("open")
+        setopenProf(true);
+    }
+
+    const handleCloseProfile = () => {
+        setopenProf(false);
     }
 
     const handleTaskCreation = (event) => {
@@ -682,7 +697,7 @@ export default function Project() {
 
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
-                                    <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
+                                    <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                         <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>
                                     </Grid>
@@ -694,7 +709,7 @@ export default function Project() {
                                 projectDtl.memberList.members.map((member) =>
                                     <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
-                                            <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
+                                            <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                                 <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>{member.RoleTag}</Button>
                                             </Grid>
@@ -799,6 +814,20 @@ export default function Project() {
                         <Button onClick={handleTaskCreation}>Create</Button>
                     </DialogActions>
             </Dialog>
+            
+            <Dialog open={Boolean(openProf)}>
+                <Card variant="outlined" sx={{ width: 620 , padding: 3}}>
+                    <Typography level="body2">April 24 to May 02, 2021</Typography>
+                    <IconButton
+                        size="sm"
+                        onClick={handleCloseProfile}
+                        sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
+                    >
+                        <BookmarkAdd />
+                    </IconButton>
+                    </Card>
+            </Dialog>
+            
 
             {/* invitation form */}
             <Dialog open={Boolean(open2)} onClose={handleClose2}>
