@@ -161,7 +161,7 @@ export default function Project() {
         debugger
         if(projectDtl.membersLimit){
             const memberLimit = projectDtl.membersLimit;
-            if(size >= memberLimit){
+            if(size >= memberLimit-1){
                 alert("members exceeds the limitation");
                 return
             }
