@@ -105,7 +105,10 @@ export default function Project() {
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
     const [progress, setProgress] = useState(0);
-
+    const [alertOpen, setAlertOpen] = useState(false);
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
     let TASK_OWNER = "OWNER"
 
     /* Task creation variables */
@@ -169,19 +172,6 @@ export default function Project() {
 
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
-
-        //judge invite limit
-        const size = projectDtl.memberList.length;
-
-        if(projectDtl.membersLimit){
-            const memberLimit = projectDtl.membersLimit;
-            //-1 because declude project leader
-            if(size >= memberLimit){
-                alert("members exceeds the limitation");
-                return
-            }
-        }
-
         let ref = collection (firedb, 'users')
         if (invite) {
             ref = query(ref, where("email", "==", invite));
@@ -256,6 +246,17 @@ export default function Project() {
 
     /* user invitation form */
     const handleClickOpen2 = () => { //popup invitation form
+        //judge invite limit
+        const size = projectDtl.memberList.members.length;
+        debugger
+        if(projectDtl.membersLimit){
+            const memberLimit = projectDtl.membersLimit;
+            //-1 because declude project leader
+            if(size >= parseInt(memberLimit) - 1){
+                setAlertOpen(true);
+                return
+            }
+        }
         setOpen2(true);
         console.log(projectDtl.memberList);
     }
@@ -850,6 +851,27 @@ export default function Project() {
                         <Button onClick={handleClose2}>Cancel</Button>
                         <Button onClick={handleProjectInvitation}>Invite</Button>
                     </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={alertOpen}
+                onClose={handleAlertClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Tips"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Members exceeds the limitation, you can't invite more
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleAlertClose} autoFocus>
+                        I Know
+                    </Button>
+                </DialogActions>
             </Dialog>
 
         </Box>
