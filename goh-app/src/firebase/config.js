@@ -56,7 +56,7 @@ const storage = getStorage(app);
 export {storage, firedb, auth}
 /* *** FUNCTION TO ADD NEW UID TO FIRESTORE *** */
 
-export const createUserDocumentFromAuth = async (userAuth, userid) => {
+export const createUserDocumentFromAuth = async (userAuth, userid, photoURL) => {
     const userDocRef = doc(firedb, 'users', userAuth.uid);
     const userSnapshot = await getDoc(userDocRef);
     if (!userSnapshot.exists()) {
@@ -72,7 +72,8 @@ export const createUserDocumentFromAuth = async (userAuth, userid) => {
                 createdAt,
                 ownedProjects,
                 invitations,
-                my_message
+                my_message,
+                photoURL
             });
         } catch (error) {
             console.log('error creating the user', error.message);
