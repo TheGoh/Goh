@@ -35,8 +35,6 @@ export default function TModify() {
         setTaskPrio(event.target.value);
     }
     
-    console.log(taskPrio);
-
 
     if (!taskDtl) {
         return <div> Loading... </div>
