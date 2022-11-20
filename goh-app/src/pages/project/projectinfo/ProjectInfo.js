@@ -52,9 +52,17 @@ import { ButtonGroup, Menu } from '@mui/material';
 
 /* Priority and relative theming */
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { orange } from '@mui/material/colors';
+import { blue, orange, red } from '@mui/material/colors';
 
-const PRIM_THEME = createTheme({
+const CAS_THEME = createTheme({
+    palette: {
+        primary: {
+            main: blue[700],
+        },
+    },
+});
+
+const IMP_THEME = createTheme({
     palette: {
         primary: {
             main: orange[500],
@@ -62,8 +70,13 @@ const PRIM_THEME = createTheme({
     },
 });
 
-
-
+const URG_THEME = createTheme({
+    palette: {
+        primary: {
+            main: red[500],
+        },
+    },
+});
 
 /* Progress Bar */
 function LinearProgressWithLabel(props) {
@@ -389,8 +402,76 @@ export default function Project() {
         }
         sendMsg(task_dict[task].ownerid,new_message);
     }
-
     /* Task creation ends */
+    
+    /* Button control starts */
+    function getPrioTheme(key) {
+        let prio_theme;
+        if (task_dict[key].prio === 0) prio_theme = CAS_THEME;
+        else if (task_dict[key].prio === 1) prio_theme = IMP_THEME;
+        else prio_theme = URG_THEME;
+        return prio_theme;
+    }
+
+    function todoTaskBtns(key) { //TODO task color only depends on priority
+        let prio_theme = getPrioTheme(key);
+        return (
+            <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
+                <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '85%'}} theme={prio_theme}>
+                    {task_dict[key].taskName}
+                </Button>
+                <Button onClick={() => {handleTakeTask(key)}}><PlaylistAddIcon/></Button>
+            </Paper>
+        )
+    }
+
+    function inProgressBtns(key) { //In progress btns has 2 conditions
+        let prio_theme = getPrioTheme(key);
+        if (user.uid === task_dict[key].ownerid) {
+            return (
+                <ButtonGroup sx={{width: '100%', height: '80px'}}>
+                    <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '85%'}} theme={prio_theme}>
+                        {task_dict[key].taskName}<br></br>
+                        Owner: {TASK_OWNER}<br></br>
+                        Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
+                    </Button> 
+                    <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
+                </ButtonGroup>
+            )
+        }
+        else {
+            return (
+                <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '100%', height: '80px'}} theme={prio_theme}>
+                    {task_dict[key].taskName}<br></br>
+                    Owner: {TASK_OWNER}<br></br>
+                    Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
+                </Button> 
+            )
+        }
+    }
+
+    function inReviewBtns(key) {
+        let prio_theme = getPrioTheme(key);
+        if (user.uid === projectDtl.ownerid) {
+            return (
+                <ButtonGroup sx={{width: '100%'}}>
+                    <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '70%'}} theme={prio_theme}>
+                        {task_dict[key].taskName}
+                    </Button>
+                    <Button onClick={() => {handleReview(key)}} sx={{width: '15%'}}><VisibilityIcon/></Button>
+                    <Button onClick={() => {handleRejectResult(key)}} sx={{width: '15%'}}><ThumbDownOffAltIcon/></Button>
+                </ButtonGroup>
+            )
+        }
+        else {
+            return (
+                <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '100%'}} theme={prio_theme}>
+                    {task_dict[key].taskName}
+                </Button>
+            )
+        }
+    } 
+    /* Button control ends */
 
     if (error) {
         return <div className = "error">{error}</div>
@@ -487,15 +568,9 @@ export default function Project() {
                                 {
                                     task_ids.length > 0 && task_ids.filter(task => {
                                             if (task_dict[task]['taskState'] === "TODO") {return task;}
-
                                         }).map((task) =>
                                         <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
-                                            <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
-                                                        {task_dict[task].taskName}
-                                                </Button>
-                                                <Button onClick={() => {handleTakeTask(task)}}><PlaylistAddIcon/></Button>
-                                            </Paper>
+                                            {todoTaskBtns(task)}
                                         </Grid>
                                     )
                                 }
@@ -511,24 +586,7 @@ export default function Project() {
                                         }).map((task) =>
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-
-                                                    {
-                                                        user.uid === task_dict[task].ownerid ?
-                                                        <ButtonGroup sx={{width: '100%', height: '80px'}}>
-                                                            <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '85%'}}>
-                                                                {task_dict[task].taskName}<br></br>
-                                                                Owner: {TASK_OWNER}<br></br>
-                                                                Due on: {task_dict[task].createdAt.toDate().toLocaleString().split(",")[0]}
-                                                            </Button>
-                                                            <Button onClick={() => {handleMarkDone(task)}} sx={{width:'15%'}}><TaskIcon/></Button>
-                                                        </ButtonGroup>
-                                                        :
-                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%', height: '80px'}}>
-                                                            {task_dict[task].taskName}<br></br>
-                                                            Owner: {TASK_OWNER}<br></br>
-                                                            Due on: {task_dict[task].createdAt.toDate().toLocaleString().split(",")[0]}
-                                                        </Button>
-                                                    }
+                                                    {inProgressBtns(task)}
                                                 </Paper>
                                             </Grid>
                                         )
@@ -546,19 +604,7 @@ export default function Project() {
                                             }).map((task) =>
                                             <Grid item xs={1} key = {task} sx={{width: '100%', marginBottom: '5px'}}>
                                                 <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                    { user.uid === projectDtl.ownerid ?
-                                                        <ButtonGroup sx={{width: '100%'}}>
-                                                            <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '70%'}}>
-                                                                {task_dict[task].taskName}
-                                                            </Button>
-                                                            <Button onClick={() => {handleReview(task)}} sx={{width: '15%'}}><VisibilityIcon/></Button>
-                                                            <Button onClick={() => {handleRejectResult(task)}} sx={{width: '15%'}}><ThumbDownOffAltIcon/></Button>
-                                                        </ButtonGroup>
-                                                        :
-                                                        <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[task].taskId}`} sx={{width: '100%'}}>
-                                                            {task_dict[task].taskName}
-                                                        </Button>
-                                                    }
+                                                    {inReviewBtns(task)}
                                                 </Paper>
                                             </Grid>
                                         )

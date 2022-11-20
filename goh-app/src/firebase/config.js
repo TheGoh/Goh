@@ -53,7 +53,7 @@ const storage = getStorage(app);
 //timestamp
 //const timestamp = firebase.firestore.Timestamp
 
-export {firedb, auth}
+export {storage, firedb, auth}
 /* *** FUNCTION TO ADD NEW UID TO FIRESTORE *** */
 
 export const createUserDocumentFromAuth = async (userAuth, userid) => {

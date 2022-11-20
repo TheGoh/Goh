@@ -6,7 +6,8 @@ import { useFirestore } from '../../../hooks/useFirestore'
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { firedb } from '../../../firebase/config';
+import { firedb, storage } from '../../../firebase/config';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -48,7 +49,14 @@ export default function TaskInfo() {
     if (!projectDtl) {
         return <div> Loading... </div>
     }
-
+    const uploadAttachment = (e) => {
+        const attachment = e.target.files[0];
+        const storage = getStorage();
+        const fileRef = ref(storage, attachment.name)
+        uploadBytes(fileRef, attachment).then((snapshot) => {
+            console.log("Uploaded")
+        })
+    }
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleDelete = async(e) => {
         //remove from projects collection
@@ -139,6 +147,14 @@ export default function TaskInfo() {
                         <div></div>
                     }
                     
+                </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <InputLabel htmlFor="component-outlined">Add Attachment</InputLabel>
+                        <OutlinedInput
+                        id="component-outlined"
+                        onChange = {uploadAttachment}
+                        type="file"
+                        />
                 </Grid>
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
