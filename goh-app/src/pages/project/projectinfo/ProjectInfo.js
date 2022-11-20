@@ -172,7 +172,7 @@ export default function Project() {
 
         //judge invite limit
         const size = projectDtl.memberList.length;
-        debugger
+
         if(projectDtl.membersLimit){
             const memberLimit = projectDtl.membersLimit;
             //-1 because declude project leader
