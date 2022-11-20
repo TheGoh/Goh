@@ -113,6 +113,7 @@ export default function Project() {
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
     const [dueDate, setDueDate] = useState(null);
+    const [dueDateTime, setDueTateTime] = useState(null);
     const [taskPrio, setTaskPrio] = useState('');
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
@@ -268,12 +269,15 @@ export default function Project() {
     const handleDueDateChange = (tValue,keyboardInputValue) => {
         console.log(dayjs(tValue).format("MM/DD/YYYY"));
         setDueDate(dayjs(tValue).format("MM/DD/YYYY"));
+        setDueTateTime(new Date(dayjs(tValue).format("MM/DD/YYYY")))
+
     };
 
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
         setDueDate(null);
+        setDueTateTime(null);
         setTaskPrio(0);
         setOpen(false);
     }
@@ -284,7 +288,7 @@ export default function Project() {
         if (taskPrio === undefined || taskPrio === null || taskPrio === "") {
             setTaskPrio(0);
         }
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, taskPrio);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate,dueDateTime, taskPrio);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
@@ -297,7 +301,8 @@ export default function Project() {
         }
         setTaskName('');
         setTaskDescr('');
-        setDueDate(null)
+        setDueDate(null);
+        setDueTateTime(null);
         setCurrMemId('');
         setTaskPrio(0);
         setOpen(false);
@@ -403,7 +408,7 @@ export default function Project() {
         sendMsg(task_dict[task].ownerid,new_message);
     }
     /* Task creation ends */
-    
+
     /* Button control starts */
     function getPrioTheme(key) {
         let prio_theme;
@@ -434,7 +439,7 @@ export default function Project() {
                         {task_dict[key].taskName}<br></br>
                         Owner: {TASK_OWNER}<br></br>
                         Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
-                    </Button> 
+                    </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
                 </ButtonGroup>
             )
@@ -445,7 +450,7 @@ export default function Project() {
                     {task_dict[key].taskName}<br></br>
                     Owner: {TASK_OWNER}<br></br>
                     Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
-                </Button> 
+                </Button>
             )
         }
     }
@@ -470,7 +475,7 @@ export default function Project() {
                 </Button>
             )
         }
-    } 
+    }
     /* Button control ends */
 
     if (error) {

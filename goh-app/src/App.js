@@ -18,6 +18,7 @@ import Modify from './pages/project/projectmodify/ProjectModify'
 import TModify from './pages/project/taskmodify/TaskModify'
 import TaskInfo from './pages/project/taskinfo/TaskInfo'
 import Chat from './pages/project/chat/Chat'
+import Calendar from "./pages/calendar/Calendar";
 
 //console.log(version);
 
@@ -36,27 +37,32 @@ function App() {
               <Route path = '/' element={<Home />} />
 
               {/* Redirect to Home page */}
-              <Route 
-              path = '/login' 
-              element={ !user ? <Login /> : <Navigate to = "/project/projectcreate"/> } 
+              <Route
+              path = '/login'
+              element={ !user ? <Login /> : <Navigate to = "/project/projectcreate"/> }
               />
 
               {/* Redirect to Home page */}
               <Route
               path = '/signup'
-              element={ user ? <Navigate to = "/project/projectcreate"/> : <Signup />} 
-              />       
-
-              <Route 
-              path = '/accountInfo' 
-              element={ user ? <AccountInfo/> : <Navigate to = "/login"/> } 
+              element={ user ? <Navigate to = "/project/projectcreate"/> : <Signup />}
               />
-              
+
+              <Route
+              path = '/accountInfo'
+              element={ user ? <AccountInfo/> : <Navigate to = "/login"/> }
+              />
+
+              <Route
+              path = '/calendar'
+              element={ user ? <Calendar/> : <Navigate to = "/login"/> }
+              />
+
               {/* Redirect to add project */}
               <Route
               path = '/project/projectcreate'
-              element={ user ? <ProjectCreate/> : <Navigate to = "/login"/>} 
-              />        
+              element={ user ? <ProjectCreate/> : <Navigate to = "/login"/>}
+              />
 
               <Route
               path = '/project/:projectId'

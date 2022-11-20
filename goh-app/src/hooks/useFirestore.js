@@ -87,6 +87,7 @@ export const useFirestore = () => {
         taskName,
         taskDescr,
         dueDate,
+        dueDateTime,
         prio
         ) => {
         setError(null)
@@ -125,6 +126,7 @@ export const useFirestore = () => {
                     taskState,
                     comments,
                     dueDate,
+                    dueDateTime,
                     prio
                 });
             } catch (error) {

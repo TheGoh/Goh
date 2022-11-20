@@ -18,31 +18,32 @@ export default function Nav() {
     useEffect(() => {
 
     }, [user])
-    
+
     return (
         <nav className={styles.navbar}>
             <ul>
                 <li className={styles.title}><Link to ='/'>Goh App</Link></li>
-                
+
                 {!user && (
                     <>
                     <li><Link to="/login"><LoginIcon/></Link></li>
                     <li><Link to="/signup"><PersonAddIcon/></Link></li>
                     </>
                 )}
-                
+
                 {user && (
                     <>
                         <li><Link to="/project/projectcreate">My Projects</Link></li>
                         <li><Link to="/accountInfo">Hey, {user.displayName} Account Settings</Link></li>
                         <li><Link to="/notification">Notification</Link></li>
+                        <li><Link to="/calendar">Calendar</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
                         </>
                 )}
 
-                
+
             </ul>
-           
+
         </nav>
     )
 }
