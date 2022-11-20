@@ -44,8 +44,7 @@ export const useSignup = () => {
               if (avatar) {
                 await uploadBytes(storageRef, avatar)
               } 
-              var imgURL = await getDownloadURL(storageRef);
-              console.log(imgURL)
+              const imgURL = await getDownloadURL(storageRef);
               await updateProfile(user,{
                 displayName:userid,
                 photoURL: imgURL
