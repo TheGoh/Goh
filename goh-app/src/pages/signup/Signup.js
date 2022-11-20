@@ -25,26 +25,11 @@ export default function Signup() {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      signup(email,password,userid);
+      signup(email,password,userid, avatar);
     }
 
     const handleFile = (e) => {
       let selected = e.target.files[0]
-
-      // if (!selected) {
-      //   setAvatarErr('Please select a file')
-      //   return 
-      // }
-
-      // if (!selected.type.includes('image')) {
-      //   setAvatarErr('Please select a image')
-      //   return 
-      // }
-
-      // if (selected.size > 100000) {
-      //   setAvatarErr('image is too big')
-      //   return
-      // }
       setAvatar(selected)
     }
 
@@ -54,7 +39,7 @@ export default function Signup() {
           
           <Box sx={{ width:'50%'}} className={styles['intro']}>
             <img src={logo}></img>
-            <Grid container sx={{margin: 'auto', width: '100%', marginTop: '155px'}} columns={3}>
+            <Grid container sx={{margin: 'auto', width: '100%', marginTop: '210px'}} columns={3}>
               <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
               <Grid item className={styles['links']} xs={1}>
                 <Link to="/login" className={styles['links']}>Already have an account?</Link>

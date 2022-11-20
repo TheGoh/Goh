@@ -1,4 +1,6 @@
 import firebase from "firebase/app"
+import { getStorage } from "firebase/storage";
+
 /* Firestore documentation functionality */
 import { 
     getFirestore,
@@ -42,19 +44,19 @@ const app = initializeApp(firebaseConfig);
 //initialize firestore
 const firedb = getFirestore();
 const auth = getAuth();
-
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
-
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(app);
 
 
 //timestamp
 //const timestamp = firebase.firestore.Timestamp
 
-export {firedb, auth}
+export {storage, firedb, auth}
 /* *** FUNCTION TO ADD NEW UID TO FIRESTORE *** */
 
-export const createUserDocumentFromAuth = async (userAuth, userid) => {
+export const createUserDocumentFromAuth = async (userAuth, userid, photoURL) => {
     const userDocRef = doc(firedb, 'users', userAuth.uid);
     const userSnapshot = await getDoc(userDocRef);
     if (!userSnapshot.exists()) {
@@ -70,7 +72,8 @@ export const createUserDocumentFromAuth = async (userAuth, userid) => {
                 createdAt,
                 ownedProjects,
                 invitations,
-                my_message
+                my_message,
+                photoURL
             });
         } catch (error) {
             console.log('error creating the user', error.message);
