@@ -157,11 +157,12 @@ export default function Project() {
         e.preventDefault();
 
         //judge invite limit
-        const size = projectDtl.memberList.members.length;
+        const size = projectDtl.memberList.length;
         debugger
         if(projectDtl.membersLimit){
             const memberLimit = projectDtl.membersLimit;
-            if(size >= memberLimit-1){
+            //-1 because declude project leader
+            if(size >= memberLimit){
                 alert("members exceeds the limitation");
                 return
             }
