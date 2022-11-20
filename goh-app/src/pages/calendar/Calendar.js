@@ -101,7 +101,7 @@ export default function Calendar() {
     };
 
     return (
-        <Box>
+        <Box sx={{width:'85%', margin: 'auto', paddingTop:'20px'}}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <StaticDatePicker
                 displayStaticWrapperAs="desktop"
