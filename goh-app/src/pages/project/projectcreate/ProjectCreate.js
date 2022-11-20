@@ -31,6 +31,7 @@ export default function ProjectCreate() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const [projName, setProjName] = useState('');
     const [projDescr, setProjDescr] = useState('');
+    const [membersLimit, setMembersLimit] = useState('');
     const [all_projects_dict, setAllProjectsDict] = useState('');
 
     const { user } = useAuthContext()
@@ -38,8 +39,8 @@ export default function ProjectCreate() {
     /* Fetch the current user document*/
     const { documents: userDetail } = useDocument('users', user.uid);
     const { documents: allProjects , error2} = useCollection('projects', null);
-    
-    
+
+
     useEffect(() => {
         if (allProjects) {
             /* initialize a temp dictionary */
@@ -50,7 +51,7 @@ export default function ProjectCreate() {
             setAllProjectsDict(temp);
         }
     }, [allProjects])
-    
+
     /* Form control */
     const handleClickOpen = () => { //popup form
         setOpen(true);
@@ -59,6 +60,7 @@ export default function ProjectCreate() {
     const handleClose = () => { //close form and clear inputs
         setProjName('');
         setProjDescr('');
+        setMembersLimit('');
         setOpen(false);
     };
 
@@ -66,20 +68,20 @@ export default function ProjectCreate() {
         event.preventDefault();
         if (projName.length !== 0) {
             const projid = uuid();
-            createProject(user.uid, projid, projName, projDescr);
+            createProject(user.uid, projid, projName, projDescr,membersLimit);
             setOpen(false);
-        }      
+        }
         setProjName('');
-        setProjDescr(''); 
+        setProjDescr('');
     };
-    
+
     if (allProjects === null || userDetail === null || Object.keys(all_projects_dict).length === 0) return (<div>Loading</div>)
-    else return ( 
+    else return (
         <Box>
 
             {/* Projects display */}
-            <Grid container spacing={5}  
-                  columns={5} 
+            <Grid container spacing={5}
+                  columns={5}
                   sx={{width: '90%', margin: 'auto' }}>
                 <Grid item xs={1}>
                     <Button variant="outlined" className={styles['project-grid-button']} onClick={handleClickOpen}>
@@ -87,17 +89,17 @@ export default function ProjectCreate() {
                     </Button>
                 </Grid>
                 {userDetail.ownedProjects.length > 0 && userDetail.ownedProjects.map((item) => (
-                    
+
                     all_projects_dict[item] === (undefined) ? ""
                     :
-                    <Grid item xs={1} key = {item}>   
+                    <Grid item xs={1} key = {item}>
                         <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id} style={{ textDecoration: 'none' }}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
                                     all_projects_dict[item].projName
                                 }
                             </Button>
-                        </Link>          
+                        </Link>
                     </Grid>
                 ))}
             </Grid>
@@ -136,11 +138,23 @@ export default function ProjectCreate() {
                                     />
                                 </FormControl>
                             </Grid>
+                            <Grid item xs={1} sx={{marginTop: '20px'}}>
+                                <FormControl sx={{width: "100%"}}>
+                                    <InputLabel htmlFor="component-outlined">Members Limit</InputLabel>
+                                    <OutlinedInput
+                                        id="component-outlined"
+                                        value={membersLimit}
+                                        label="MembersLimit"
+                                        onChange = {(e)=>setMembersLimit(e.target.value)}
+                                        type="text"
+                                    />
+                                </FormControl>
+                            </Grid>
                         </Grid>
                     </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Create</Button> 
+                    <Button onClick={handleSubmit}>Create</Button>
                 </DialogActions>
             </Dialog>
         </Box>

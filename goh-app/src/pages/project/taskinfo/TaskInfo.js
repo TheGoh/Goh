@@ -6,7 +6,8 @@ import { useFirestore } from '../../../hooks/useFirestore'
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { firedb } from '../../../firebase/config';
+import { firedb, storage } from '../../../firebase/config';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -30,17 +31,23 @@ export default function TaskInfo() {
     //console.log("here is target project id", projectId );
     const { documents: projectDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const { user } = useAuthContext()
-    const [ open, setOpen ] = useState('')
+    const [ open, setOpen ] = useState('')  //Comment popup
+    const [ openA, setAOpen ] = useState('') //Attachment popup
     const [ commentList, setCommentList ] = useState('');
     const [ comment, setComment ] = useState('')
+    const [ fileUrl, setUrl ] = useState('');
+    const [ file, setFile ] = useState('');
 
     useEffect(() => {
         if (projectDtl) {
-            let all_Comments = []
+            let all_Comments = [];
+            let attach_URL = '';
             Object.keys(projectDtl.comments).forEach(item => {
                 const date = new Date()          
                 all_Comments.push({comment: projectDtl.comments[item].comment, id:projectDtl.comments[item].id, time: date, resolved: projectDtl.comments[item].resolved});        
             })
+            attach_URL = projectDtl.fileURL;
+            setUrl(attach_URL);
             setCommentList(all_Comments);
         }
     }, [projectDtl]);
@@ -48,7 +55,37 @@ export default function TaskInfo() {
     if (!projectDtl) {
         return <div> Loading... </div>
     }
-
+    const handleOpenAttach = () => {
+        window.open(fileUrl, '_blank', 'noopener,noreferrer');
+    }
+    const uploadAttachment = async(e) => {
+        e.preventDefault();
+        const attachment = e.target.files[0];
+        const storage = getStorage();
+        const fileRef = ref(storage, `TaskAttachment/${taskId}`)
+        await uploadBytes(fileRef, attachment).then((snapshot) => {
+            console.log("Uploaded")
+        })
+        const dwnldUrl = await getDownloadURL(fileRef)
+        setUrl(dwnldUrl)
+    }
+    const handleAttach = (e) => {
+        e.preventDefault();
+        const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
+        if (ref) {
+            updateDoc(ref, {
+                fileURL: fileUrl
+            })
+            console.log("firestore update")
+        }
+        setAOpen(false)
+    }
+    const handleAOpen = () => {
+        setAOpen(true);
+    }
+    const handleAttachClose = () => {
+        setAOpen(false);
+    }
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleDelete = async(e) => {
         //remove from projects collection
@@ -162,6 +199,12 @@ export default function TaskInfo() {
                 <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                     <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
                 </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Button onClick={handleAOpen} variant='contained' color='error'>Attachment</Button>                    
+                </Grid>
+                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
+                    <Button onClick={handleOpenAttach}>Open Attachment</Button>     
+                </Grid>
                 {/* Comments List */}
                 {
                   projectDtl.comments.length > 0 && projectDtl.comments.map(comment => (
@@ -206,6 +249,31 @@ export default function TaskInfo() {
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={handleComment}>Comment</Button> 
+                    </DialogActions>
+            </Dialog>
+            {/* Attachment Popup */}
+            <Dialog open={Boolean(openA)} onClose={handleAttachClose}>
+                <DialogTitle>Add Attachment</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            Please add your attachment
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                        <Grid item xs={1} sx={{marginBottom: '20px'}}>
+                            <FormControl sx={{width: "100%"}}>
+                            <OutlinedInput
+                                id="component-outlined"
+                                onChange = {uploadAttachment}
+                                type="file"
+                            />
+                            </FormControl>
+                        </Grid>                    
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAttachClose}>Cancel</Button>
+                        <Button onClick={handleAttach}>Attach</Button> 
                     </DialogActions>
             </Dialog>
         </Box>

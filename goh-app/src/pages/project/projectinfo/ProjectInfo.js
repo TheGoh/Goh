@@ -35,7 +35,6 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import NativeSelect from '@mui/material/NativeSelect';
 
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -169,6 +168,15 @@ export default function Project() {
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
 
+        //judge invite limit
+        const size = projectDtl.memberList.members.length;
+        if(projectDtl.membersLimit){
+            const memberLimit = projectDtl.membersLimit;
+            if(size >= memberLimit - 1){
+                alert("members exceeds the limitation");
+            }
+        }
+
         let ref = collection (firedb, 'users')
         if (invite) {
             ref = query(ref, where("email", "==", invite));
@@ -263,7 +271,7 @@ export default function Project() {
         setTaskDescr('');
         setDueDate(null);
         setTaskPrio(0);
-        setOpen(false); 
+        setOpen(false);
     }
 
     const handleTaskCreation = (event) => {
@@ -307,7 +315,7 @@ export default function Project() {
             let temp_id_dict = {};
             let count = 0;
             sorted_collection.forEach(task => {
-                if (task.taskState == "COMPLETED") count++;
+                if (task.taskState === "COMPLETED") count++;
                 temp_ids.push(task.id);
                 temp_id_dict[task.id] = task;
             })
@@ -651,7 +659,7 @@ export default function Project() {
                             <Link to={`/project/${projectId}/chat`}  key={projectId} style={{ textDecoration: 'none' }}>
                                 <Button variant='contained' endIcon={<ChatIcon />} >Chat Room</Button>
                             </Link>
-                        </Grid> 
+                        </Grid>
 
                     </Grid>
                 </Grid>

@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { useLogout } from '../hooks/useLogout';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import Avatar from './Avatar.js'
 
 //styles
 import styles from './Navbar.module.css'
 import { useEffect } from 'react'
-import { useFirestore } from '../hooks/useFirestore';
 
 export default function Nav() {
     const { logout } = useLogout()
@@ -37,6 +37,7 @@ export default function Nav() {
                         <li><Link to="/accountInfo">Hey, {user.displayName} Account Settings</Link></li>
                         <li><Link to="/notification">Notification</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
+                        <li><Avatar src = {user.photoURL}/></li>
                         </>
                 )}
 

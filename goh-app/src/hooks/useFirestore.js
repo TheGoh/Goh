@@ -10,7 +10,7 @@ export const useFirestore = () => {
 
 
     /* *** FUNCTION TO CREATE A NEW PROJECT INTO PROJECTS COLLECTION *** */
-    const createProject = async (ownerid, projid, projName, projDescr) => {
+    const createProject = async (ownerid, projid, projName, projDescr,membersLimit) => {
         setError(null)
         const projDocRef = doc(firedb, `projects`, projid);
         const currUserDoc = doc(firedb, `users`, ownerid);
@@ -30,6 +30,7 @@ export const useFirestore = () => {
                     ownerid,
                     projName,
                     projDescr,
+                    membersLimit,
                     createdAt,
                     memberList: memberList,
                     roleTags: roleTags,
@@ -109,6 +110,7 @@ export const useFirestore = () => {
             let taskState = "TODO";
             const currUserId = currMemId;
             const comments = [];
+            const attachURL = '';
             if (currUserId !== '') {
                 taskState = "IN PROGRESS"
             }
@@ -124,7 +126,8 @@ export const useFirestore = () => {
                     taskState,
                     comments,
                     dueDate,
-                    prio
+                    prio,
+                    attachURL
                 });
             } catch (error) {
                 console.log('error creating the task', error.message);
