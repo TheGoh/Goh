@@ -28,7 +28,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export default function TaskInfo() {
     let { projectId, taskId } = useParams();
     const { deleteDocument } = useFirestore()
-    //console.log("here is target project id", projectId );
     const { documents: projectDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const { user } = useAuthContext()
     const [ open, setOpen ] = useState('')  //Comment popup
@@ -174,7 +173,9 @@ export default function TaskInfo() {
 
     return (
         <Box>
+           
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
+            <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained">Go back</Button>
                 <Grid item xs={3}><h1>{projectDtl.taskName}</h1></Grid>
                 <Grid item xs={3}><h3>{projectDtl.taskDescr}</h3></Grid>
                 <Grid item xs={3}><h4>{projectDtl.dueDate}</h4></Grid>
