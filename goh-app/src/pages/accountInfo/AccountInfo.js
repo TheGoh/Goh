@@ -9,9 +9,9 @@ import React from "react";
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useState } from "react";
 import styles from './AccountInfo.module.css'
-import { storage, firedb } from '../../firebase/config';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs, query, where , collection} from "firebase/firestore"
+import {  firedb } from '../../firebase/config';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, updateDoc } from "firebase/firestore"
 
 
 
@@ -50,6 +50,7 @@ export default function AccountInfo() {
           alert("Invalid File Size")
           return;
         } else {
+          const storage = getStorage();
           const path = `UserProfileImage/${user.uid}/${avatar.name}`
           const storageRef = ref(storage, path);
           await uploadBytes(storageRef, avatar)
@@ -57,8 +58,8 @@ export default function AccountInfo() {
         }       
       }
 
-      const ref = doc(firedb, `users`, user.uid)
-      await updateDoc(ref, {
+      const reference = doc(firedb, `users`, user.uid)
+      await updateDoc(reference, {
         email: newEmail,
         photoURL: imgURL,
         description: description
@@ -68,6 +69,7 @@ export default function AccountInfo() {
         photoURL: imgURL
       })
     }
+    
 
     if (!user) return <div> loading...</div>
     
@@ -95,7 +97,6 @@ export default function AccountInfo() {
             <span>Update Photo</span>
               <input
                     type = "file"
-                    value={avatar}
                     onChange = {(e) => {
                       let selected = e.target.files[0]
                       setAvatar(selected)
