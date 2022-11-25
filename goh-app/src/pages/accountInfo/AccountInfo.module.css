@@ -18,6 +18,15 @@
   margin-bottom: 6px;
   text-align: left;
 }
+.signup-form textarea {
+  padding: 8px 0px 8px 5px;
+  font-size: 1em;
+  height: 100px;
+  color: #777;
+  width: 100%;
+  border: 2px solid rgb(157, 157, 157);
+  border-radius: 5px;
+}
 .signup-form input {
   padding: 8px 0px 8px 5px;
   font-size: 1em;

@@ -6,18 +6,21 @@ import {
   EmailAuthProvider
 } from "firebase/auth";
 import React from "react";
+import TextField from '@mui/material/TextField';
+import { useAuthContext } from '../../hooks/useAuthContext'
 import { useState } from "react";
 import styles from './AccountInfo.module.css'
 
 
 
 export default function AccountInfo() {
-    const auth = getAuth();
-    const user = auth.currentUser
+    const { user } = useAuthContext();
     const [ newDisplayName, setDisplayName ] = useState('');
     const [ newEmail, setEmail ] = useState('');
     const [ newPassword, setPassword ] = useState('');
     const [ currPass, setCurrPass ] = useState('');
+    const [ avatar, setAvatar ] = useState(null)
+    const [description, setDescription ] = useState('');
     
     const updateInfo = (event) => {
       event.preventDefault();
@@ -27,8 +30,6 @@ export default function AccountInfo() {
       );
       reauthenticateWithCredential(user, credential).then((cred) => {
             //user = cred.user;  
-            console.log("HERE");
-            console.log("email:" + newEmail)
             updateEmail(user, newEmail).then(()=>{
               console.log("email update success")
             }).catch((error) => {
@@ -47,29 +48,47 @@ export default function AccountInfo() {
           <form className={styles['signup-form']}>
             <h2>Account Information</h2>
             <label>
-            <span>Current Password</span>
-              <input
-                    type = "text"
-                    value={currPass}
-                    onChange={(e)=>{
-                      setCurrPass(e.target.value)
-                    }}
-              />
             <span>New Email</span>
               <input
-                    type = "text"
+                    type = "email"
                     value={newEmail}
                     onChange={(e)=>{
                       setEmail(e.target.value)
                     }}
               />
-
               <span>New Password</span>
               <input
-                    type = "text"
+                    type = "password"
                     value={newPassword}
                     onChange={(e)=>{
                       setPassword(e.target.value)
+                    }}
+              />
+            <span>Update Photo</span>
+              <input
+                    type = "file"
+                    value={currPass}
+                    onChange = {(e) => {
+                      let selected = e.target.files[0]
+                      setAvatar(selected)
+                    }}
+              />
+
+            <span>Add a Description</span>
+              <textarea
+                    type = "text"
+                    value={description}
+                    onChange = {(e) => {
+                      setDescription(e.target.value)
+                    }}
+              />  
+              
+              <span>Current Password</span>
+              <input
+                    type = "password"
+                    value={currPass}
+                    onChange={(e)=>{
+                      setCurrPass(e.target.value)
                     }}
               />
             </label>
