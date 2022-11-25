@@ -104,7 +104,7 @@ export default function Project() {
     /* Project information variables */
     let { projectId } = useParams();
     const { deleteDocument, sendMsg, createTask } = useFirestore();
-    const { projectDelete, inviteUser , error: errorAction} = useProjectActions();
+    const { projectDelete, inviteUser , getUserInfo, error: errorAction} = useProjectActions();
     const { documents: projectDtl , error} = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
@@ -135,6 +135,7 @@ export default function Project() {
 
     /* profile page icon */ 
     const [openProf, setopenProf] = useState(false);
+    const [profile, setProfile] = useState('');
 
     /* Project operations starts */
     const handleProjectDelete = () => {
@@ -186,13 +187,19 @@ export default function Project() {
         setOpen(false);
     }
 
-    const handleOpenProfile = () => {
-        console.log("open")
+    const handleOpenProfile = async (e) => {
+        const return_prof = await getUserInfo(e.target.value)
+        if (errorAction) {
+            alert(errorAction);
+        }
+        console.log(return_prof)
+        setProfile(return_prof)
         setopenProf(true);
     }
 
     const handleCloseProfile = () => {
         setopenProf(false);
+        setProfile('')
     }
 
     const handleTaskCreation = (event) => {
@@ -603,7 +610,7 @@ export default function Project() {
 
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
-                                    <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
+                                    <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile} value = {projectDtl.memberList.owner[0].id} >{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                         <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>
                                     </Grid>
@@ -615,7 +622,7 @@ export default function Project() {
                                 projectDtl.memberList.members.map((member) =>
                                     <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
-                                            <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile}>{member.displayName}</Button></Grid>
+                                            <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile} value = {member.id}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                                 <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>{member.RoleTag}</Button>
                                             </Grid>
@@ -723,7 +730,7 @@ export default function Project() {
             
             <Dialog open={Boolean(openProf)}>
                 <Card variant="outlined" sx={{ width: 620 , padding: 3}}>
-                    <Typography level="body2">April 24 to May 02, 2021</Typography>
+                    <Typography level="body2">{profile.displayName}</Typography>
                     <IconButton
                         size="sm"
                         onClick={handleCloseProfile}
