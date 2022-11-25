@@ -44,6 +44,9 @@ import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
+import { CardActionArea } from '@mui/material';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -729,15 +732,27 @@ export default function Project() {
             </Dialog>
             
             <Dialog open={Boolean(openProf)}>
-                <Card variant="outlined" sx={{ width: 620 , padding: 3}}>
-                    <Typography level="body2">{profile.displayName}</Typography>
-                    <IconButton
-                        size="sm"
-                        onClick={handleCloseProfile}
-                        sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
-                    >
+                <Card variant="outlined" sx={{ maxWidth: 345}}>
+                <CardActionArea>
+                        <CardMedia
+                        component="img"
+                        height="140"
+                        image={profile.photoURL}
+                        alt="user photo"
+                        />
+                        <IconButton
+                                size="sm"
+                                onClick={handleCloseProfile}
+                                sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
+                            >
                         <BookmarkAdd />
-                    </IconButton>
+                        </IconButton>
+                        <CardContent>
+                        <Typography variant="h5" component="div">{profile.displayName}</Typography>
+                        <Typography variant="body2" color="text.secondary">{profile.email}</Typography>
+
+                    </CardContent>
+                    </CardActionArea>
                     </Card>
             </Dialog>
             
