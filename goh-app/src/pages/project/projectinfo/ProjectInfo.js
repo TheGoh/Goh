@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDocument } from '../../../hooks/useDocument';
 import { useCollection } from '../../../hooks/useCollection';
 import { useFirestore } from '../../../hooks/useFirestore';
+import { useProjectActions } from '../../../hooks/useProjectActions';
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
@@ -103,6 +104,7 @@ export default function Project() {
     /* Project information variables */
     let { projectId } = useParams();
     const { deleteDocument, sendMsg, createTask } = useFirestore();
+    const { projectDelete, inviteUser , error: errorAction} = useProjectActions();
     const { documents: projectDtl , error} = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
@@ -135,117 +137,21 @@ export default function Project() {
     const [openProf, setopenProf] = useState(false);
 
     /* Project operations starts */
-    const handleProjectDelete = async(e) => {
-        //remove from projects collection
-        const ref = doc(firedb, `users`, user.uid)
-
-        //remove from user's project id entry
-        await getDoc(ref)
-            .then (async(doc) => {
-                let tempOwnedProjects = doc.data().ownedProjects;
-                let tempList = tempOwnedProjects.filter((project) => {
-                    if (projectId !== project) return project;
-                })
-                await updateDoc(ref, {
-                     ownedProjects: tempList
-                })
-            })
-
-        /* Delete project id from member project id list */
-        projectDtl.memberList["members"].forEach(async(member) => {
-            const ref2 = doc(firedb, `users`, member.id)
-            //remove from user's project id entry
-            await getDoc(ref2)
-                .then (async (doc) => {
-                    let tempOwnedProjects = doc.data().ownedProjects;
-                    let tempList = tempOwnedProjects.filter((project) => {
-                        if (projectId !== project) return project;
-                    })
-                    await updateDoc(ref2, {
-                            ownedProjects: tempList
-                    })
-            })
-        })
-
-        deleteDocument(`projects`, projectId)
+    const handleProjectDelete = () => {
+        projectDelete(projectId, projectDtl);
+        deleteDocument(`projects`, projectId);
     }
 
 
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
-
-        //judge invite limit
-        const size = projectDtl.memberList.members.length;
-        if(projectDtl.membersLimit){
-            const memberLimit = projectDtl.membersLimit;
-            if(size >= memberLimit - 1){
-                alert("members exceeds the limitation");
-            }
+        inviteUser(projectId,projectDtl, invite, roleTag);
+        setRole('');
+        setInvite('');
+        setOpen2(false);
+        if (errorAction) {
+            alert(errorAction);
         }
-
-        let ref = collection (firedb, 'users')
-        if (invite) {
-            ref = query(ref, where("email", "==", invite));
-        }
-
-        await getDocs(ref)
-            .then((snapshot) => {
-                let result = [];
-                snapshot.docs.forEach(doc => {
-                    result.push({...doc.data(), id: doc.id});
-                });
-
-                const receiver_uid = result[0].id;
-                const currUserDoc = doc(firedb, `users`, receiver_uid);
-
-                //update user's invitation list
-                getDoc(currUserDoc)
-                    .then ((doc) => {
-                        let invite_list = doc.data().invitations;
-
-                        if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
-
-                            let tempRole = roleTag
-                            if (!roleTag) {
-                                tempRole = "member"
-                            }
-
-                            invite_list[projectId] = {
-                                projName: projectDtl.projName,
-                                roleTag: tempRole
-                            }
-
-                            //notification
-                            let message_list = doc.data().my_message;
-                            const time = new Date();
-                            const message = user.displayName + "invite you to join " + projectDtl.projName;
-                            const new_message = {
-                                Sender: user.displayName,
-                                Time: time,
-                                message: message
-                            }
-                            message_list.push(new_message)
-
-                            //update user metadata
-                            updateDoc(currUserDoc, {
-                                invitations: invite_list,
-                                my_message: message_list
-                                }
-                            );
-                        }
-                        else {
-                            console.log("already in this group")
-                        }
-                    })
-                setRole('')
-                setInvite('')
-                setOpen2(false)
-            })
-            .catch((err) => {
-                setRole('')
-                setInvite('')
-                console.error("Invalid User");
-            });
     }
     /* Project operations ends */
 
@@ -258,7 +164,7 @@ export default function Project() {
     /* user invitation form */
     const handleClickOpen2 = () => { //popup invitation form
         setOpen2(true);
-        console.log(projectDtl.memberList);
+        //console.log(projectDtl.memberList);
     }
 
     const handleClose2 = () => { //clear invitation form
