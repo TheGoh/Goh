@@ -60,7 +60,8 @@ export default function AccountInfo() {
       const ref = doc(firedb, `users`, user.uid)
       await updateDoc(ref, {
         email: newEmail,
-        photoURL: imgURL
+        photoURL: imgURL,
+        description: description
       })
 
       await updateProfile(user, {
