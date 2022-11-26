@@ -12,6 +12,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -23,7 +24,15 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { handleBreakpoints } from '@mui/system';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+
+import styles from './TaskInfo.module.css';
+
 
 export default function TaskInfo() {
     let { projectId, taskId } = useParams();
@@ -154,32 +163,48 @@ export default function TaskInfo() {
     }
 
     function taskPrio(task) {
-        if (task.prio === 0) {
-            return (
-                <h4>Casual</h4>
-            )
-        }
-        else if (task.prio === 1) {
-            return (
-                <h4>Important</h4>
-            )
-        }
-        else {
-            return (
-                <h4>Urgent</h4>
-            )
-        }
+        if (task.prio === 0) return "Casual"
+        else if (task.prio === 1) return "Important"
+        else return "Urgent"
     }
 
     return (
         <Box>
+            <Grid container columns={3} sx={{padding: "30px"}}>
+                {/* Basic info and operations */}
+                <Grid item xs={2}> 
+                    <Grid container columns={1}>
+                        <Grid item xs={1} className={styles['basic-info']}><h1>{projectDtl.taskName}</h1></Grid>
+                        <Grid item xs={1} className={styles['basic-info']}><p>{projectDtl.taskDescr}</p></Grid>
+                        <Grid item xs={1} className={styles['basic-info']}>
+                            <p>{projectDtl.dueDate}&nbsp;&nbsp;</p>
+                            <Divider orientation="vertical" variant="middle" flexItem />
+                            <p>&nbsp;&nbsp;{taskPrio(projectDtl)}</p>
+                        </Grid>
+                        <Grid item xs={1} className={styles['basic-info']}>  
+                            <ButtonGroup sx={{marginTop: "12px", marginBottom: "15px"}}>
+                                <Button onClick={handleAOpen}><AttachmentIcon/></Button>
+                                <Button onClick={handleOpenAttach}><FileOpenIcon/></Button>
+                                <Button onClick={handleOpen}><AddCommentIcon/></Button>
+                            </ButtonGroup>
+                        </Grid>
+
+                        <Grid item xs={1} className={styles['basic-info']}>
+                        <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained"><ChangeCircleIcon/></Button>
+                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error'><DeleteIcon /></Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                {/* Comments */}
+                <Grid item xs={1}>
+
+                </Grid>
+
+            </Grid>
            
             <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
-            <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained">Go back</Button>
-                <Grid item xs={3}><h1>{projectDtl.taskName}</h1></Grid>
-                <Grid item xs={3}><h3>{projectDtl.taskDescr}</h3></Grid>
-                <Grid item xs={3}><h4>{projectDtl.dueDate}</h4></Grid>
-                <Grid item xs={3}>{taskPrio(projectDtl)}</Grid>
+                <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained">Go back</Button>
             </Grid>
 
             <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
@@ -197,15 +222,8 @@ export default function TaskInfo() {
                     }
                     
                 </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Button onClick={handleAOpen} variant='contained' color='error'>Attachment</Button>                    
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Button onClick={handleOpenAttach}>Open Attachment</Button>     
-                </Grid>
+
+
                 {/* Comments List */}
                 {
                   projectDtl.comments.length > 0 && projectDtl.comments.map(comment => (
@@ -224,6 +242,8 @@ export default function TaskInfo() {
                   ))
                 }
             </Grid>
+
+
             {/* Comments Popup */}
             <Dialog open={Boolean(open)} onClose={handleClose}>
                 <DialogTitle>Add Comment</DialogTitle>
@@ -252,6 +272,8 @@ export default function TaskInfo() {
                         <Button onClick={handleComment}>Comment</Button> 
                     </DialogActions>
             </Dialog>
+
+
             {/* Attachment Popup */}
             <Dialog open={Boolean(openA)} onClose={handleAttachClose}>
                 <DialogTitle>Add Attachment</DialogTitle>
