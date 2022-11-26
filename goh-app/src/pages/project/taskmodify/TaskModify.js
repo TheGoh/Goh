@@ -70,6 +70,7 @@ export default function TModify() {
                           setTaskDescr(e.target.value); 
                         }}
                         type="text"
+                        multiline
                         />
                     </FormControl>
                 </Grid>

@@ -791,6 +791,7 @@ export default function Project() {
                             label="TaskDescription"
                             onChange = {(e)=>setTaskDescr(e.target.value)}
                             type="text"
+                            multiline
                             />
                             </FormControl>
                         </Grid>
