@@ -18,7 +18,6 @@ export default function Nav() {
     useEffect(() => {
 
     }, [user])
-    
     return (
         <nav className={styles.navbar}>
             <ul>
