@@ -207,7 +207,6 @@ export default function TaskInfo() {
                             <ButtonGroup>
                                 <Button onClick={handleAOpen}><AttachmentIcon/></Button>
                                 <Button onClick={handleOpenAttach}><FileOpenIcon/></Button>
-                                <Button onClick={handleOpen}><AddCommentIcon/></Button>
                             </ButtonGroup>
                             &nbsp;&nbsp;
                             <Divider orientation="vertical" variant="middle" flexItem />
@@ -220,7 +219,9 @@ export default function TaskInfo() {
                 {/* Comments */}
                 <Grid item xs={1}>
                     <Grid container columns={1}>
-                        <Grid item xs={1} className={styles['comment-title']}><h1>Comments</h1></Grid>
+                        <Grid item xs={1} className={styles['comment-title']}>
+                        <h1>Comments</h1>
+                        <Button onClick={handleOpen}><AddCommentIcon/></Button></Grid>
                         {/* Comments List */}
                         {
                         projectDtl.comments.length > 0 ? projectDtl.comments.map(comment => (
