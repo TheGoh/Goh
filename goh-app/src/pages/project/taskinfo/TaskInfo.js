@@ -30,6 +30,7 @@ import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import UndoIcon from '@mui/icons-material/Undo';
 
 import styles from './TaskInfo.module.css';
 
@@ -168,6 +169,27 @@ export default function TaskInfo() {
         else return "Urgent"
     }
 
+    function ownerButton() {
+        if (user.uid === projectDtl.ownerid) {
+            return (
+                <ButtonGroup>
+                    <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained"><UndoIcon/></Button>
+                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained"><ChangeCircleIcon/></Button>
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error'><DeleteIcon /></Button>
+                </ButtonGroup>
+            )
+        }
+        else {
+            return (
+                <ButtonGroup>
+                    <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained"><UndoIcon/></Button>
+                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained" disabled><ChangeCircleIcon/></Button>
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error' disabled><DeleteIcon /></Button>
+                </ButtonGroup>
+            )
+        }
+    }
+
     return (
         <Box>
             <Grid container columns={3} sx={{padding: "30px"}}>
@@ -178,69 +200,53 @@ export default function TaskInfo() {
                         <Grid item xs={1} className={styles['basic-info']}><p>{projectDtl.taskDescr}</p></Grid>
                         <Grid item xs={1} className={styles['basic-info']}>
                             <p>{projectDtl.dueDate}&nbsp;&nbsp;</p>
-                            <Divider orientation="vertical" variant="middle" flexItem />
+                            <p>|</p>
                             <p>&nbsp;&nbsp;{taskPrio(projectDtl)}</p>
                         </Grid>
-                        <Grid item xs={1} className={styles['basic-info']}>  
-                            <ButtonGroup sx={{marginTop: "12px", marginBottom: "15px"}}>
+                        <Grid item xs={1} className={styles['btn-bar']} sx={{marginTop: "15px"}}>  
+                            <ButtonGroup>
                                 <Button onClick={handleAOpen}><AttachmentIcon/></Button>
                                 <Button onClick={handleOpenAttach}><FileOpenIcon/></Button>
                                 <Button onClick={handleOpen}><AddCommentIcon/></Button>
                             </ButtonGroup>
-                        </Grid>
-
-                        <Grid item xs={1} className={styles['basic-info']}>
-                        <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained"><ChangeCircleIcon/></Button>
-                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error'><DeleteIcon /></Button>
+                            &nbsp;&nbsp;
+                            <Divider orientation="vertical" variant="middle" flexItem />
+                            &nbsp;&nbsp;
+                            {ownerButton()}
                         </Grid>
                     </Grid>
                 </Grid>
 
                 {/* Comments */}
                 <Grid item xs={1}>
-
-                </Grid>
-
-            </Grid>
-           
-            <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
-                <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained">Go back</Button>
-            </Grid>
-
-            <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
-                <Grid item xs={1}>
-                    {user.uid === projectDtl.ownerid ?
-                        <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained">Change Task information</Button>
+                    <Grid container columns={1}>
+                        <Grid item xs={1} className={styles['comment-title']}><h1>Comments</h1></Grid>
+                        {/* Comments List */}
+                        {
+                        projectDtl.comments.length > 0 ? projectDtl.comments.map(comment => (
+                            <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
+                            <Paper sx={{ width: "80%"}}>
+                                <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
+                                    {(comment.resolved.includes("UNRESOLVED")) ?
+                                        <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
+                                        :
+                                        <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
+                                    }
+                                    
+                                </Grid>
+                            </Paper>
+                            </Grid>
+                        ))
                         :
-                        <div></div>
-                    }
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    {user.uid === projectDtl.ownerid ?
-                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    :
-                        <div></div>
-                    }
-                    
-                </Grid>
-
-
-                {/* Comments List */}
-                {
-                  projectDtl.comments.length > 0 && projectDtl.comments.map(comment => (
-                    <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
-                      <Paper sx={{ width: "80%"}}>
-                        <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                            {(comment.resolved.includes("UNRESOLVED")) ?
-                                <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
-                                :
-                                <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
-                            }
-                            
+                        <Grid item xs ={1} key="no-comment" sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
+                        <Paper sx={{ width: "80%"}}>
+                            No Comments yet
+                        </Paper>
                         </Grid>
-                      </Paper>
+                        }
                     </Grid>
-                  ))
-                }
+                </Grid>
+
             </Grid>
 
 
