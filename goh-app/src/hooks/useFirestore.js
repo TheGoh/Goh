@@ -111,6 +111,7 @@ export const useFirestore = () => {
             let taskState = "TODO";
             const currUserId = currMemId;
             const comments = [];
+            const attachURL = '';
             if (currUserId !== '') {
                 taskState = "IN PROGRESS"
             }
@@ -127,7 +128,8 @@ export const useFirestore = () => {
                     comments,
                     dueDate,
                     dueDateTime,
-                    prio
+                    prio,
+                    attachURL
                 });
             } catch (error) {
                 console.log('error creating the task', error.message);

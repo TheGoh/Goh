@@ -7,11 +7,12 @@ import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { firedb, storage } from '../../../firebase/config';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -23,25 +24,39 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { handleBreakpoints } from '@mui/system';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+import UndoIcon from '@mui/icons-material/Undo';
+
+import styles from './TaskInfo.module.css';
+
 
 export default function TaskInfo() {
     let { projectId, taskId } = useParams();
     const { deleteDocument } = useFirestore()
-    //console.log("here is target project id", projectId );
     const { documents: projectDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const { user } = useAuthContext()
-    const [ open, setOpen ] = useState('')
+    const [ open, setOpen ] = useState('')  //Comment popup
+    const [ openA, setAOpen ] = useState('') //Attachment popup
     const [ commentList, setCommentList ] = useState('');
     const [ comment, setComment ] = useState('')
+    const [ fileUrl, setUrl ] = useState('');
+    const [ file, setFile ] = useState('');
 
     useEffect(() => {
         if (projectDtl) {
-            let all_Comments = []
+            let all_Comments = [];
+            let attach_URL = '';
             Object.keys(projectDtl.comments).forEach(item => {
                 const date = new Date()          
                 all_Comments.push({comment: projectDtl.comments[item].comment, id:projectDtl.comments[item].id, time: date, resolved: projectDtl.comments[item].resolved});        
             })
+            attach_URL = projectDtl.fileURL;
+            setUrl(attach_URL);
             setCommentList(all_Comments);
         }
     }, [projectDtl]);
@@ -49,13 +64,36 @@ export default function TaskInfo() {
     if (!projectDtl) {
         return <div> Loading... </div>
     }
-    const uploadAttachment = (e) => {
+    const handleOpenAttach = () => {
+        window.open(fileUrl, '_blank', 'noopener,noreferrer');
+    }
+    const uploadAttachment = async(e) => {
+        e.preventDefault();
         const attachment = e.target.files[0];
         const storage = getStorage();
-        const fileRef = ref(storage, attachment.name)
-        uploadBytes(fileRef, attachment).then((snapshot) => {
+        const fileRef = ref(storage, `TaskAttachment/${taskId}`)
+        await uploadBytes(fileRef, attachment).then((snapshot) => {
             console.log("Uploaded")
         })
+        const dwnldUrl = await getDownloadURL(fileRef)
+        setUrl(dwnldUrl)
+    }
+    const handleAttach = (e) => {
+        e.preventDefault();
+        const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
+        if (ref) {
+            updateDoc(ref, {
+                fileURL: fileUrl
+            })
+            console.log("firestore update")
+        }
+        setAOpen(false)
+    }
+    const handleAOpen = () => {
+        setAOpen(true);
+    }
+    const handleAttachClose = () => {
+        setAOpen(false);
     }
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleDelete = async(e) => {
@@ -125,58 +163,94 @@ export default function TaskInfo() {
         setOpen(false);
     }
 
+    function taskPrio(task) {
+        if (task.prio === 0) return "Casual"
+        else if (task.prio === 1) return "Important"
+        else return "Urgent"
+    }
+
+    function ownerButton() {
+        if (user.uid === projectDtl.ownerid) {
+            return (
+                <ButtonGroup>
+                    <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained"><UndoIcon/></Button>
+                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained"><ChangeCircleIcon/></Button>
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error'><DeleteIcon /></Button>
+                </ButtonGroup>
+            )
+        }
+        else {
+            return (
+                <ButtonGroup>
+                    <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained"><UndoIcon/></Button>
+                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained" disabled><ChangeCircleIcon/></Button>
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error' disabled><DeleteIcon /></Button>
+                </ButtonGroup>
+            )
+        }
+    }
+
     return (
         <Box>
-            <Grid container columns={3} sx={{width: '85%', margin: 'auto'}}>
-                <Grid item xs={3}><h1>{projectDtl.taskName}</h1></Grid>
-                <Grid item xs={3}><h3>{projectDtl.taskDescr}</h3></Grid>
-                <Grid item xs={3}><h4>{projectDtl.dueDate}</h4></Grid>
+            <Grid container columns={3} sx={{padding: "30px"}}>
+                {/* Basic info and operations */}
+                <Grid item xs={2}> 
+                    <Grid container columns={1}>
+                        <Grid item xs={1} className={styles['basic-info']}><h1>{projectDtl.taskName}</h1></Grid>
+                        <Grid item xs={1} className={styles['basic-info']}><p>{projectDtl.taskDescr}</p></Grid>
+                        <Grid item xs={1} className={styles['basic-info']}>
+                            <p>{projectDtl.dueDate}&nbsp;&nbsp;</p>
+                            <p>|</p>
+                            <p>&nbsp;&nbsp;{taskPrio(projectDtl)}</p>
+                        </Grid>
+                        <Grid item xs={1} className={styles['btn-bar']} sx={{marginTop: "15px"}}>  
+                            <ButtonGroup>
+                                <Button onClick={handleAOpen}><AttachmentIcon/></Button>
+                                <Button onClick={handleOpenAttach}><FileOpenIcon/></Button>
+                            </ButtonGroup>
+                            &nbsp;&nbsp;
+                            <Divider orientation="vertical" variant="middle" flexItem />
+                            &nbsp;&nbsp;
+                            {ownerButton()}
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                {/* Comments */}
+                <Grid item xs={1}>
+                    <Grid container columns={1}>
+                        <Grid item xs={1} className={styles['comment-title']}>
+                        <h1>Comments</h1>
+                        <Button onClick={handleOpen}><AddCommentIcon/></Button></Grid>
+                        {/* Comments List */}
+                        {
+                        projectDtl.comments.length > 0 ? projectDtl.comments.map(comment => (
+                            <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
+                            <Paper sx={{ width: "80%"}}>
+                                <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
+                                    {(comment.resolved.includes("UNRESOLVED")) ?
+                                        <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
+                                        :
+                                        <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
+                                    }
+                                    
+                                </Grid>
+                            </Paper>
+                            </Grid>
+                        ))
+                        :
+                        <Grid item xs ={1} key="no-comment" sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
+                        <Paper sx={{ width: "80%"}}>
+                            No Comments yet
+                        </Paper>
+                        </Grid>
+                        }
+                    </Grid>
+                </Grid>
+
             </Grid>
 
-            <Grid container columns={3} sx={{width: '85%', margin: 'auto', paddingTop: '30px'}}>
-                <Grid item xs={1}>
-                    {user.uid === projectDtl.ownerid ?
-                        <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained">Change Task information</Button>
-                        :
-                        <div></div>
-                    }
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    {user.uid === projectDtl.ownerid ?
-                        <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' endIcon={<DeleteIcon />} color='error'>Delete This Task</Button>                    :
-                        <div></div>
-                    }
-                    
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <InputLabel htmlFor="component-outlined">Add Attachment</InputLabel>
-                        <OutlinedInput
-                        id="component-outlined"
-                        onChange = {uploadAttachment}
-                        type="file"
-                        />
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
-                    <Button onClick={handleOpen} variant='contained' color='error'>Comment</Button>                    
-                </Grid>
-                {/* Comments List */}
-                {
-                  projectDtl.comments.length > 0 && projectDtl.comments.map(comment => (
-                    <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
-                      <Paper sx={{ width: "80%"}}>
-                        <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                            {(comment.resolved.includes("UNRESOLVED")) ?
-                                <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
-                                :
-                                <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
-                            }
-                            
-                        </Grid>
-                      </Paper>
-                    </Grid>
-                  ))
-                }
-            </Grid>
+
             {/* Comments Popup */}
             <Dialog open={Boolean(open)} onClose={handleClose}>
                 <DialogTitle>Add Comment</DialogTitle>
@@ -203,6 +277,33 @@ export default function TaskInfo() {
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={handleComment}>Comment</Button> 
+                    </DialogActions>
+            </Dialog>
+
+
+            {/* Attachment Popup */}
+            <Dialog open={Boolean(openA)} onClose={handleAttachClose}>
+                <DialogTitle>Add Attachment</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText sx={{textIndent:'0px'}}>
+                            Please add your attachment
+                        </DialogContentText>
+
+                        <Grid container sx={{marginTop: '20px'}} columns={1}>
+                        <Grid item xs={1} sx={{marginBottom: '20px'}}>
+                            <FormControl sx={{width: "100%"}}>
+                            <OutlinedInput
+                                id="component-outlined"
+                                onChange = {uploadAttachment}
+                                type="file"
+                            />
+                            </FormControl>
+                        </Grid>                    
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAttachClose}>Cancel</Button>
+                        <Button onClick={handleAttach}>Attach</Button> 
                     </DialogActions>
             </Dialog>
         </Box>

@@ -135,6 +135,7 @@ export default function ProjectCreate() {
                                     label="ProjectDescription"
                                     onChange = {(e)=>setProjDescr(e.target.value)}
                                     type="text"
+                                    multiline
                                     />
                                 </FormControl>
                             </Grid>

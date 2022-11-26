@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import * as React from 'react';
 
 import { useDocument } from '../../hooks/useDocument';
@@ -7,22 +7,59 @@ import { firedb } from '../../firebase/config';
 import {updateDoc, doc, getDoc } from "firebase/firestore";
 import { useFirestore } from '../../hooks/useFirestore';
 
-import styles from './Notification.module.css'
-import Box from '@mui/material/Box';
+
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import CloseIcon from '@mui/icons-material/Close';
-import CheckIcon from '@mui/icons-material/Check';
-import { ButtonGroup } from '@mui/material';
 
+
+// Notification button
+import IconButton from '@mui/material/IconButton';
+import Popper from '@mui/material/Popper';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
 
 export default function Notification() {
     const { user } = useAuthContext();
     const { documents: userDetail } = useDocument('users', user.uid );
     const [ inviteList, setinviteList ] = useState('');
     const { sendMsg } = useFirestore();
+
+    // Notification menu controls
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+    const handleToggle = () => {
+      setOpen((prevOpen) => !prevOpen);
+    };
+    const handleClose = (event) => {
+      if (anchorRef.current && anchorRef.current.contains(event.target)) {
+        return;
+      }
+  
+      setOpen(false);
+    };
+    function handleListKeyDown(event) {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        setOpen(false);
+      } else if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    }
+    const prevOpen = React.useRef(open);
+    React.useEffect(() => {
+      if (prevOpen.current === true && open === false) {
+        anchorRef.current.focus();
+      }
+  
+      prevOpen.current = open;
+    }, [open]);
+
+    // Invitation menu controls
 
     useEffect(() => {
       if (userDetail) {
@@ -45,169 +82,69 @@ export default function Notification() {
       }
     }
 
-    const handleAccept = async(assign) => {
-      console.log(assign.id)
-      //extract current project and invitations
-      let tempList = {};
-      let returnList = {};
-      if (userDetail) {
-          let tempOwnedProjects = userDetail.ownedProjects;
-          tempList = {...userDetail.invitations}
-          
-          Object.keys(tempList).forEach(item => {
-              
-              if (item != assign.id) {
-                  console.log(item)
-                  returnList[item] = tempList[item]
-              }
-          })
-
-          //fetch the target project from database
-          const projDocRef = doc(firedb, `projects`, assign.id);
-          const projSnapshot = await getDoc(projDocRef);
-
-          //Check if the database has this project
-          if (projSnapshot.exists()) {
-
-              //STEP1: push the project id into user ownproject list
-              tempOwnedProjects.push(assign.id);
-              updateDoc(doc(firedb, `users`, user.uid), { 
-                  ownedProjects: tempOwnedProjects,
-                  invitations:returnList
-              })
-
-              //STEP2: add user id into project memberList
-              let MemList = {...projSnapshot.data().memberList}
-              let tempRoleList = projSnapshot.data().roleTags;
-              if (!tempRoleList.includes(assign.id)) {
-                  tempRoleList.push(assign.role);
-              }
-              const obj = {
-                  id: user.uid,
-                  displayName: user.displayName,
-                  RoleTag: assign.role
-              }
-
-              MemList["members"].push(obj)
-              updateDoc(projDocRef, {
-                  memberList: MemList,
-                  roleTags: tempRoleList
-              })
-
-          } else {
-              //If project doesnt't exist, simply remove the project from the invitation list.
-              updateDoc(doc(firedb, `users`, user.uid), { 
-                  invitations:returnList
-              })
-          }
-          //notification
-          const time = new Date();
-          const message = "user " + user.displayName + " accept to join " + projSnapshot.data().projName
-          const new_message = {
-              Sender: user.displayName,
-              Time: time,
-              message: message
-          }
-          sendMsg(projSnapshot.data().ownerid, new_message);        
-      }        
-  }
-
-  const handleDecline = async(assign) => {
-      console.log(assign.id)
-
-      const projDocRef = doc(firedb, `projects`, assign.id);
-      const projSnapshot = await getDoc(projDocRef);
-
-      let returnList = {};
-      if (userDetail) {
-          let tempList = {...userDetail.invitations}
-          Object.keys(tempList).forEach(item => {        
-              if (item != assign.id) {
-                  console.log(item)
-                  returnList[item] = tempList[item]
-              }
-          })
-          updateDoc(doc(firedb, `users`, user.uid), { invitations:returnList});
-          const time = new Date();
-          const message = "user " + user.displayName + " reject to join " + projSnapshot.data().projName
-          const new_message = {
-              Sender: user.displayName,
-              Time: time,
-              message: message
-          }
-          sendMsg(projSnapshot.data().ownerid, new_message);  
-      }
-  }
-
     if (!userDetail) {
       return <div> Loading... </div>
     }
     return(
-      <Box>
-        <Box sx={{width:'85%', margin: 'auto', paddingTop:'20px'}}>
-          <Grid container columns={4}>
-            
-            {/* Notifications */}
-            <Grid item xs={2}>
-              <Grid container columns={1}>
-                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
-                  <Paper sx={{width:'80%'}} elevation={0}><h1 className={styles['uniheader']}>Inbox</h1></Paper>
-                </Grid>
-                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
-                  <h3 className={styles['uniheader']}>Message received: {userDetail.my_message.length}</h3>
-                </Grid>
-                
+      <Button
+        ref={anchorRef}
+        id="composition-button"
+        aria-controls={open ? 'composition-menu' : undefined}
+        aria-expanded={open ? 'true' : undefined}
+        aria-haspopup="true"
+        onClick={handleToggle}
+      >
+        {userDetail.my_message.length > 0 ? <NotificationsActiveIcon/> : <NotificationsNoneIcon/>}
 
-                {
-                  userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
-                    <Grid item xs ={1} key = {msg.Time} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
-                      <Paper sx={{ width: "80%"}}>
-                        <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                          <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>{msg.Time.toDate().toLocaleString()}</Grid>
-                          <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>Sender: {msg.Sender}</Grid>
-                          <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>Message:{msg.message}</Grid>
-                        </Grid>
-                      </Paper>
-                    </Grid>
-                  ))
-                }
 
-                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
-                  <Button onClick={handleClear} variant="contained" endIcon={<ClearAllIcon/>}>Clear messages</Button>
-                </Grid>
-              </Grid>
-            </Grid>
+        <Popper
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          placement="bottom"
+          transition
+          disablePortal
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === 'bottom-start' ? 'left top' : 'left bottom',
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList
+                    autoFocusItem={open}
+                    id="composition-menu"
+                    aria-labelledby="composition-button"
+                    onKeyDown={handleListKeyDown}
+                  >
+                    {userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
+                      <MenuItem sx={{textAlign: "left"}} onClick={handleClose}>
+                      {msg.Time.toDate().toLocaleString()}<br></br>
+                      Sender: {msg.Sender}<br></br>
+                      {msg.message}
+                      </MenuItem>
+                    ))}
 
-            {/* Invitations */}
-            <Grid item xs={2}>
-              <Grid container columns={2}>
-                <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}>
-                  <Paper sx={{width:'80%'}} elevation={0}><h1 className={styles['uniheader']}>Invitations</h1></Paper>
-                </Grid>
-                  <Grid item xs={2}>
-                            <Grid container columns={1}>
-                                <Grid container columns={1} sx={{width: '100%'}}>
-                                    {
-                                        inviteList.length > 0 && inviteList.map((invitation) => 
-                                            <Grid item xs={1} key = {invitation.id} sx={{width: '100%', marginBottom: '5px'}}>
-                                                <Paper sx={{display: 'flex', width: '90%', margin: 'auto'}}>
-                                                        <Grid variant="contained"  sx={{width: '85%'}}>From Project: {invitation.label} |   Your Role: {invitation.role}</Grid>
-                                                        <ButtonGroup>
-                                                            <Button onClick={() => {handleAccept(invitation)}}><CheckIcon/></Button> 
-                                                            <Button onClick={() => {handleDecline(invitation)}}><CloseIcon/></Button>   
-                                                        </ButtonGroup>                                                    
-                                                </Paper>
-                                            </Grid>
-                                        )
-                                    }
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                </Grid>
-              </Grid>
-          </Grid>
-        </Box>
-      </Box>
+                    {userDetail.my_message.length !== 0 ?
+                      <MenuItem onClick={handleClear} >
+                        <Button onClick={handleClear} variant="contained" endIcon={<ClearAllIcon/>} sx={{textTransform: "none"}}>
+                          Clear all messages
+                        </Button>
+                      </MenuItem>
+                      :
+                      <MenuItem onClick={handleClose}>Empty notification</MenuItem>
+                    }
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+      </Button>
     )
 
 }

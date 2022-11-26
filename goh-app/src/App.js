@@ -13,12 +13,14 @@ import Navbar from './components/Navbar'
 import AccountInfo from './pages/accountInfo/AccountInfo'
 import ProjectCreate from './pages/project/projectcreate/ProjectCreate'
 import Notification from './pages/notification/Notification'
+import Invitations from './pages/notification/Invitation'
 import Project from './pages/project/projectinfo/ProjectInfo'
 import Modify from './pages/project/projectmodify/ProjectModify'
 import TModify from './pages/project/taskmodify/TaskModify'
 import TaskInfo from './pages/project/taskinfo/TaskInfo'
 import Chat from './pages/project/chat/Chat'
 import Calendar from "./pages/calendar/Calendar";
+
 
 //console.log(version);
 

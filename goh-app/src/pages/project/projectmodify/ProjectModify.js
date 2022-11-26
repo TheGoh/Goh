@@ -78,6 +78,7 @@ export default function Modify() {
                           setDescr(true);
                         }}
                         type="text"
+                        multiline
                         />
                     </FormControl>
                 </Grid>

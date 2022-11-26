@@ -5,11 +5,19 @@ import { Link } from "react-router-dom";
 import { useLogout } from '../hooks/useLogout';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import Avatar from './Avatar.js';
+import Notification from '../pages/notification/Notification';
+import Invitation from '../pages/notification/Invitation';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+
+import LogoutIcon from '@mui/icons-material/Logout';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 //styles
 import styles from './Navbar.module.css'
 import { useEffect } from 'react'
-import { useFirestore } from '../hooks/useFirestore';
 
 export default function Nav() {
     const { logout } = useLogout()
@@ -33,11 +41,16 @@ export default function Nav() {
 
                 {user && (
                     <>
-                        <li><Link to="/project/projectcreate">My Projects</Link></li>
-                        <li><Link to="/accountInfo">Hey, {user.displayName} Account Settings</Link></li>
+                        <li>
+                            <ButtonGroup>
+                            <Button component={Link} to="/project/projectcreate"><InventoryIcon/></Button>
+                            <Button component={Link} to="/accountInfo"><SettingsIcon/></Button>
+                            </ButtonGroup>
+                        </li>
                         <li><Link to="/notification">Notification</Link></li>
                         <li><Link to="/calendar">Calendar</Link></li>
                         <li><a onClick={ logout }> Logout</a></li>
+                        <li><Avatar src = {user.photoURL}/></li>
                         </>
                 )}
 
