@@ -678,17 +678,6 @@ export default function Project() {
                             <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             </Grid>
                         }
-
-                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
-                            <Link to={`/project/${projectId}/chat`}  key={projectId} style={{ textDecoration: 'none' }}>
-                                <Button variant='contained' endIcon={<ChatIcon />} >Chat Room</Button>
-                            </Link>
-                        </Grid>
-
-                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
-                            <Button variant='contained' endIcon={<ChatIcon/>} onClick={handleChatRoomOpen}>Chat Room Popup</Button>
-                        </Grid>
-
                     </Grid>
                 </Grid>
 
@@ -696,14 +685,31 @@ export default function Project() {
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
                         <Grid container columns={3}>
-                            <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
-                                People
+                            
+
+
+                            
+                            <Grid item xs={3}>
+                                <Grid container columns={4}>
+                                    <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
+                                        People
+                                    </Grid>
+                                    <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
+                                        {user.uid === projectDtl.ownerid ?
+                                        <ButtonGroup>
+                                            <Button variant="contained" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button>
+                                            <Button variant='contained' onClick={handleChatRoomOpen}><ChatIcon/></Button>
+                                        </ButtonGroup>
+                                        :
+                                        <ButtonGroup>
+                                            <Button variant='contained' onClick={handleChatRoomOpen}><ChatIcon/></Button>
+                                        </ButtonGroup>
+                                        }
+                                        
+                                    </Grid>
+                                </Grid>
+                                
                             </Grid>
-
-
-                                {   user.uid === projectDtl.ownerid &&
-                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
-                                }
 
 
                                 {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
@@ -750,23 +756,7 @@ export default function Project() {
                 open={chatState}
                 onClose={handleChatRoomClose}
             >
-                <Box
-                    role="presentation"
-                >
-                    {/* <List>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={handleChatRoomClose}>
-                                <ListItemIcon><CloseIcon/></ListItemIcon>
-                                <ListItemText>Close Chat</ListItemText>
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <Chat/>
-                        </ListItem>
-                        
-                    </List> */}
-                    <Chat/>
-                </Box>
+                <Box role="presentation"><Chat/></Box>
             </Drawer>
 
 
