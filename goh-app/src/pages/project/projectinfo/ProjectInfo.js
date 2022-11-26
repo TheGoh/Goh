@@ -118,7 +118,10 @@ export default function Project() {
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
     const [progress, setProgress] = useState(0);
-
+    const [alertOpen, setAlertOpen] = useState(false);
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
     let TASK_OWNER = "OWNER"
 
     /* Task creation variables */
@@ -126,6 +129,7 @@ export default function Project() {
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
     const [dueDate, setDueDate] = useState(null);
+    const [dueDateTime, setDueTateTime] = useState(null);
     const [taskPrio, setTaskPrio] = useState('');
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
@@ -191,16 +195,6 @@ export default function Project() {
 
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
-
-        //judge invite limit
-        const size = projectDtl.memberList.members.length;
-        if(projectDtl.membersLimit){
-            const memberLimit = projectDtl.membersLimit;
-            if(size >= memberLimit - 1){
-                alert("members exceeds the limitation");
-            }
-        }
-
         let ref = collection (firedb, 'users')
         if (invite) {
             ref = query(ref, where("email", "==", invite));
@@ -275,6 +269,17 @@ export default function Project() {
 
     /* user invitation form */
     const handleClickOpen2 = () => { //popup invitation form
+        //judge invite limit
+        const size = projectDtl.memberList.members.length;
+        debugger
+        if(projectDtl.membersLimit){
+            const memberLimit = projectDtl.membersLimit;
+            //-1 because declude project leader
+            if(size >= parseInt(memberLimit) - 1){
+                setAlertOpen(true);
+                return
+            }
+        }
         setOpen2(true);
         console.log(projectDtl.memberList);
     }
@@ -288,12 +293,15 @@ export default function Project() {
     const handleDueDateChange = (tValue,keyboardInputValue) => {
         console.log(dayjs(tValue).format("MM/DD/YYYY"));
         setDueDate(dayjs(tValue).format("MM/DD/YYYY"));
+        setDueTateTime(new Date(dayjs(tValue).format("MM/DD/YYYY")))
+
     };
 
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
         setDueDate(null);
+        setDueTateTime(null);
         setTaskPrio(0);
         setOpen(false);
     }
@@ -304,7 +312,7 @@ export default function Project() {
         if (taskPrio === undefined || taskPrio === null || taskPrio === "") {
             setTaskPrio(0);
         }
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, taskPrio);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate,dueDateTime, taskPrio);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
@@ -317,7 +325,8 @@ export default function Project() {
         }
         setTaskName('');
         setTaskDescr('');
-        setDueDate(null)
+        setDueDate(null);
+        setDueTateTime(null);
         setCurrMemId('');
         setTaskPrio(0);
         setOpen(false);
@@ -423,7 +432,7 @@ export default function Project() {
         sendMsg(task_dict[task].ownerid,new_message);
     }
     /* Task creation ends */
-    
+
     /* Button control starts */
     function getPrioTheme(key) {
         let prio_theme;
@@ -454,7 +463,7 @@ export default function Project() {
                         {task_dict[key].taskName}<br></br>
                         Owner: {TASK_OWNER}<br></br>
                         Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
-                    </Button> 
+                    </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
                 </ButtonGroup>
             )
@@ -465,7 +474,7 @@ export default function Project() {
                     {task_dict[key].taskName}<br></br>
                     Owner: {TASK_OWNER}<br></br>
                     Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
-                </Button> 
+                </Button>
             )
         }
     }
@@ -490,7 +499,7 @@ export default function Project() {
                 </Button>
             )
         }
-    } 
+    }
     /* Button control ends */
 
     if (error) {
@@ -895,6 +904,27 @@ export default function Project() {
                         <Button onClick={handleClose2}>Cancel</Button>
                         <Button onClick={handleProjectInvitation}>Invite</Button>
                     </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={alertOpen}
+                onClose={handleAlertClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Tips"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Members exceeds the limitation, you can't invite more
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleAlertClose} autoFocus>
+                        I Know
+                    </Button>
+                </DialogActions>
             </Dialog>
 
         </Box>
