@@ -9,6 +9,8 @@ import { Link} from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { collection, doc, getDoc, getDocs, updateDoc, query, where} from "firebase/firestore";
+import ScrollToBottom from "react-scroll-to-bottom";
+import Chat from '../chat/Chat'
 
 /* MUI components */
 import styles from './ProjectInfo.module.css';
@@ -16,6 +18,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Drawer from '@mui/material/Drawer';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -33,8 +37,15 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
+import CloseIcon from '@mui/icons-material/Close';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -50,7 +61,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { ButtonGroup, Menu } from '@mui/material';
 
 /* Priority and relative theming */
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { blue, orange, red } from '@mui/material/colors';
 
 const CAS_THEME = createTheme({
@@ -76,6 +87,9 @@ const URG_THEME = createTheme({
         },
     },
 });
+
+const drawerWidth = 300;
+
 
 /* Progress Bar */
 function LinearProgressWithLabel(props) {
@@ -123,10 +137,20 @@ export default function Project() {
         memList = projectDtl.memberList.members;
     }
 
-
     /* Invitation and RoleTags */
     const [open2, setOpen2] = useState(''); // form dialog open/close
     const [roleTag, setRole] = useState('');
+
+    /* Char room control variables */
+    const [chatState, setChatState] = useState(false);
+
+    const handleChatRoomOpen = () => {
+        setChatState(true);
+    }
+
+    const handleChatRoomClose = () => {
+        setChatState(false);
+    }
 
     /* Project operations starts */
     const handleProjectDelete = async(e) => {
@@ -661,6 +685,10 @@ export default function Project() {
                             </Link>
                         </Grid>
 
+                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
+                            <Button variant='contained' endIcon={<ChatIcon/>} onClick={handleChatRoomOpen}>Chat Room Popup</Button>
+                        </Grid>
+
                     </Grid>
                 </Grid>
 
@@ -706,6 +734,41 @@ export default function Project() {
                     </Paper>
                 </Grid>
             </Grid>
+
+            {/* Char room */}
+            <Drawer
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                    },
+                
+                }}
+                anchor="right"
+                open={chatState}
+                onClose={handleChatRoomClose}
+            >
+                <Box
+                    role="presentation"
+                >
+                    {/* <List>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={handleChatRoomClose}>
+                                <ListItemIcon><CloseIcon/></ListItemIcon>
+                                <ListItemText>Close Chat</ListItemText>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <Chat/>
+                        </ListItem>
+                        
+                    </List> */}
+                    <Chat/>
+                </Box>
+            </Drawer>
+
 
             {/* Popup form */}
             <Dialog open={Boolean(open)} onClose={handleClose}>
