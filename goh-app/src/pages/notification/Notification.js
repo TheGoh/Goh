@@ -12,10 +12,13 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 
+import Invitation from './Invitation';
+
 
 // Notification button
 import IconButton from '@mui/material/IconButton';
 import Popper from '@mui/material/Popper';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -86,6 +89,7 @@ export default function Notification() {
       return <div> Loading... </div>
     }
     return(
+      <ButtonGroup>
       <Button
         ref={anchorRef}
         id="composition-button"
@@ -145,6 +149,9 @@ export default function Notification() {
           )}
         </Popper>
       </Button>
+      <Invitation/>
+      </ButtonGroup>
+      
     )
 
 }
