@@ -9,8 +9,9 @@ import { Link} from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { collection, doc, getDoc, getDocs, updateDoc, query, where} from "firebase/firestore";
-import ScrollToBottom from "react-scroll-to-bottom";
-import Chat from '../chat/Chat'
+import Chat from '../chat/Chat';
+
+
 
 /* MUI components */
 import styles from './ProjectInfo.module.css';
@@ -18,7 +19,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -37,17 +37,8 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
-import CloseIcon from '@mui/icons-material/Close';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-
-
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';

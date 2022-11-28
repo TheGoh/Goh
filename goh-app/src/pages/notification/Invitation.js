@@ -7,6 +7,7 @@ import { firedb } from '../../firebase/config';
 import {updateDoc, doc, getDoc } from "firebase/firestore";
 import { useFirestore } from '../../hooks/useFirestore';
 
+import styles from './Notification.module.css';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -183,6 +184,7 @@ export default function Invitation() {
                     placement="bottom-start"
                     transition
                     disablePortal
+                    className={styles['paper-container']}
                 >
                     {({ TransitionProps, placement }) => (
                     <Grow

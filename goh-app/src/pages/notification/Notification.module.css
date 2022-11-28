@@ -5,6 +5,9 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+.paper-container {
+  z-index: 100;
+}
 
 
 

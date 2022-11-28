@@ -20,6 +20,7 @@ import TModify from './pages/project/taskmodify/TaskModify'
 import TaskInfo from './pages/project/taskinfo/TaskInfo'
 import Chat from './pages/project/chat/Chat'
 import Calendar from "./pages/calendar/Calendar";
+import Gohbar from './components/Gohbar';
 
 
 //console.log(version);
@@ -33,7 +34,7 @@ function App() {
       {authIsReady && (
         <BrowserRouter>
           <div className="App Container">
-            <Navbar />
+            <Gohbar />
             <Routes>
               {/* Redirect to Home page */}
               <Route path = '/' element={<Home />} />

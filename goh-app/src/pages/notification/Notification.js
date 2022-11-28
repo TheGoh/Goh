@@ -7,15 +7,10 @@ import { firedb } from '../../firebase/config';
 import {updateDoc, doc, getDoc } from "firebase/firestore";
 import { useFirestore } from '../../hooks/useFirestore';
 
-
+import styles from './Notification.module.css';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-
-import Invitation from './Invitation';
-
-
-// Notification button
 import IconButton from '@mui/material/IconButton';
 import Popper from '@mui/material/Popper';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -89,7 +84,7 @@ export default function Notification() {
       return <div> Loading... </div>
     }
     return(
-      <ButtonGroup>
+      
       <Button
         ref={anchorRef}
         id="composition-button"
@@ -97,6 +92,7 @@ export default function Notification() {
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
+        color="inherit"
       >
         {userDetail.my_message.length > 0 ? <NotificationsActiveIcon/> : <NotificationsNoneIcon/>}
 
@@ -105,9 +101,10 @@ export default function Notification() {
           open={open}
           anchorEl={anchorRef.current}
           role={undefined}
-          placement="bottom"
+          placement="bottom-start"
           transition
           disablePortal
+          className={styles['paper-container']}
         >
           {({ TransitionProps, placement }) => (
             <Grow
@@ -149,8 +146,7 @@ export default function Notification() {
           )}
         </Popper>
       </Button>
-      <Invitation/>
-      </ButtonGroup>
+
       
     )
 
