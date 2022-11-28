@@ -20,6 +20,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
+import Grid from '@mui/material/Grid';
 
 dayjs.extend(isBetweenPlugin);
 
@@ -103,47 +104,54 @@ export default function Calendar() {
 
     return (
         <Box sx={{width:'85%', margin: 'auto', paddingTop:'20px'}}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <StaticDatePicker
-                displayStaticWrapperAs="desktop"
-                label="Week picker"
-                value={value}
-                onChange={(newValue) => {
-                    setValue(newValue);
-                }}
-                renderDay={renderWeekPickerDay}
-                renderInput={(params) => <TextField {...params} />}
-                inputFormat="'Week of' MMM d"
-            />
-        </LocalizationProvider>
-
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="task list">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Task Name</TableCell>
-                            <TableCell>Task Description</TableCell>
-                            <TableCell align="right">Due Date</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {currentMonthTasks.map((row) => (
-                            <TableRow
-                                key={row.taskId}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {row.taskName}
-                                </TableCell>
-                                <TableCell component="th" scope="row">
-                                    {row.taskDescr}
-                                </TableCell>
-                                <TableCell align="right">{row.dueDate}</TableCell>
+            <Grid container spacing={2}>
+            <Grid item xs={4}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <StaticDatePicker
+                        displayStaticWrapperAs="desktop"
+                        label="Week picker"
+                        value={value}
+                        onChange={(newValue) => {
+                            setValue(newValue);
+                        }}
+                        renderDay={renderWeekPickerDay}
+                        renderInput={(params) => <TextField {...params} />}
+                        inputFormat="'Week of' MMM d"
+                    />
+                </LocalizationProvider>
+            </Grid>
+            <Grid item xs={8}>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="task list">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Task Name</TableCell>
+                                <TableCell>Task Description</TableCell>
+                                <TableCell align="right">Due Date</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {currentMonthTasks.map((row) => (
+                                <TableRow
+                                    key={row.taskId}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.taskName}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {row.taskDescr}
+                                    </TableCell>
+                                    <TableCell align="right">{row.dueDate}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            </Grid>
+
+
         </Box>
     );
 }
