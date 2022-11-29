@@ -66,7 +66,7 @@ export default function Notification() {
             result.push({label: userDetail.invitations[item].projName,  id: item, role: userDetail.invitations[item].roleTag});        
           })
           setinviteList(result)
-          console.log("myList: ", inviteList)
+          //console.log("myList: ", inviteList)
     }
     },[userDetail]);
 
