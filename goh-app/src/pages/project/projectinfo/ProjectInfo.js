@@ -125,7 +125,6 @@ export default function Project() {
     const handleAlertClose = () => {
         setAlertOpen(false);
     };
-    let TASK_OWNER = "OWNER"
 
     /* Task creation variables */
     const { documents: task_collections } = useCollection(`projects/${projectId}/tasks`, null);
@@ -139,6 +138,9 @@ export default function Project() {
     const [open, setOpen] = useState(''); // form dialog open/close
     const [currTaskId, setCurrTaskId] = useState('');
     const [currMemId, setCurrMemId] = useState('');
+
+    /* member List */
+    const [taskOwnerName, setTaskOwnerName] = useState('');
     let memList = {};
     if (projectDtl !== null) {
         memList = projectDtl.memberList.members;
@@ -193,7 +195,6 @@ export default function Project() {
     const handleClickOpen2 = () => { //popup invitation form
         //judge invite limit
         const size = projectDtl.memberList.members.length;
-        debugger
         if(projectDtl.membersLimit){
             const memberLimit = projectDtl.membersLimit;
             //-1 because declude project leader
@@ -249,7 +250,7 @@ export default function Project() {
         if (taskPrio === undefined || taskPrio === null || taskPrio === "") {
             setTaskPrio(0);
         }
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate,dueDateTime, taskPrio);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, dueDateTime, taskPrio);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
@@ -296,6 +297,23 @@ export default function Project() {
         }
 
     }, [task_collections]);
+
+    useEffect(() => {
+        if (projectDtl) {
+            let temp_mem = {};
+            if (projectDtl.memberList !== undefined) {
+                temp_mem[projectDtl.memberList.owner[0].id] = projectDtl.memberList.owner[0].displayName
+                if (projectDtl.memberList.members.length > 0) {
+                    projectDtl.memberList.members.forEach((member) => {
+                        temp_mem[member.id] = member.displayName;
+                    })
+                }
+                
+                setTaskOwnerName(temp_mem);
+            }
+            
+        }
+    }, [projectDtl])
 
     // Task state changes
     const handleTakeTask = (task) => { //TODO to IN PROGRESS
@@ -393,13 +411,13 @@ export default function Project() {
 
     function inProgressBtns(key) { //In progress btns has 2 conditions
         let prio_theme = getPrioTheme(key);
-        if (user.uid === task_dict[key].ownerid) {
+        if (user.uid === task_dict[key].currUserId) {
             return (
                 <ButtonGroup sx={{width: '100%', height: '80px'}}>
                     <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '85%'}} theme={prio_theme}>
                         {task_dict[key].taskName}<br></br>
-                        Owner: {TASK_OWNER}<br></br>
-                        Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
+                        Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
+                        Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                     </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
                 </ButtonGroup>
@@ -409,8 +427,8 @@ export default function Project() {
             return (
                 <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '100%', height: '80px'}} theme={prio_theme}>
                     {task_dict[key].taskName}<br></br>
-                    Owner: {TASK_OWNER}<br></br>
-                    Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
+                    Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
+                    Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                 </Button>
             )
         }
@@ -687,7 +705,7 @@ export default function Project() {
                 </Grid>
             </Grid>
 
-            {/* Char room */}
+            {/* Chat room */}
             <Drawer
                 sx={{
                     width: drawerWidth,

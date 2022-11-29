@@ -172,19 +172,19 @@ export default function TaskInfo() {
     function ownerButton() {
         if (user.uid === projectDtl.ownerid) {
             return (
-                <ButtonGroup>
-                    <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained"><UndoIcon/></Button>
-                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained"><ChangeCircleIcon/></Button>
-                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error'><DeleteIcon /></Button>
+                <ButtonGroup key={projectId}>
+                    <Button component={Link} to={`/project/${projectId}`}  variant="contained"><UndoIcon/></Button>
+                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`}  variant="contained"><ChangeCircleIcon/></Button>
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} variant='contained' color='error'><DeleteIcon /></Button>
                 </ButtonGroup>
             )
         }
         else {
             return (
-                <ButtonGroup>
-                    <Button component={Link} to={`/project/${projectId}`} key={projectId} variant="contained"><UndoIcon/></Button>
-                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} key={projectId} variant="contained" disabled><ChangeCircleIcon/></Button>
-                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} key = {projectId} variant='contained' color='error' disabled><DeleteIcon /></Button>
+                <ButtonGroup key={projectId}>
+                    <Button component={Link} to={`/project/${projectId}`} variant="contained"><UndoIcon/></Button>
+                    <Button component={Link} to={`/project/taskmodify/${projectId}/${taskId}`} variant="contained" disabled><ChangeCircleIcon/></Button>
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleDelete} variant='contained' color='error' disabled><DeleteIcon /></Button>
                 </ButtonGroup>
             )
         }
