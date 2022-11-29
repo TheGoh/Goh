@@ -147,6 +147,7 @@ export const useFirestore = () => {
 
         await deleteDoc(ref)
             .catch(error => {
+                console.log('error deleting the document', error.message)
                 setError(error.message);
             })
     }

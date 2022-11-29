@@ -13,10 +13,9 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import Divider from '@mui/material/Divider';
 import SendIcon from '@mui/icons-material/Send';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 
 export default function Chat() {
@@ -24,7 +23,7 @@ export default function Chat() {
     const { user } = useAuthContext();
     const { documents: projectDtl , error} = useDocument('projects', projectId);
     const { documents: chatLog, error2 } = useCollection(`projects/${projectId}/chats`, null);
-    const { sendChatMsg , error3} = useFirestore();
+    const { sendChatMsg , deleteDocument, error3} = useFirestore();
     const [ MsgList, setMsgList] = useState('');
     //TODO add useCollection
 
@@ -34,6 +33,16 @@ export default function Chat() {
 
     const handleSend = () => {
        sendChatMsg(projectId, user.uid, user.displayName, msg);
+    }
+
+    const handleDelHistory = () => {
+      if (chatLog.length > 0) {
+        chatLog.forEach(msg =>{
+          deleteDocument(`projects/${projectId}/chats`, msg.id);
+        })
+      }
+      
+      
     }
 
     useEffect(() => {
@@ -47,18 +56,22 @@ export default function Chat() {
     }
 
     if (!chatLog) {
-        return <div> no files </div>
+        return <div> Loading ...  </div>
     }
 
     return (
       <Box sx={{width: '100%', height: '100vh'}}>
-        <Paper sx={{padding: '20px', height: '2%'}} className={styles['heading']}>Live Chat</Paper>
+        <Paper sx={{padding: '20px', height: '2%'}} className={styles['heading']}>Live Chat
+        <Button onClick = {handleDelHistory}><ClearAllIcon/></Button>
+        </Paper>
+        
         <Box sx={{height: '80%'}} className={styles['scroll-container']}>
           <ScrollToBottom>
             {chatLog.length > 0 && chatLog.map((msg) => {
               return (
                 <Box
                   className={user.uid === msg.senderId ? styles['out'] : styles['in']}
+                  key = {msg.createAt}
                   elevation={0}
                 >
                   <Box sx={{width: '60%'}}>
