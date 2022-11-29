@@ -53,27 +53,41 @@ export default function Calendar() {
     const [currentMonthTasks, setCurrentMonthTasks] = useState([]);
     const [dueDateList, setDueDateList] = useState([]);
     useEffect(() => {
-        const ref = query(collection(firedb, "projects"),where("ownerid","==",user.uid));
+        const ref = query(collection(firedb, "projects"));
         let taskList = [];
         let dateList = [];
         onSnapshot(ref, (snapshot) => {
             snapshot.docs.forEach(doc => {
-                const monthStart = new Date(dayjs().startOf('month').format('MM/DD/YYYY'));
-                const monthEnd = new Date(dayjs().endOf('month').format('MM/DD/YYYY'));
-                const taskRef = query(collection(firedb,"projects/"+ doc.id + "/tasks"),where("dueDateTime",">=", monthStart),where("dueDateTime","<=", monthEnd));
-                onSnapshot(taskRef,(snapshot) => {
-                    snapshot.docs.forEach(tk => {
-                        const data = tk.data();
-                        if(!(taskList.some((item) => item.taskId == data.taskId))){
-                            taskList.push(data);
+                const data = doc.data();
+                let arr = [];
+                if(data.memberList){
+                    if(data.memberList.members){
+                        if(data.memberList.members.length > 0){
+                            for(let i=0;i<data.memberList.members.length;i++){
+                                arr.push(data.memberList.members[i].id);
+                            }
                         }
-                        if(!(dateList).some((item) => item === data.dueDate)){
-                            dateList.push(data.dueDate);
-                        }
-                        setDueDateList(dateList);
-                        setCurrentMonthTasks(taskList);
+                    }
+                }
+                if(data.ownerid === user.uid || arr.includes(user.uid)){
+                    const monthStart = new Date(dayjs().startOf('month').format('MM/DD/YYYY'));
+                    const monthEnd = new Date(dayjs().endOf('month').format('MM/DD/YYYY'));
+                    const taskRef = query(collection(firedb,"projects/"+ doc.id + "/tasks"),where("dueDateTime",">=", monthStart),where("dueDateTime","<=", monthEnd));
+                    onSnapshot(taskRef,(snapshot) => {
+                        snapshot.docs.forEach(tk => {
+                            const data = tk.data();
+                            if(!(taskList.some((item) => item.taskId == data.taskId))){
+                                taskList.push(data);
+                            }
+                            if(!(dateList).some((item) => item === data.dueDate)){
+                                dateList.push(data.dueDate);
+                            }
+                            setDueDateList(dateList);
+                            setCurrentMonthTasks(taskList);
+                        })
                     })
-                })
+                }
+
             });
 
         } , (error) => {
