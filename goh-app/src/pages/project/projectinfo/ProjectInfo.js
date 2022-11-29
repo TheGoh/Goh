@@ -122,6 +122,7 @@ export default function Project() {
     const [invite, setInvite] = useState('');
     const [progress, setProgress] = useState(0);
     const [alertOpen, setAlertOpen] = useState(false);
+
     const handleAlertClose = () => {
         setAlertOpen(false);
     };
@@ -213,7 +214,7 @@ export default function Project() {
         setOpen2(false);
     }
 
-    const handleDueDateChange = (tValue,keyboardInputValue) => {
+    const handleDueDateChange = (tValue) => {
         console.log(dayjs(tValue).format("MM/DD/YYYY"));
         setDueDate(dayjs(tValue).format("MM/DD/YYYY"));
         setDueTateTime(new Date(dayjs(tValue).format("MM/DD/YYYY")))
@@ -225,7 +226,7 @@ export default function Project() {
         setTaskDescr('');
         setDueDate(null);
         setDueTateTime(null);
-        setTaskPrio(0);
+        setTaskPrio('');
         setOpen(false);
     }
 
@@ -247,10 +248,17 @@ export default function Project() {
     const handleTaskCreation = (event) => {
         //event.preventDefault();
         const taskid = uuid();
+        let priority = taskPrio;
         if (taskPrio === undefined || taskPrio === null || taskPrio === "") {
-            setTaskPrio(0);
+            priority = 0;
         }
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, dueDateTime, taskPrio);
+
+        if (!dueDate) {
+            alert("Please Pick a due date");
+            return;
+        }
+
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, dueDateTime, priority);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
