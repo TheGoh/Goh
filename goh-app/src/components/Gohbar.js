@@ -19,6 +19,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { createTheme } from '@mui/material/styles';
 import { blue } from '@mui/material/colors';
 
@@ -62,6 +63,7 @@ export default function Gohbar() {
                                 <ButtonGroup color="inherit">
                                     <Button component={Link} to="/project/projectcreate"><InventoryIcon/></Button>
                                     <Button component={Link} to="/accountInfo"><SettingsIcon/></Button>
+                                    <Button component={Link} to="/calendar"><CalendarMonthIcon/></Button>
                                 </ButtonGroup>
                             </Grid>
                             <Grid item xs={1} sx={{display: "flex", justifyContent: "center"}}>
