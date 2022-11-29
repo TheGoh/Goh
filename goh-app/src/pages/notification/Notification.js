@@ -132,7 +132,7 @@ export default function Notification() {
 
                     {userDetail.my_message.length !== 0 ?
                       <MenuItem onClick={handleClear} >
-                        <Button onClick={handleClear} variant="contained" endIcon={<ClearAllIcon/>} sx={{textTransform: "none"}}>
+                        <Button onClick={handleClear} variant="contained" endicon={<ClearAllIcon/>} sx={{textTransform: "none"}}>
                           Clear all messages
                         </Button>
                       </MenuItem>

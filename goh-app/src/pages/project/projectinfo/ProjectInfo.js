@@ -643,7 +643,7 @@ export default function Project() {
                         {user.uid === projectDtl.ownerid ?
                             <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
                                 <Link to="/project/projectcreate" onClick={handleProjectDelete} style={{ textDecoration: 'none' }}>
-                                    <Button variant='contained' endIcon={<DeleteIcon />} color='error'>Delete Project</Button>
+                                    <Button variant='contained' endicon={<DeleteIcon />} color='error'>Delete Project</Button>
                                 </Link>
                             </Grid>
                             :

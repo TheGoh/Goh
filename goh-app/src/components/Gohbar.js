@@ -50,7 +50,7 @@ export default function Gohbar() {
         <Box>
             <AppBar position="static" theme={BAR_THEME} sx={{fontStyle: 'italic'}}>
                 <Toolbar className={styles['container']}>
-                    <IconButton component={Link} to="/" endIcon={<HomeIcon/>} color="inherit"><HomeIcon/></IconButton>
+                    <IconButton component={Link} to="/" endicon={<HomeIcon/>} color="inherit"><HomeIcon/></IconButton>
                     <h1 className={styles['container']}>Goh</h1>
                     {
                         user ?
