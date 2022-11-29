@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+.container h1 {
+    font-family: 'Cabin', sans-serif;
+    font-weight: bold;
+    font-style: italic;
+}

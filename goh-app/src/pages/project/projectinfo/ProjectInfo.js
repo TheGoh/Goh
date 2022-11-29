@@ -10,6 +10,9 @@ import { Link} from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { collection, doc, getDoc, getDocs, updateDoc, query, where} from "firebase/firestore";
+import Chat from '../chat/Chat';
+
+
 
 /* MUI components */
 import styles from './ProjectInfo.module.css';
@@ -17,6 +20,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -36,9 +40,11 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
+
 
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -57,7 +63,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { ButtonGroup, Menu } from '@mui/material';
 
 /* Priority and relative theming */
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { blue, orange, red } from '@mui/material/colors';
 
 const CAS_THEME = createTheme({
@@ -83,6 +89,9 @@ const URG_THEME = createTheme({
         },
     },
 });
+
+const drawerWidth = 300;
+
 
 /* Progress Bar */
 function LinearProgressWithLabel(props) {
@@ -112,7 +121,10 @@ export default function Project() {
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
     const [progress, setProgress] = useState(0);
-
+    const [alertOpen, setAlertOpen] = useState(false);
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
     let TASK_OWNER = "OWNER"
 
     /* Task creation variables */
@@ -120,6 +132,7 @@ export default function Project() {
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
     const [dueDate, setDueDate] = useState(null);
+    const [dueDateTime, setDueTateTime] = useState(null);
     const [taskPrio, setTaskPrio] = useState('');
     const [task_ids, setTaskIds] = useState('');
     const [task_dict, setTaskDict] = useState('');
@@ -131,7 +144,6 @@ export default function Project() {
         memList = projectDtl.memberList.members;
     }
 
-
     /* Invitation and RoleTags */
     const [open2, setOpen2] = useState(''); // form dialog open/close
     const [roleTag, setRole] = useState('');
@@ -139,6 +151,18 @@ export default function Project() {
     /* profile page icon */ 
     const [openProf, setopenProf] = useState(false);
     const [profile, setProfile] = useState('');
+
+    /* Char room control variables */
+    const [chatState, setChatState] = useState(false);
+
+    const handleChatRoomOpen = () => {
+        setChatState(true);
+    }
+
+    const handleChatRoomClose = () => {
+        setChatState(false);
+    }
+
 
     /* Project operations starts */
     const handleProjectDelete = () => {
@@ -167,6 +191,17 @@ export default function Project() {
 
     /* user invitation form */
     const handleClickOpen2 = () => { //popup invitation form
+        //judge invite limit
+        const size = projectDtl.memberList.members.length;
+        debugger
+        if(projectDtl.membersLimit){
+            const memberLimit = projectDtl.membersLimit;
+            //-1 because declude project leader
+            if(size >= parseInt(memberLimit) - 1){
+                setAlertOpen(true);
+                return
+            }
+        }
         setOpen2(true);
         //console.log(projectDtl.memberList);
     }
@@ -180,12 +215,15 @@ export default function Project() {
     const handleDueDateChange = (tValue,keyboardInputValue) => {
         console.log(dayjs(tValue).format("MM/DD/YYYY"));
         setDueDate(dayjs(tValue).format("MM/DD/YYYY"));
+        setDueTateTime(new Date(dayjs(tValue).format("MM/DD/YYYY")))
+
     };
 
     const handleClose = () => { //close form and clear inputs
         setTaskName('');
         setTaskDescr('');
         setDueDate(null);
+        setDueTateTime(null);
         setTaskPrio(0);
         setOpen(false);
     }
@@ -211,7 +249,7 @@ export default function Project() {
         if (taskPrio === undefined || taskPrio === null || taskPrio === "") {
             setTaskPrio(0);
         }
-        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate, taskPrio);
+        createTask(projectId, user.uid, currMemId, taskid, taskName, taskDescr, dueDate,dueDateTime, taskPrio);
         if(currMemId !== ''){
             const time = new Date();
             const message = "task " + taskName + " has been assigned to you"
@@ -224,7 +262,8 @@ export default function Project() {
         }
         setTaskName('');
         setTaskDescr('');
-        setDueDate(null)
+        setDueDate(null);
+        setDueTateTime(null);
         setCurrMemId('');
         setTaskPrio(0);
         setOpen(false);
@@ -330,7 +369,7 @@ export default function Project() {
         sendMsg(task_dict[task].ownerid,new_message);
     }
     /* Task creation ends */
-    
+
     /* Button control starts */
     function getPrioTheme(key) {
         let prio_theme;
@@ -361,7 +400,7 @@ export default function Project() {
                         {task_dict[key].taskName}<br></br>
                         Owner: {TASK_OWNER}<br></br>
                         Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
-                    </Button> 
+                    </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
                 </ButtonGroup>
             )
@@ -372,7 +411,7 @@ export default function Project() {
                     {task_dict[key].taskName}<br></br>
                     Owner: {TASK_OWNER}<br></br>
                     Due on: {task_dict[key].createdAt.toDate().toLocaleString().split(",")[0]}
-                </Button> 
+                </Button>
             )
         }
     }
@@ -397,7 +436,7 @@ export default function Project() {
                 </Button>
             )
         }
-    } 
+    }
     /* Button control ends */
 
     if (error) {
@@ -585,13 +624,6 @@ export default function Project() {
                             <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}>
                             </Grid>
                         }
-
-                        <Grid item xs={1} sx={{display: 'flex', alignItems:'center', }}>
-                            <Link to={`/project/${projectId}/chat`}  key={projectId} style={{ textDecoration: 'none' }}>
-                                <Button variant='contained' endIcon={<ChatIcon />} >Chat Room</Button>
-                            </Link>
-                        </Grid>
-
                     </Grid>
                 </Grid>
 
@@ -599,14 +631,31 @@ export default function Project() {
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
                         <Grid container columns={3}>
-                            <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
-                                People
+                            
+
+
+                            
+                            <Grid item xs={3}>
+                                <Grid container columns={4}>
+                                    <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
+                                        People
+                                    </Grid>
+                                    <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
+                                        {user.uid === projectDtl.ownerid ?
+                                        <ButtonGroup>
+                                            <Button variant="contained" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button>
+                                            <Button variant='contained' onClick={handleChatRoomOpen}><ChatIcon/></Button>
+                                        </ButtonGroup>
+                                        :
+                                        <ButtonGroup>
+                                            <Button variant='contained' onClick={handleChatRoomOpen}><ChatIcon/></Button>
+                                        </ButtonGroup>
+                                        }
+                                        
+                                    </Grid>
+                                </Grid>
+                                
                             </Grid>
-
-
-                                {   user.uid === projectDtl.ownerid &&
-                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}><Button variant="text" onClick={handleClickOpen2} sx={{display: 'flex', alignItems: 'center'}}><GroupAddIcon/></Button></Grid>
-                                }
 
 
                                 {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
@@ -637,6 +686,25 @@ export default function Project() {
                     </Paper>
                 </Grid>
             </Grid>
+
+            {/* Char room */}
+            <Drawer
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                    },
+                
+                }}
+                anchor="right"
+                open={chatState}
+                onClose={handleChatRoomClose}
+            >
+                <Box role="presentation"><Chat/></Box>
+            </Drawer>
+
 
             {/* Popup form */}
             <Dialog open={Boolean(open)} onClose={handleClose}>
@@ -669,6 +737,7 @@ export default function Project() {
                             label="TaskDescription"
                             onChange = {(e)=>setTaskDescr(e.target.value)}
                             type="text"
+                            multiline
                             />
                             </FormControl>
                         </Grid>
@@ -798,6 +867,27 @@ export default function Project() {
                         <Button onClick={handleClose2}>Cancel</Button>
                         <Button onClick={handleProjectInvitation}>Invite</Button>
                     </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={alertOpen}
+                onClose={handleAlertClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Tips"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Members exceeds the limitation, you can't invite more
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleAlertClose} autoFocus>
+                        I Know
+                    </Button>
+                </DialogActions>
             </Dialog>
 
         </Box>
