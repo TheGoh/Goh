@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDocument } from '../../../hooks/useDocument';
 import { useCollection } from '../../../hooks/useCollection';
 import { useFirestore } from '../../../hooks/useFirestore';
+import { useProjectActions } from '../../../hooks/useProjectActions';
 import { firedb } from '../../../firebase/config';
 import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
@@ -39,9 +40,19 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ChatIcon from '@mui/icons-material/Chat';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+
+import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
+import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
+
+
+
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
+import { CardActionArea } from '@mui/material';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -105,6 +116,7 @@ export default function Project() {
     /* Project information variables */
     let { projectId } = useParams();
     const { deleteDocument, sendMsg, createTask } = useFirestore();
+    const { projectDelete, inviteUser , getUserInfo, error: errorAction} = useProjectActions();
     const { documents: projectDtl , error} = useDocument('projects', projectId);
     const { user } = useAuthContext();
     const [invite, setInvite] = useState('');
@@ -136,6 +148,10 @@ export default function Project() {
     const [open2, setOpen2] = useState(''); // form dialog open/close
     const [roleTag, setRole] = useState('');
 
+    /* profile page icon */ 
+    const [openProf, setopenProf] = useState(false);
+    const [profile, setProfile] = useState('');
+
     /* Char room control variables */
     const [chatState, setChatState] = useState(false);
 
@@ -147,108 +163,23 @@ export default function Project() {
         setChatState(false);
     }
 
+
     /* Project operations starts */
-    const handleProjectDelete = async(e) => {
-        //remove from projects collection
-        const ref = doc(firedb, `users`, user.uid)
-
-        //remove from user's project id entry
-        await getDoc(ref)
-            .then (async(doc) => {
-                let tempOwnedProjects = doc.data().ownedProjects;
-                let tempList = tempOwnedProjects.filter((project) => {
-                    if (projectId !== project) return project;
-                })
-                await updateDoc(ref, {
-                     ownedProjects: tempList
-                })
-            })
-
-        /* Delete project id from member project id list */
-        projectDtl.memberList["members"].forEach(async(member) => {
-            const ref2 = doc(firedb, `users`, member.id)
-            //remove from user's project id entry
-            await getDoc(ref2)
-                .then (async (doc) => {
-                    let tempOwnedProjects = doc.data().ownedProjects;
-                    let tempList = tempOwnedProjects.filter((project) => {
-                        if (projectId !== project) return project;
-                    })
-                    await updateDoc(ref2, {
-                            ownedProjects: tempList
-                    })
-            })
-        })
-
-        deleteDocument(`projects`, projectId)
+    const handleProjectDelete = () => {
+        projectDelete(projectId, projectDtl);
+        deleteDocument(`projects`, projectId);
     }
 
 
     const handleProjectInvitation = async(e) => {
         e.preventDefault();
-        let ref = collection (firedb, 'users')
-        if (invite) {
-            ref = query(ref, where("email", "==", invite));
+        inviteUser(projectId,projectDtl, invite, roleTag);
+        setRole('');
+        setInvite('');
+        setOpen2(false);
+        if (errorAction) {
+            alert(errorAction);
         }
-
-        await getDocs(ref)
-            .then((snapshot) => {
-                let result = [];
-                snapshot.docs.forEach(doc => {
-                    result.push({...doc.data(), id: doc.id});
-                });
-
-                const receiver_uid = result[0].id;
-                const currUserDoc = doc(firedb, `users`, receiver_uid);
-
-                //update user's invitation list
-                getDoc(currUserDoc)
-                    .then ((doc) => {
-                        let invite_list = doc.data().invitations;
-
-                        if (!invite_list[projectId] && !doc.data().ownedProjects.includes(projectId)) {
-
-                            let tempRole = roleTag
-                            if (!roleTag) {
-                                tempRole = "member"
-                            }
-
-                            invite_list[projectId] = {
-                                projName: projectDtl.projName,
-                                roleTag: tempRole
-                            }
-
-                            //notification
-                            let message_list = doc.data().my_message;
-                            const time = new Date();
-                            const message = user.displayName + "invite you to join " + projectDtl.projName;
-                            const new_message = {
-                                Sender: user.displayName,
-                                Time: time,
-                                message: message
-                            }
-                            message_list.push(new_message)
-
-                            //update user metadata
-                            updateDoc(currUserDoc, {
-                                invitations: invite_list,
-                                my_message: message_list
-                                }
-                            );
-                        }
-                        else {
-                            console.log("already in this group")
-                        }
-                    })
-                setRole('')
-                setInvite('')
-                setOpen2(false)
-            })
-            .catch((err) => {
-                setRole('')
-                setInvite('')
-                console.error("Invalid User");
-            });
     }
     /* Project operations ends */
 
@@ -272,7 +203,7 @@ export default function Project() {
             }
         }
         setOpen2(true);
-        console.log(projectDtl.memberList);
+        //console.log(projectDtl.memberList);
     }
 
     const handleClose2 = () => { //clear invitation form
@@ -295,6 +226,21 @@ export default function Project() {
         setDueTateTime(null);
         setTaskPrio(0);
         setOpen(false);
+    }
+
+    const handleOpenProfile = async (e) => {
+        const return_prof = await getUserInfo(e.target.value)
+        if (errorAction) {
+            alert(errorAction);
+        }
+        console.log(return_prof)
+        setProfile(return_prof)
+        setopenProf(true);
+    }
+
+    const handleCloseProfile = () => {
+        setopenProf(false);
+        setProfile('')
     }
 
     const handleTaskCreation = (event) => {
@@ -716,7 +662,7 @@ export default function Project() {
 
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
-                                    <Grid item xs={1}><Button sx={{width: '100%'}}>{projectDtl.memberList.owner[0].displayName}</Button></Grid>
+                                    <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile} value = {projectDtl.memberList.owner[0].id} >{projectDtl.memberList.owner[0].displayName}</Button></Grid>
                                     <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                         <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>owner</Button>
                                     </Grid>
@@ -728,7 +674,7 @@ export default function Project() {
                                 projectDtl.memberList.members.map((member) =>
                                     <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
-                                            <Grid item xs={1}><Button sx={{width: '100%'}}>{member.displayName}</Button></Grid>
+                                            <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile} value = {member.id}>{member.displayName}</Button></Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                                 <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>{member.RoleTag}</Button>
                                             </Grid>
@@ -853,6 +799,32 @@ export default function Project() {
                         <Button onClick={handleTaskCreation}>Create</Button>
                     </DialogActions>
             </Dialog>
+            
+            <Dialog open={Boolean(openProf)}>
+                <Card variant="outlined" sx={{ maxWidth: 345}}>
+                <CardActionArea>
+                        <CardMedia
+                        component="img"
+                        height="140"
+                        image={profile.photoURL}
+                        alt="user photo"
+                        />
+                        <IconButton
+                                size="sm"
+                                onClick={handleCloseProfile}
+                                sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
+                            >
+                        <BookmarkAdd />
+                        </IconButton>
+                        <CardContent>
+                        <Typography variant="h5" component="div">{profile.displayName}</Typography>
+                        <Typography variant="body2" color="text.secondary">{profile.email}</Typography>
+
+                    </CardContent>
+                    </CardActionArea>
+                    </Card>
+            </Dialog>
+            
 
             {/* invitation form */}
             <Dialog open={Boolean(open2)} onClose={handleClose2}>
