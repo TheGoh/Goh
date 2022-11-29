@@ -288,7 +288,7 @@ export default function Project() {
             let temp_collection = task_collections;
             let sorted_collection = {};
             sorted_collection = temp_collection.sort((a,b) => {
-                return a.taskName.localeCompare(b.taskName);
+                return a.dueDate.localeCompare(b.dueDate);
             })
             let temp_ids = [];
             let temp_id_dict = {};

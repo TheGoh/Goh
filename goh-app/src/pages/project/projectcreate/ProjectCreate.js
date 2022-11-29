@@ -118,7 +118,7 @@ export default function ProjectCreate() {
                                 <FormControl sx={{width: "100%"}}>
                                     <InputLabel htmlFor="component-outlined">Project Name</InputLabel>
                                     <OutlinedInput
-                                    id="component-outlined"
+                                    id="component-outlined0"
                                     value={projName}
                                     label="ProjectName"
                                     onChange = {(e)=>setProjName(e.target.value)}
@@ -130,7 +130,7 @@ export default function ProjectCreate() {
                                 <FormControl sx={{width: "100%"}}>
                                     <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
                                     <OutlinedInput
-                                    id="component-outlined"
+                                    id="component-outlined1"
                                     value={projDescr}
                                     label="ProjectDescription"
                                     onChange = {(e)=>setProjDescr(e.target.value)}
@@ -141,9 +141,9 @@ export default function ProjectCreate() {
                             </Grid>
                             <Grid item xs={1} sx={{marginTop: '20px'}}>
                                 <FormControl sx={{width: "100%"}}>
-                                    <InputLabel htmlFor="component-outlined">Members Limit</InputLabel>
+                                    <InputLabel htmlFor="component-outlined">Members Limit (Optional)</InputLabel>
                                     <OutlinedInput
-                                        id="component-outlined"
+                                        id="component-outlined2"
                                         value={membersLimit}
                                         label="MembersLimit"
                                         onChange = {(e)=>setMembersLimit(e.target.value)}
