@@ -58,6 +58,7 @@ export const createUserDocumentFromAuth = async (userAuth, userid, photoURL) => 
         const ownedProjects = [];
         const invitations = {}; // a list of project ids being invited to
         const my_message = [];
+        const description = '';
         try {
             await setDoc(userDocRef, {
                 displayName : userid,
@@ -66,6 +67,7 @@ export const createUserDocumentFromAuth = async (userAuth, userid, photoURL) => 
                 ownedProjects,
                 invitations,
                 my_message,
+                description,
                 photoURL
             });
         } catch (error) {
