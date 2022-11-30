@@ -308,15 +308,33 @@ export default function Project() {
 
     useEffect(() => {
         if (projectDtl) {
-            let temp_mem = {};
-            if (projectDtl.memberList !== undefined) {
-                temp_mem[projectDtl.memberList.owner[0].id] = projectDtl.memberList.owner[0].displayName
-                if (projectDtl.memberList.members.length > 0) {
-                    projectDtl.memberList.members.forEach((member) => {
-                        temp_mem[member.id] = member.displayName;
+            
+            if (projectDtl.memberList !== undefined ) {
+                let temp_mem = {};
+                if (projectDtl.memberList.owner.length > 0) {
+                    projectDtl.memberList.owner.forEach(async(own) => {
+                        const ref = doc(firedb, `users`, own.id);
+                        await getDoc(ref)
+                            .then((doc) => {
+                                let user_data = doc.data()
+                                temp_mem[own.id] = user_data;
+                            })
                     })
                 }
                 
+                if (projectDtl.memberList.members.length > 0) {
+                    projectDtl.memberList.members.forEach(async(member) => {
+                        const ref = doc(firedb, `users`, member.id);
+                        await getDoc(ref)
+                            .then((doc) => {
+                                let user_data = doc.data()
+                                temp_mem[member.id] = user_data;
+                            })
+                        
+                    })
+                }
+                
+                 console.log(temp_mem)
                 setTaskOwnerName(temp_mem);
             }
             
@@ -424,7 +442,7 @@ export default function Project() {
                 <ButtonGroup sx={{width: '100%', height: '80px'}}>
                     <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '85%'}} theme={prio_theme}>
                         {task_dict[key].taskName}<br></br>
-                        Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
+                        Owner: {taskOwnerName[task_dict[key].currUserId].displayName}<br></br>
                         Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                     </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
@@ -435,7 +453,7 @@ export default function Project() {
             return (
                 <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '100%', height: '80px'}} theme={prio_theme}>
                     {task_dict[key].taskName}<br></br>
-                    Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
+                    Owner: {taskOwnerName[task_dict[key].currUserId].displayName}<br></br>
                     Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                 </Button>
             )
@@ -657,10 +675,7 @@ export default function Project() {
                 <Grid item xs={1} sx={{width:"95%"}}>
                     <Paper sx={{height: '100%', marginTop: '20px'}} className={styles['member-ls']}>
                         <Grid container columns={3}>
-                            
-
-
-                            
+                                                    
                             <Grid item xs={3}>
                                 <Grid container columns={4}>
                                     <Grid item xs={2} sx={{paddingBottom: '20px', paddingTop: '20px', fontSize:'20px', fontWeight:'bold'}}>
