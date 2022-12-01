@@ -300,7 +300,6 @@ export default function Project() {
             })
             setTaskIds(temp_ids);
             setTaskDict(temp_id_dict);
-
             setProgress((count / Object.keys(task_collections).length) * 100)
         }
 
@@ -308,33 +307,15 @@ export default function Project() {
 
     useEffect(() => {
         if (projectDtl) {
-            
-            if (projectDtl.memberList !== undefined ) {
-                let temp_mem = {};
-                if (projectDtl.memberList.owner.length > 0) {
-                    projectDtl.memberList.owner.forEach(async(own) => {
-                        const ref = doc(firedb, `users`, own.id);
-                        await getDoc(ref)
-                            .then((doc) => {
-                                let user_data = doc.data()
-                                temp_mem[own.id] = user_data;
-                            })
-                    })
-                }
-                
+            let temp_mem = {};
+            if (projectDtl.memberList !== undefined) {
+                temp_mem[projectDtl.memberList.owner[0].id] = projectDtl.memberList.owner[0].displayName
                 if (projectDtl.memberList.members.length > 0) {
-                    projectDtl.memberList.members.forEach(async(member) => {
-                        const ref = doc(firedb, `users`, member.id);
-                        await getDoc(ref)
-                            .then((doc) => {
-                                let user_data = doc.data()
-                                temp_mem[member.id] = user_data;
-                            })
-                        
+                    projectDtl.memberList.members.forEach((member) => {
+                        temp_mem[member.id] = member.displayName;
                     })
                 }
                 
-                 console.log(temp_mem)
                 setTaskOwnerName(temp_mem);
             }
             
@@ -437,12 +418,13 @@ export default function Project() {
 
     function inProgressBtns(key) { //In progress btns has 2 conditions
         let prio_theme = getPrioTheme(key);
-        if (user.uid === task_dict[key].currUserId) {
+        
+            if (user.uid === task_dict[key].currUserId) {
             return (
                 <ButtonGroup sx={{width: '100%', height: '80px'}}>
                     <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '85%'}} theme={prio_theme}>
                         {task_dict[key].taskName}<br></br>
-                        Owner: {taskOwnerName[task_dict[key].currUserId].displayName}<br></br>
+                        Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
                         Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                     </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
@@ -453,11 +435,13 @@ export default function Project() {
             return (
                 <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '100%', height: '80px'}} theme={prio_theme}>
                     {task_dict[key].taskName}<br></br>
-                    Owner: {taskOwnerName[task_dict[key].currUserId].displayName}<br></br>
+                    Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
                     Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                 </Button>
             )
         }
+        
+       
     }
 
     function inReviewBtns(key) {
@@ -487,7 +471,7 @@ export default function Project() {
         return <div className = "error">{error}</div>
     }
 
-    if (!projectDtl || !task_collections) {
+    if (!projectDtl || !task_collections ) {
         return <div> Loading... </div>
     }
     return (
