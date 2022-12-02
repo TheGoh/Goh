@@ -102,11 +102,11 @@ export default function TaskInfo() {
         const dwnldUrl = await getDownloadURL(fileRef)
         setUrl(dwnldUrl)
     }
-    const handleAttach = (e) => {
+    const handleAttach = async (e) => {
         e.preventDefault();
         const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
         if (ref) {
-            updateDoc(ref, {
+            await updateDoc(ref, {
                 fileURL: fileUrl
             })
             console.log("firestore update")
