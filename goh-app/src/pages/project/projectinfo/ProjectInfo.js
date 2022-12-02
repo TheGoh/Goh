@@ -679,11 +679,7 @@ export default function Project() {
                                         
                                     </Grid>
                                 </Grid>
-                                
                             </Grid>
-
-
-                                {/* // <Grid item xs={1} sx={{display: 'flex', alignItems:'center'}}> */}
 
                             <Grid item xs={3}>
                                 <Grid container columns={2}>
@@ -826,28 +822,29 @@ export default function Project() {
             </Dialog>
             
             <Dialog open={Boolean(openProf)}>
-                <Card variant="outlined" sx={{ maxWidth: 345}}>
-                <CardActionArea>
+                <Card variant="outlined" sx={{ width: "345px"}}>
+                    <CardActionArea>
                         <CardMedia
                         component="img"
-                        height="140"
+                        height="200px"
                         image={profile.photoURL}
                         alt="user photo"
                         />
                         <IconButton
-                                size="sm"
-                                onClick={handleCloseProfile}
-                                sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
-                            >
-                        <BookmarkAdd />
+                            size="sm"
+                            onClick={handleCloseProfile}
+                            sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
+                        >
+                            <BookmarkAdd />
                         </IconButton>
-                        <CardContent>
-                        <Typography variant="h5" component="div">{profile.displayName}</Typography>
-                        <Typography variant="body2" color="text.secondary">{profile.email}</Typography>
 
-                    </CardContent>
+                        <CardContent>
+                            <Typography variant="h5" component="div">{profile.displayName}</Typography>
+                            <Typography variant="body2" color="text.secondary">{profile.email}</Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{overflowY: "scroll"}}>{profile.description}</Typography>
+                        </CardContent>
                     </CardActionArea>
-                    </Card>
+                </Card>
             </Dialog>
             
 
