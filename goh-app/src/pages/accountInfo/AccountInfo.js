@@ -12,7 +12,9 @@ import styles from './AccountInfo.module.css'
 import {  firedb } from '../../firebase/config';
 import { useProjectActions } from '../../hooks/useProjectActions';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, updateDoc } from "firebase/firestore";
+
+import Button from '@mui/material/Button';
 
 
 
@@ -135,7 +137,7 @@ export default function AccountInfo() {
               />
             </label>
             
-            <button onClick={updateInfo}>Save</button>
+            <Button onClick={updateInfo} variant='contained'>Save</Button>
           </form>
         </div>
       )

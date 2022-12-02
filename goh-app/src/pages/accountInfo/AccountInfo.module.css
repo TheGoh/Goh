@@ -35,7 +35,7 @@
   border: 2px solid rgb(157, 157, 157);
   border-radius: 5px;
 }
-.signup-form button {
+/* .signup-form button {
   font-family: 'Cabin', sans-serif;
   font-weight: normal;
   font-size: 20px;
@@ -46,7 +46,7 @@
   border: none;
   border-radius: 10px;
   transition: all 0.4s ease-in-out;
-}
+} */
 
 .passwd {
     margin: 0px;
