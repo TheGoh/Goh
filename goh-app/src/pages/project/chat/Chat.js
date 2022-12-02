@@ -33,6 +33,7 @@ export default function Chat() {
 
     const handleSend = () => {
        sendChatMsg(projectId, user.uid, user.displayName, msg);
+       setMsg('');
     }
 
     const handleDelHistory = () => {
@@ -47,7 +48,12 @@ export default function Chat() {
 
     useEffect(() => {
         if (chatLog) {
-            console.log(chatLog);
+          let sorted_collection = {};
+            sorted_collection = chatLog.sort((a,b) => {
+                return a.createAt.toString().localeCompare(b.createAt.toString());
+            })
+          console.log(sorted_collection)
+          setMsgList(sorted_collection)
         }
     }, [chatLog])
 
@@ -67,7 +73,7 @@ export default function Chat() {
         
         <Box sx={{height: '80%'}} className={styles['scroll-container']}>
           <ScrollToBottom>
-            {chatLog.length > 0 && chatLog.map((msg) => {
+            {MsgList.length > 0 && MsgList.map((msg) => {
               return (
                 <Box
                   className={user.uid === msg.senderId ? styles['out'] : styles['in']}
@@ -95,7 +101,9 @@ export default function Chat() {
               setMsg(event.target.value);
             }}
             onKeyPress={(event) => {
-              if (event.key === "Enter") handleSend();
+              if (event.key === "Enter") {
+                handleSend();
+              } 
             }}
             sx={{ ml: 1, flex: 1, width:"80%"}}
           />
