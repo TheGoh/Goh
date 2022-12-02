@@ -51,12 +51,12 @@ export default function Chat() {
 
     useEffect(() => {
         if (chatLog) {
-          let sorted_collection = {};
-            sorted_collection = chatLog.sort((a,b) => {
-                return a.createAt.toString().localeCompare(b.createAt.toString());
-            })
-          console.log(sorted_collection)
-          setMsgList(sorted_collection)
+          // let sorted_collection = {};
+          //   sorted_collection = chatLog.sort((a,b) => {
+          //       return a.createAt.toString().localeCompare(b.createAt.toString());
+          //   })
+          // console.log(sorted_collection)
+          // setMsgList(sorted_collection)
         }
     }, [chatLog])
 
@@ -77,7 +77,7 @@ export default function Chat() {
         
         <Box sx={{height: '80%'}} className={styles['scroll-container']}>
           <ScrollToBottom>
-            {MsgList.length > 0 && MsgList.map((msg) => {
+            {chatLog.length > 0 && chatLog.map((msg) => {
               return (
                 <Box
                   className={user.uid === msg.senderId ? styles['out'] : styles['in']}
