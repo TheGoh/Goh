@@ -93,9 +93,12 @@ export default function TModify() {
                 </Grid>
 
                 <Grid item xs={1}>
-                    <Link to={`/project/taskinfo/${projectId}/${taskId}`} onClick={handleModify} >
-                        <Button variant="contained" sx={{height: '90%', width: '50%'}}>Save</Button>
-                    </Link>
+                    <Button component={Link} 
+                            to={`/project/taskinfo/${projectId}/${taskId}`}
+                            onClick={handleModify} 
+                            variant="contained" sx={{width: '50%'}}>
+                            Save
+                    </Button>
                 </Grid>
             
             </Grid>
