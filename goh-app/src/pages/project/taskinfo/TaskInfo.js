@@ -51,7 +51,10 @@ export default function TaskInfo() {
     const [ fileUrl, setUrl ] = useState('');
     const [ file, setFile ] = useState('');
     const [ taskOwner, setTaskOwner ] = useState(null);
-
+    let remChar = 0;
+    if (comment.length <= 500) {
+        remChar = 500 - comment.length;
+    }
     useEffect(() => {
         if (projectDtl) {
             let all_Comments = [];
@@ -139,6 +142,11 @@ export default function TaskInfo() {
 
     const handleComment = async(e) => {
         e.preventDefault();
+        if (comment.length > 500) {
+            setComment('');
+            setOpen(false);
+            return
+        }
         const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
         await getDoc(ref).then((doc) => {
             let comment_list = doc.data().comments;
@@ -289,7 +297,7 @@ export default function TaskInfo() {
                         <DialogContentText sx={{textIndent:'0px'}}>
                             Please enter your comments
                         </DialogContentText>
-
+                        <h5>Characters Remaining: {remChar}</h5>
                         <Grid container sx={{marginTop: '20px'}} columns={1}>
                         <Grid item xs={1} sx={{marginBottom: '20px'}}>
                             <FormControl sx={{width: "100%"}}>
@@ -298,7 +306,8 @@ export default function TaskInfo() {
                             id="component-outlined"
                             value={comment}
                             label="Comment"
-                            onChange = {(e)=>setComment(e.target.value)}
+                            onChange = {(e)=>
+                                setComment(e.target.value)}
                             type="text"
                             />
                             </FormControl>
@@ -327,6 +336,7 @@ export default function TaskInfo() {
                                 id="component-outlined"
                                 onChange = {uploadAttachment}
                                 type="file"
+                                
                             />
                             </FormControl>
                         </Grid>                    
