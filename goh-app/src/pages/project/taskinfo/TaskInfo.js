@@ -102,8 +102,11 @@ export default function TaskInfo() {
         const dwnldUrl = await getDownloadURL(fileRef)
         setUrl(dwnldUrl)
     }
-    const handleAttach = async (e) => {
+    const handleAttach = async(e) => {
         e.preventDefault();
+        if ( !fileUrl ) {
+           return alert("file is not ready");
+        }
         const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
         if (ref) {
             await updateDoc(ref, {
