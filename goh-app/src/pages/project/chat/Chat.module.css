@@ -16,6 +16,7 @@
   background-color: #43a047;
   padding: 5px;
   border-radius: 3px;
+  word-wrap: break-word;
 }
 
 .out .meta {
@@ -35,6 +36,7 @@
   background-color: rgb(72, 130, 255);
   padding: 5px;
   border-radius: 3px;
+  word-wrap: break-word;
 }
 
 .in .meta {
