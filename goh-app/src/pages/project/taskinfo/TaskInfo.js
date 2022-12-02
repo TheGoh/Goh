@@ -216,8 +216,7 @@ export default function TaskInfo() {
                     <Grid container columns={1}>
                         <Grid item xs={1} className={styles['basic-info']}>
                             <h1>{projectDtl.taskName}</h1>
-                            
-                            {taskOwner !== null && <Avatar alt="owner-img" src={taskOwner.photoURL}/>}
+                            {taskOwner !== null && <Avatar alt="owner-img" src={taskOwner.photoURL} sx={{width: "50px", height:"50px"}}/>}
                         </Grid>
                         <Grid item xs={1} className={styles['basic-info']}><p>{projectDtl.taskDescr}</p></Grid>
                         <Grid item xs={1} className={styles['basic-info']}>
