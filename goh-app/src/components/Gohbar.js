@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -28,6 +29,7 @@ import { blue } from '@mui/material/colors';
 import Notification from '../pages/notification/Notification';
 import Invitation from '../pages/notification/Invitation';
 import Avatar from './Avatar.js';
+import Govatar from './Govatar.js';
 
 const BAR_THEME = createTheme({
     palette: {
@@ -59,32 +61,28 @@ export default function Gohbar() {
                             <Grid item xs={1}></Grid>
                             <Grid item xs={1}></Grid>
                             <Grid item xs={1}></Grid>
-                            <Grid item xs={1} sx={{display: "flex", justifyContent: "center"}}>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-end"}}>
                                 <ButtonGroup color="inherit">
                                     <Button component={Link} to="/project/projectcreate"><InventoryIcon/></Button>
                                     <Button component={Link} to="/accountInfo"><SettingsIcon/></Button>
                                     <Button component={Link} to="/calendar"><CalendarMonthIcon/></Button>
                                 </ButtonGroup>
                             </Grid>
-                            <Grid item xs={1} sx={{display: "flex", justifyContent: "center"}}>
+                            <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-end"}}>
                                 <ButtonGroup color="inherit">
                                     <Notification/>
                                     <Invitation/>
                                     <Button onClick={logout}><LogoutIcon/></Button>
                                 </ButtonGroup>
-                            </Grid>
-                            <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-start"}}>
-                                <Avatar src = {user.photoURL}/>
+                                <Divider variant="middle"/>
+                                <Govatar src = {user.photoURL}/>
                             </Grid>
                         </Grid>
                         :
-                        <Grid container columns={7}>
+                        <Grid container columns={2}>
                             <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}>
+                            <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-end"}}>
                                 <ButtonGroup color="inherit">
                                     <Button component={Link} to="/login"><LoginIcon/></Button>
                                     <Button component={Link} to="/signup"><PersonAddIcon/></Button>
