@@ -15,6 +15,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
+import Badge from '@mui/material/Badge';
+import Avatar from '@mui/material/Avatar';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -185,7 +187,7 @@ export default function TaskInfo() {
     }
 
     function ownerButton() {
-        if (user.uid === projectDtl.ownerid) {
+        if (user.uid === projectDtl.ownerid || user.uid === projectDtl.currUserId) {
             return (
                 <ButtonGroup key={projectId}>
                     <Button component={Link} to={`/project/${projectId}`}  variant="contained"><UndoIcon/></Button>
@@ -205,13 +207,17 @@ export default function TaskInfo() {
         }
     }
 
+
     return (
         <Box>
             <Grid container columns={3} sx={{padding: "30px"}}>
                 {/* Basic info and operations */}
                 <Grid item xs={2}> 
                     <Grid container columns={1}>
-                        <Grid item xs={1} className={styles['basic-info']}><h1>{projectDtl.taskName}</h1></Grid>
+                        <Grid item xs={1} className={styles['basic-info']}>
+                            <h1>{projectDtl.taskName}</h1>
+                            {taskOwner !== null && <Avatar alt="owner-img" src={taskOwner.photoURL}/>}
+                        </Grid>
                         <Grid item xs={1} className={styles['basic-info']}><p>{projectDtl.taskDescr}</p></Grid>
                         <Grid item xs={1} className={styles['basic-info']}>
                             <p>{projectDtl.dueDate}&nbsp;&nbsp;</p>
