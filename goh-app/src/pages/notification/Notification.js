@@ -6,6 +6,8 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 import { firedb } from '../../firebase/config';
 import {updateDoc, doc, getDoc } from "firebase/firestore";
 import { useFirestore } from '../../hooks/useFirestore';
+import { Link } from "react-router-dom";
+
 
 import styles from './Notification.module.css';
 import Paper from '@mui/material/Paper';
@@ -93,6 +95,7 @@ export default function Notification() {
         aria-haspopup="true"
         onClick={handleToggle}
         color="inherit"
+        component={Link}
       >
         {userDetail.my_message.length > 0 ? <NotificationsActiveIcon/> : <NotificationsNoneIcon/>}
 

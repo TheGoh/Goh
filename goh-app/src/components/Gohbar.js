@@ -62,14 +62,14 @@ export default function Gohbar() {
                             <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-end"}}>
                                 <ButtonGroup color="inherit">
                                     <Button component={Link} to="/project/projectcreate"><InventoryIcon/></Button>
-                                    <Button component={Link} to="/accountInfo"><SettingsIcon/></Button>
                                     <Button component={Link} to="/calendar"><CalendarMonthIcon/></Button>
+                                    <Notification/>
                                 </ButtonGroup>
                                 <Divider variant="middle"/>
                                 <ButtonGroup color="inherit">
-                                    <Notification/>
                                     <Invitation/>
-                                    <Button onClick={logout}><LogoutIcon/></Button>
+                                    <Button component={Link} to="/accountInfo"><SettingsIcon/></Button>
+                                    <Button component={Link} onClick={logout}><LogoutIcon/></Button>
                                 </ButtonGroup>
                                 <Divider variant="middle"/>
                                 <Govatar src = {user.photoURL}/>
