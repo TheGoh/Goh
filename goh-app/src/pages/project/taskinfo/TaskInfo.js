@@ -207,7 +207,6 @@ export default function TaskInfo() {
         }
     }
 
-
     return (
         <Box>
             <Grid container columns={3} sx={{padding: "30px"}}>
@@ -248,14 +247,25 @@ export default function TaskInfo() {
                         projectDtl.comments.length > 0 ? projectDtl.comments.map(comment => (
                             <Grid item xs ={1} key = {comment.id} sx={{display: 'flex', justifyContent: 'flex-start', marginBottom: '10px'}}>
                             <Paper sx={{ width: "80%"}}>
+                                {(user.uid === projectDtl.ownerid || user.uid === projectDtl.currUserId) ? 
                                 <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
                                     {(comment.resolved.includes("UNRESOLVED")) ?
-                                        <Button onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
+                                        <Button variant="outlined" onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
                                         :
-                                        <Button onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
+                                        <Button variant="contained" onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
                                     }
                                     
                                 </Grid>
+                                :
+                                <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
+                                    {(comment.resolved.includes("UNRESOLVED")) ?
+                                        <Button variant="outlined" color="error">{comment.comment}</Button> 
+                                        :
+                                        <Button variant="contained" color="success">{comment.comment}</Button> 
+                                    }
+                                
+                                </Grid>
+                                }
                             </Paper>
                             </Grid>
                         ))
