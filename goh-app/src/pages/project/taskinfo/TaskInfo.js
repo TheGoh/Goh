@@ -249,19 +249,19 @@ export default function TaskInfo() {
                             <Paper sx={{ width: "80%"}}>
                                 {(user.uid === projectDtl.ownerid || user.uid === projectDtl.currUserId) ? 
                                 <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
-                                    {(comment.resolved.includes("UNRESOLVED")) ?
-                                        <Button variant="outlined" onClick={() => {handleResolved(comment)}} color="error">{comment.comment}</Button> 
-                                        :
-                                        <Button variant="contained" onClick={() => {handleResolved(comment)}} color="success">{comment.comment}</Button> 
-                                    }
-                                    
+                                    <Button variant="contained"
+                                            onClick={() => {handleResolved(comment)}}
+                                            color={comment.resolved.includes("UNRESOLVED") ? "error" : "success"}
+                                            sx={{textTransform: "none"}}>
+                                        {comment.comment}
+                                    </Button> 
                                 </Grid>
                                 :
                                 <Grid container columns={1} sx={{width: "95%", p: '15px'}}>
                                     {(comment.resolved.includes("UNRESOLVED")) ?
-                                        <Button variant="outlined" color="error">{comment.comment}</Button> 
+                                        <Button variant="outlined" color="error" sx={{textTransform: "none"}}>{comment.comment}</Button> 
                                         :
-                                        <Button variant="contained" color="success">{comment.comment}</Button> 
+                                        <Button variant="contained" color="success" sx={{textTransform: "none"}}>{comment.comment}</Button> 
                                     }
                                 
                                 </Grid>

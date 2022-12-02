@@ -694,7 +694,9 @@ export default function Project() {
                                 projectDtl.memberList.members.map((member) =>
                                     <Grid item xs={3} key = {member.id} >
                                         <Grid container columns={2}>
-                                            <Grid item xs={1}><Button sx={{width: '100%'}} onClick={handleOpenProfile} value = {member.id}>{member.displayName}</Button></Grid>
+                                            <Grid item xs={1}>
+                                                <Button sx={{width: '100%', textTransform: 'none'}} onClick={handleOpenProfile} value = {member.id}>{member.displayName}</Button>
+                                            </Grid>
                                             <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
                                                 <Button variant="outlined" disabled style={{textTransform: 'none', height: '50%', width: '50%'}}>{member.RoleTag}</Button>
                                             </Grid>

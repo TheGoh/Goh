@@ -47,3 +47,6 @@
     overflow-y: scroll;
 }
 
+.roletag-id-btn {
+    text-transform: none;
+}

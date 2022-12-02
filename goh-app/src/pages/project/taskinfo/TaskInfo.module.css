@@ -23,3 +23,9 @@
     text-align: left;
     font-family: 'Montserrat', sans-serif;
 }
+
+.comment-wrap {
+    /* word-wrap: break-word; */
+    display: flex;
+    flex-wrap: wrap;
+}
