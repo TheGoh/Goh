@@ -7,6 +7,7 @@ import { useAuthContext } from '../../../hooks/useAuthContext'
 import { Link} from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { firedb, storage } from '../../../firebase/config';
+import { useProjectActions } from '../../../hooks/useProjectActions';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import Box from '@mui/material/Box';
@@ -40,21 +41,35 @@ export default function TaskInfo() {
     const { deleteDocument } = useFirestore()
     const { documents: projectDtl } = useDocument(`projects/${projectId}/tasks`, taskId);
     const { user } = useAuthContext()
+    const { getUserInfo, error: errorAction } = useProjectActions();
     const [ open, setOpen ] = useState('')  //Comment popup
     const [ openA, setAOpen ] = useState('') //Attachment popup
     const [ commentList, setCommentList ] = useState('');
     const [ comment, setComment ] = useState('')
     const [ fileUrl, setUrl ] = useState('');
     const [ file, setFile ] = useState('');
+    const [ taskOwner, setTaskOwner ] = useState('');
 
     useEffect(() => {
         if (projectDtl) {
             let all_Comments = [];
             let attach_URL = '';
+            let temp_taskOwner = '';
             Object.keys(projectDtl.comments).forEach(item => {
                 const date = new Date()          
                 all_Comments.push({comment: projectDtl.comments[item].comment, id:projectDtl.comments[item].id, time: date, resolved: projectDtl.comments[item].resolved});        
             })
+
+            const getUsers = async () => {
+                temp_taskOwner = await getUserInfo(projectDtl.currUserId);
+                console.log(temp_taskOwner)
+            };
+
+            if (projectDtl.taskState === "IN PROGRESS") {
+                getUsers();
+            }
+
+            setTaskOwner(temp_taskOwner)
             attach_URL = projectDtl.fileURL;
             setUrl(attach_URL);
             setCommentList(all_Comments);

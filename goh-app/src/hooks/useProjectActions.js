@@ -117,7 +117,7 @@ export const useProjectActions = () => {
         let ref = doc (firedb, 'users', userId)
         const snapshot = await getDoc(ref);
         if (snapshot.exists()) {
-            console.log(snapshot.data())
+            //console.log(snapshot.data())
             return snapshot.data();
         } else {
             setError("INVALID")
