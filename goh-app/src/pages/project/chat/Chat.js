@@ -51,12 +51,12 @@ export default function Chat() {
 
     useEffect(() => {
         if (chatLog) {
-          let sorted_collection = {};
-            sorted_collection = chatLog.sort((a,b) => {
-                return a.createAt.toString().localeCompare(b.createAt.toString());
-            })
-          console.log(sorted_collection)
-          setMsgList(sorted_collection)
+          // let sorted_collection = {};
+          //   sorted_collection = chatLog.sort((a,b) => {
+          //       return a.createAt.toString().localeCompare(b.createAt.toString());
+          //   })
+          // console.log(sorted_collection)
+          // setMsgList(sorted_collection)
         }
     }, [chatLog])
 
