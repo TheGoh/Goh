@@ -66,6 +66,7 @@ export default function ProjectCreate() {
 
     const handleSubmit = (event) => { //close form and save project
         event.preventDefault();
+        if (membersLimit && (membersLimit < 1)) return alert("Please enter a number larger than 1");
         if (projName.length !== 0) {
             const projid = uuid();
             createProject(user.uid, projid, projName, projDescr,membersLimit);
