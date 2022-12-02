@@ -81,7 +81,7 @@ export default function AccountInfo() {
       };
 
       getUsers();
-    })
+    },[])
     
 
     if (!user) return <div> loading...</div>
