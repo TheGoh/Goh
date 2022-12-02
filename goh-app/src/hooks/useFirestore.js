@@ -61,7 +61,6 @@ export const useFirestore = () => {
         const createAt = new Date();
         const chatCollection = doc(firedb, `projects/${projid}/chats`,createAt.toString());
         const chatSnapShot = await getDoc(chatCollection);
-        console.log("chat snapshot")
         if (!chatSnapShot.exists()) {
             await setDoc(chatCollection, {
                 createAt,
@@ -69,7 +68,7 @@ export const useFirestore = () => {
                 senderName,
                 message
             })
-            .then(()=> {console.log("Update messages!!!")})
+            // .then(()=> {console.log("Update messages!!!")})
             .catch(error => {
                 console.log(error.message)
                 setError(error.message)
