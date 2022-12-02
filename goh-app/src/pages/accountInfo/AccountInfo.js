@@ -13,7 +13,6 @@ import {  firedb } from '../../firebase/config';
 import { useProjectActions } from '../../hooks/useProjectActions';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, updateDoc } from "firebase/firestore";
-
 import Button from '@mui/material/Button';
 
 
@@ -40,38 +39,39 @@ export default function AccountInfo() {
         .catch((error) => {
           updateEmail(user, tempEmail)
           return alert(error.message)
-        });    
-      })
-      .catch((error) => {
-        return alert("INVALID PASSWORD")
-      })
-      let imgURL = user.photoURL;
-      if (avatar) {
-        if (!avatar.type.includes('image')) {
-          alert("Please select a image")
-          return;
-        } else if (avatar.size > 100000) {
-          alert("Invalid File Size")
-          return;
-        } else {
-          const storage = getStorage();
-          const path = `UserProfileImage/${user.uid}/${avatar.name}`
-          const storageRef = ref(storage, path);
-          await uploadBytes(storageRef, avatar)
-          imgURL = await getDownloadURL(storageRef);
-        }       
-      }
+        });
+        let imgURL = user.photoURL;
+          if (avatar) {
+            if (!avatar.type.includes('image')) {
+              alert("Please select a image")
+              return;
+            } else if (avatar.size > 100000) {
+              alert("Invalid File Size")
+              return;
+            } else {
+              const storage = getStorage();
+              const path = `UserProfileImage/${user.uid}/${avatar.name}`
+              const storageRef = ref(storage, path);
+              await uploadBytes(storageRef, avatar)
+              imgURL = await getDownloadURL(storageRef);
+            }       
+          }
 
-      const reference = doc(firedb, `users`, user.uid)
-      await updateDoc(reference, {
-        email: newEmail,
-        photoURL: imgURL,
-        description: description
-      })
+          const reference = doc(firedb, `users`, user.uid)
+          await updateDoc(reference, {
+            email: newEmail,
+            photoURL: imgURL,
+            description: description
+          })
 
-      await updateProfile(user, {
-        photoURL: imgURL
+          await updateProfile(user, {
+            photoURL: imgURL
+          })
       })
+      .catch(() => {
+        return alert("INVALID PASSWORD");
+      })
+      
     }
 
     useEffect(() => {
