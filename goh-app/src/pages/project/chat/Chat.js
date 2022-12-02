@@ -11,8 +11,11 @@ import styles from './Chat.module.css';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
@@ -67,8 +70,9 @@ export default function Chat() {
 
     return (
       <Box sx={{width: '100%', height: '100vh'}}>
-        <Paper sx={{padding: '20px', height: '2%'}} className={styles['heading']}>Live Chat
-        <Button onClick = {handleDelHistory}><ClearAllIcon/></Button>
+        <Paper sx={{padding: '20px', height: '2%'}} className={styles['heading']}>
+          Live Chat
+          {projectDtl. ownerid === user.uid && <IconButton onClick = {handleDelHistory}><ClearAllIcon/></IconButton>}
         </Paper>
         
         <Box sx={{height: '80%'}} className={styles['scroll-container']}>
