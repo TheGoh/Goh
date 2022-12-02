@@ -90,6 +90,10 @@ export default function TaskInfo() {
     const uploadAttachment = async(e) => {
         e.preventDefault();
         const attachment = e.target.files[0];
+        if (attachment.size >= 10000000) {
+            alert("Max File Size: 10MB")
+            return;
+        }
         const storage = getStorage();
         const fileRef = ref(storage, `TaskAttachment/${taskId}`)
         await uploadBytes(fileRef, attachment).then((snapshot) => {
@@ -98,11 +102,11 @@ export default function TaskInfo() {
         const dwnldUrl = await getDownloadURL(fileRef)
         setUrl(dwnldUrl)
     }
-    const handleAttach = (e) => {
+    const handleAttach = async (e) => {
         e.preventDefault();
         const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
         if (ref) {
-            updateDoc(ref, {
+            await updateDoc(ref, {
                 fileURL: fileUrl
             })
             console.log("firestore update")
