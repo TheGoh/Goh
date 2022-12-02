@@ -56,11 +56,8 @@ export default function Gohbar() {
                     <h1 className={styles['container']}>Goh</h1>
                     {
                         user ?
-                        <Grid container columns={7}>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
-                            <Grid item xs={1}></Grid>
+                        <Grid container columns={2}>
+                            
                             <Grid item xs={1}></Grid>
                             <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-end"}}>
                                 <ButtonGroup color="inherit">
@@ -68,8 +65,7 @@ export default function Gohbar() {
                                     <Button component={Link} to="/accountInfo"><SettingsIcon/></Button>
                                     <Button component={Link} to="/calendar"><CalendarMonthIcon/></Button>
                                 </ButtonGroup>
-                            </Grid>
-                            <Grid item xs={1} sx={{display: "flex", justifyContent: "flex-end"}}>
+                                <Divider variant="middle"/>
                                 <ButtonGroup color="inherit">
                                     <Notification/>
                                     <Invitation/>
