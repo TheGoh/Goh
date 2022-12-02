@@ -185,7 +185,7 @@ export default function Invitation() {
                     transition
                     disablePortal
                     className={styles['paper-container']}
-                    sx={{height: "400px", overflowY: "scroll"}}
+                    sx={{maxHeight: "400px", overflowY: "scroll"}}
                 >
                     {({ TransitionProps, placement }) => (
                     <Grow
@@ -214,6 +214,12 @@ export default function Invitation() {
                                         </ButtonGroup>   
                                     </MenuItem>
                                 )
+                            }
+
+                            {
+                                inviteList.length === 0 &&
+                                <MenuItem onClick={handleClose}>Empty Invitation</MenuItem>
+
                             }
                             </MenuList>
                         </ClickAwayListener>
