@@ -18,13 +18,18 @@ export default function Modify() {
     const [projName, setProjName] = useState('');
     const [projDescrSet, setDescr] = useState(false);
     const [projNameSet, setName] = useState(false);
+    const [orig, setOrig] = useState(false);
     const { modifyDocument } = useFirestore();
-
     if (!projectDtl) {
         return <div> Loading... </div>
     }
     const name = projectDtl.projName
     const descr = projectDtl.projDescr
+    if (orig === false) {
+        setProjDescr(descr)
+        setProjName(name)
+        setOrig(true)
+    }
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
     const handleModify = (e) => {
         if (projNameSet === false) {
