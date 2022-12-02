@@ -105,6 +105,7 @@ export default function Notification() {
           transition
           disablePortal
           className={styles['paper-container']}
+          sx={{height: "400px", overflowY: "scroll"}}
         >
           {({ TransitionProps, placement }) => (
             <Grow
@@ -114,7 +115,7 @@ export default function Notification() {
                   placement === 'bottom-start' ? 'left top' : 'left bottom',
               }}
             >
-              <Paper>
+              <Paper elevation={3}>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}

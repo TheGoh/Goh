@@ -185,6 +185,7 @@ export default function Invitation() {
                     transition
                     disablePortal
                     className={styles['paper-container']}
+                    sx={{height: "400px", overflowY: "scroll"}}
                 >
                     {({ TransitionProps, placement }) => (
                     <Grow
