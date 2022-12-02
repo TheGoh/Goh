@@ -73,7 +73,7 @@ export default function Chat() {
         
         <Box sx={{height: '80%'}} className={styles['scroll-container']}>
           <ScrollToBottom>
-            {MsgList.length > 0 && MsgList.map((msg) => {
+            {chatLog.length > 0 && chatLog.map((msg) => {
               return (
                 <Box
                   className={user.uid === msg.senderId ? styles['out'] : styles['in']}
