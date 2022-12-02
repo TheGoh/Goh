@@ -11,11 +11,7 @@ import styles from './Chat.module.css';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
@@ -28,11 +24,7 @@ export default function Chat() {
     const { documents: chatLog, error2 } = useCollection(`projects/${projectId}/chats`, null);
     const { sendChatMsg , deleteDocument, error3} = useFirestore();
     const [ MsgList, setMsgList] = useState('');
-    //TODO add useCollection
-
-    const [msg, setMsg] = useState('')
-
-    
+    const [msg, setMsg] = useState('')  
 
     const handleSend = () => {
       if (msg.length === 0) return;
@@ -45,19 +37,17 @@ export default function Chat() {
         chatLog.forEach(msg =>{
           deleteDocument(`projects/${projectId}/chats`, msg.id);
         })
-      }
-      
-      
+      } 
     }
 
     useEffect(() => {
         if (chatLog) {
-          // let sorted_collection = {};
-          //   sorted_collection = chatLog.sort((a,b) => {
-          //       return a.createAt.toString().localeCompare(b.createAt.toString());
-          //   })
-          // console.log(sorted_collection)
-          // setMsgList(sorted_collection)
+          let sorted_collection = {};
+            sorted_collection = chatLog.sort((a,b) => {
+              return new Date(a.id) - new Date(b.id);
+            })
+          console.log(sorted_collection)
+          setMsgList(sorted_collection)
         }
     }, [chatLog])
 
@@ -78,7 +68,7 @@ export default function Chat() {
         
         <Box sx={{height: '80%'}} className={styles['scroll-container']}>
           <ScrollToBottom>
-            {chatLog.length > 0 && chatLog.map((msg) => {
+            {MsgList.length > 0 && MsgList.map((msg) => {
               return (
                 <Box
                   className={user.uid === msg.senderId ? styles['out'] : styles['in']}

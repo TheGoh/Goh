@@ -286,7 +286,6 @@ export default function Project() {
         if (task_collections) {
             //update task_ids if task collection changes
             let temp_collection = task_collections;
-            console.log("here", temp_collection);
             let sorted_collection = {};
             sorted_collection = temp_collection.sort((a,b) => {
                 return new Date(a.dueDate) - new Date(b.dueDate); 
