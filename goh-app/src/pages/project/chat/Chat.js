@@ -73,8 +73,9 @@ export default function Chat() {
                   className={user.uid === msg.senderId ? styles['out'] : styles['in']}
                   key = {msg.createAt}
                   elevation={0}
+                  sx={{overflowX: 'hidden'}}
                 >
-                  <Box sx={{width: '60%'}}>
+                  <Box sx={{width: '50%'}}>
                     <Box className={styles['meta']}>{msg.senderName}</Box>
                     <Box className={styles['content']}>{msg.message}</Box>
                     <Box className={styles['meta']}>{msg.createAt.toDate().toLocaleString().split(', ')[1]}</Box>
