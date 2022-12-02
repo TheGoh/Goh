@@ -424,8 +424,8 @@ export default function Project() {
                 <ButtonGroup sx={{width: '100%', height: '80px'}}>
                     <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '85%'}} theme={prio_theme}>
                         {task_dict[key].taskName}<br></br>
-                        Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
-                        Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
+                        {taskOwnerName[task_dict[key].currUserId]}<br></br>
+                        {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                     </Button>
                     <Button onClick={() => {handleMarkDone(key)}} sx={{width:'15%'}}><TaskIcon/></Button>
                 </ButtonGroup>
@@ -435,8 +435,8 @@ export default function Project() {
             return (
                 <Button variant="contained" component={Link} className={styles['task-btn']} to={`/project/taskinfo/${projectId}/${task_dict[key].taskId}`} sx={{width: '100%', height: '80px'}} theme={prio_theme}>
                     {task_dict[key].taskName}<br></br>
-                    Owner: {taskOwnerName[task_dict[key].currUserId]}<br></br>
-                    Due on: {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
+                    {taskOwnerName[task_dict[key].currUserId]}<br></br>
+                    {task_dict[key].dueDateTime.toDate().toLocaleString().split(",")[0]}
                 </Button>
             )
         }

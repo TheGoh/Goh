@@ -50,28 +50,28 @@ export default function TaskInfo() {
     const [ comment, setComment ] = useState('')
     const [ fileUrl, setUrl ] = useState('');
     const [ file, setFile ] = useState('');
-    const [ taskOwner, setTaskOwner ] = useState('');
+    const [ taskOwner, setTaskOwner ] = useState(null);
 
     useEffect(() => {
         if (projectDtl) {
             let all_Comments = [];
             let attach_URL = '';
-            let temp_taskOwner = '';
             Object.keys(projectDtl.comments).forEach(item => {
                 const date = new Date()          
                 all_Comments.push({comment: projectDtl.comments[item].comment, id:projectDtl.comments[item].id, time: date, resolved: projectDtl.comments[item].resolved});        
             })
 
             const getUsers = async () => {
-                temp_taskOwner = await getUserInfo(projectDtl.currUserId);
-                console.log(temp_taskOwner)
+                let temp_taskOwner = await getUserInfo(projectDtl.currUserId);
+                setTaskOwner(temp_taskOwner)
             };
 
             if (projectDtl.taskState === "IN PROGRESS") {
                 getUsers();
+            } else {
+                setTaskOwner(null);
             }
 
-            setTaskOwner(temp_taskOwner)
             attach_URL = projectDtl.fileURL;
             setUrl(attach_URL);
             setCommentList(all_Comments);
@@ -216,6 +216,7 @@ export default function TaskInfo() {
                     <Grid container columns={1}>
                         <Grid item xs={1} className={styles['basic-info']}>
                             <h1>{projectDtl.taskName}</h1>
+                            
                             {taskOwner !== null && <Avatar alt="owner-img" src={taskOwner.photoURL}/>}
                         </Grid>
                         <Grid item xs={1} className={styles['basic-info']}><p>{projectDtl.taskDescr}</p></Grid>
