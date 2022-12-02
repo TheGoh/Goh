@@ -106,9 +106,13 @@ export default function TaskInfo() {
         e.preventDefault();
         const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
         if (ref) {
-            await updateDoc(ref, {
-                fileURL: fileUrl
-            })
+            console.log("file:", fileUrl)
+            if (fileUrl !== null) {
+                await updateDoc(ref, {
+                    fileURL: fileUrl
+                })
+            }
+
             console.log("firestore update")
         }
         setAOpen(false)
