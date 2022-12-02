@@ -46,7 +46,6 @@ export default function Chat() {
             sorted_collection = chatLog.sort((a,b) => {
               return new Date(a.id) - new Date(b.id);
             })
-          console.log(sorted_collection)
           setMsgList(sorted_collection)
         }
     }, [chatLog])
