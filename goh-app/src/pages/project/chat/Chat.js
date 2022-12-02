@@ -35,8 +35,9 @@ export default function Chat() {
     
 
     const handleSend = () => {
-       sendChatMsg(projectId, user.uid, user.displayName, msg);
-       setMsg('');
+      if (msg.length === 0) return;
+      sendChatMsg(projectId, user.uid, user.displayName, msg);
+      setMsg('');
     }
 
     const handleDelHistory = () => {
