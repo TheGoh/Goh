@@ -7,9 +7,10 @@ import {
 } from "firebase/auth";
 import React from "react";
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from './AccountInfo.module.css'
 import {  firedb } from '../../firebase/config';
+import { useProjectActions } from '../../hooks/useProjectActions';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, updateDoc } from "firebase/firestore"
 
@@ -17,6 +18,7 @@ import { doc, updateDoc } from "firebase/firestore"
 
 export default function AccountInfo() {
     const { user } = useAuthContext();
+    const { getUserInfo, error: errorAction } = useProjectActions();
     const [ newEmail, setEmail ] = useState(user.email);
     const [ newPassword, setPassword ] = useState('');
     const [ currPass, setCurrPass ] = useState('');
@@ -69,6 +71,17 @@ export default function AccountInfo() {
         photoURL: imgURL
       })
     }
+
+    useEffect(() => {
+      const getUsers = async () => {
+        let temp_taskOwner = await getUserInfo(user.uid);
+        if (temp_taskOwner.description) {
+          setDescription(temp_taskOwner.description)
+        }   
+      };
+
+      getUsers();
+    })
     
 
     if (!user) return <div> loading...</div>

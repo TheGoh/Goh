@@ -43,8 +43,7 @@ import Select from '@mui/material/Select';
 
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
-import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
-
+import CloseIcon from '@mui/icons-material/Close';
 
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -235,7 +234,7 @@ export default function Project() {
         if (errorAction) {
             alert(errorAction);
         }
-        console.log(return_prof)
+        //console.log(return_prof)
         setProfile(return_prof)
         setopenProf(true);
     }
@@ -835,7 +834,7 @@ export default function Project() {
                             onClick={handleCloseProfile}
                             sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
                         >
-                            <BookmarkAdd />
+                            <CloseIcon />
                         </IconButton>
 
                         <CardContent>

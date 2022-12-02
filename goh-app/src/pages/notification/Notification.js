@@ -124,7 +124,7 @@ export default function Notification() {
                     onKeyDown={handleListKeyDown}
                   >
                     {userDetail.my_message.length > 0 && userDetail.my_message.map(msg => (
-                      <MenuItem sx={{textAlign: "left"}} onClick={handleClose}>
+                      <MenuItem sx={{textAlign: "left"}} key = {msg.Time} onClick={handleClose}>
                       {msg.Time.toDate().toLocaleString()}<br></br>
                       Sender: {msg.Sender}<br></br>
                       {msg.message}
