@@ -85,7 +85,7 @@ export default function ProjectCreate() {
                   columns={5}
                   sx={{width: '90%', margin: 'auto' }}>
                 <Grid item xs={5}  sx={{display: 'flex', justifyContent: 'flex-start'}} className={styles['heading']}><h1> All Projects</h1></Grid>
-                <Grid item xs={1}>
+                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
                     <Button variant="outlined" className={styles['project-grid-button']} onClick={handleClickOpen}>
                         <AddIcon fontSize="large"/>
                     </Button>
@@ -94,7 +94,7 @@ export default function ProjectCreate() {
 
                     all_projects_dict[item] === (undefined) ? ""
                     :
-                    <Grid item xs={1} key = {item}>
+                    <Grid item xs={1} key = {item} sx={{display: 'flex', justifyContent: 'flex-start'}}>
                         <Link to = {`/project/${all_projects_dict[item].id}`} key = {all_projects_dict[item].id} style={{ textDecoration: 'none' }}>
                             <Button variant="contained" className={styles['project-grid-button']}>
                                 {
