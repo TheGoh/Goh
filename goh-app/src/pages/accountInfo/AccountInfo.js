@@ -20,6 +20,7 @@ import Button from '@mui/material/Button';
 export default function AccountInfo() {
     const { user } = useAuthContext();
     const { getUserInfo, error: errorAction } = useProjectActions();
+    const { dispatch } = useAuthContext()
     const [ newEmail, setEmail ] = useState(user.email);
     const [ newPassword, setPassword ] = useState('');
     const [ currPass, setCurrPass ] = useState('');
@@ -67,6 +68,7 @@ export default function AccountInfo() {
           await updateProfile(user, {
             photoURL: imgURL
           })
+          dispatch({ type: 'LOGIN', payload: user}) 
       })
       .catch(() => {
         return alert("INVALID PASSWORD");
