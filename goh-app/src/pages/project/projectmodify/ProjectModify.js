@@ -54,10 +54,10 @@ export default function Modify() {
     
     return (
         <Box >
-            <Grid container sx={{margin: 'auto', width: '90%', alignItems: 'left'}} columns={4}>
+            <Grid container sx={{margin: 'auto', width: '100%',justifyContent: 'center', alignItems: 'center'}} columns={3}>
                 <Grid item xs={1}><h1>Project Modify</h1></Grid><Grid item xs={3}></Grid>
                 <Grid item xs={1}>
-                    <FormControl sx={{width:'55%'}}>
+                    <FormControl sx={{width:'100%', m:2}}>
                         <InputLabel htmlFor="component-outlined">Project Name</InputLabel>
                         <OutlinedInput
                         id="component-outlined"
@@ -70,10 +70,7 @@ export default function Modify() {
                         type="text"
                         />
                     </FormControl>
-                </Grid>
-
-                <Grid item xs={2}>
-                    <FormControl sx={{width:'80%'}}>
+                    <FormControl sx={{width:'100%', m:2}}>
                         <InputLabel htmlFor="component-outlined">Project Description</InputLabel>
                         <OutlinedInput
                         id="component-outlined"
@@ -87,12 +84,8 @@ export default function Modify() {
                         multiline
                         />
                     </FormControl>
-                </Grid>
-
-                <Grid item xs={1}>
-                    <Button component={Link} to="/project/projectcreate" onClick={handleModify} variant="contained" sx={{width: '50%'}}>Save</Button>    
-                </Grid>
-            
+                    <Button component={Link} to={`/project/${projectId}`} onClick={handleModify} variant="contained" sx={{width: '50%'}}>Save</Button>
+                </Grid>         
             </Grid>
         </Box>
     )
