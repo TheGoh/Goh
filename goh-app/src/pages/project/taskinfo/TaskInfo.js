@@ -49,8 +49,9 @@ export default function TaskInfo() {
     const [ commentList, setCommentList ] = useState('');
     const [ comment, setComment ] = useState('')
     const [ fileUrl, setUrl ] = useState('');
-    const [ file, setFile ] = useState('');
+    const [ file, setFile ] = useState(null);
     const [ taskOwner, setTaskOwner ] = useState(null);
+    
     let remChar = 0;
     if (comment.length <= 500) {
         remChar = 500 - comment.length;
@@ -89,36 +90,43 @@ export default function TaskInfo() {
     }
     const uploadAttachment = async(e) => {
         e.preventDefault();
-        const attachment = e.target.files[0];
+        let attachment = e.target.files[0];
         if (attachment.size >= 10000000) {
             alert("Max File Size: 10MB")
             return;
         }
-        const storage = getStorage();
-        const fileRef = ref(storage, `TaskAttachment/${taskId}`)
-        await uploadBytes(fileRef, attachment).then((snapshot) => {
-            console.log("Uploaded")
-        })
-        const dwnldUrl = await getDownloadURL(fileRef)
-        setUrl(dwnldUrl)
+
+        setFile(attachment)
     }
     const handleAttach = async(e) => {
         e.preventDefault();
-        if ( !fileUrl ) {
-           return alert("file is not ready");
+        
+        if (!file) {
+            return alert("Please select a file!");
         }
-        const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
-        if (ref) {
-            await updateDoc(ref, {
-                fileURL: fileUrl
-            })
-            console.log("firestore update")
-        }
+
+        const storage = getStorage();
+        const fileRef = ref(storage, `TaskAttachment/${taskId}`)
+        await uploadBytes(fileRef, file).then(async(snapshot) => {
+            const dwnldUrl = await getDownloadURL(fileRef)
+
+            const ref = doc(firedb, `projects/${projectId}/tasks/`, taskId);
+            if (ref) {
+                await updateDoc(ref, {
+                    fileURL: dwnldUrl
+                })
+            }
+        })
+        .catch((err)=>{
+            alert("error!");
+        })
         setAOpen(false)
     }
     const handleAOpen = () => {
+        setFile(null);
         setAOpen(true);
     }
+    
     const handleAttachClose = () => {
         setAOpen(false);
     }
