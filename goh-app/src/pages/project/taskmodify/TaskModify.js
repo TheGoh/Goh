@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useDocument } from '../../../hooks/useDocument';
 import { useFirestore } from '../../../hooks/useFirestore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
 
@@ -20,6 +20,7 @@ export default function TModify() {
     const [taskName, setTaskName] = useState('');
     const [taskDescr, setTaskDescr] = useState('');
     const [taskPrio, setTaskPrio] = useState('');
+    const [count, setCount] = useState(0);
     const { modifyTask } = useFirestore();
     
     //When user click button, the handledelete function will remove the project collection from the database and user's project id list
@@ -35,6 +36,14 @@ export default function TModify() {
         setTaskPrio(event.target.value);
     }
     
+    useEffect(() => {
+        if (taskDtl && count === 0) {
+            setCount(count + 1)
+            setTaskName(taskDtl.taskName)
+            setTaskDescr(taskDtl.taskDescr)
+            setTaskPrio(taskDtl.prio)
+        }
+    },[taskDtl])
 
     if (!taskDtl) {
         return <div> Loading... </div>
@@ -42,10 +51,10 @@ export default function TModify() {
     
     return (
         <Box >
-            <Grid container sx={{margin: 'auto', width: '90%', alignItems: 'left'}} columns={4}>
+            <Grid container sx={{margin: 'auto', width: '100%',justifyContent: 'center', alignItems: 'center'}} columns={3}>
                 <Grid item xs={1}><h1>Task Modify</h1></Grid><Grid item xs={3}></Grid>
                 <Grid item xs={1}>
-                    <FormControl sx={{width:'55%'}}>
+                    <FormControl sx={{width:'100%', m:2}}>
                         <InputLabel htmlFor="component-outlined">Task Name</InputLabel>
                         <OutlinedInput
                         id="component-outlined"
@@ -57,10 +66,7 @@ export default function TModify() {
                         type="text"
                         />
                     </FormControl>
-                </Grid>
-
-                <Grid item xs={1}>
-                    <FormControl sx={{width:'80%'}}>
+                    <FormControl sx={{width:'100%', m:2}}>
                         <InputLabel htmlFor="component-outlined">Task Description</InputLabel>
                         <OutlinedInput
                         id="component-outlined"
@@ -73,10 +79,8 @@ export default function TModify() {
                         multiline
                         />
                     </FormControl>
-                </Grid>
 
-                <Grid item xs={1}>
-                <FormControl sx={{width:'100%'}}>
+                    <FormControl sx={{width:'100%', m:2}}>
                     <InputLabel id="prio-label">Priority</InputLabel>
                     <Select
                         labelId="prio-lable"
@@ -90,16 +94,14 @@ export default function TModify() {
                         <MenuItem value={2}>Urgent</MenuItem>
                     </Select>
                 </FormControl>
-                </Grid>
-
-                <Grid item xs={1}>
-                    <Button component={Link} 
+                <Button component={Link} 
                             to={`/project/taskinfo/${projectId}/${taskId}`}
                             onClick={handleModify} 
                             variant="contained" sx={{width: '50%'}}>
                             Save
                     </Button>
                 </Grid>
+
             
             </Grid>
         </Box>
