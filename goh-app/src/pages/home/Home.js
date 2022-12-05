@@ -19,22 +19,15 @@ export default function Home() {
     <Box className={styles['bg-box']}>
       {/* <div>
       <h2>HOME</h2>
-      <p>Group and collaborative environments have struggled to coordinate and 
-          credit the contributions done by the individuals of the group. Our goal is to deliver 
-        a web application that can bring together the functionality of a project task manager 
-        where users can communicate, collaborate, and track their project. Additionally, generating an analytical report of the contributions of each group member that can be viewed after the completion of the project.</p>
+      <p></p>
     </div> */}
       <Grid container sx={{margin: '100px auto', width: '1000px'}}>
         <Paper className={styles['txt-container']} elevation={3}>
           <h1>Home</h1>
           <Box sx={{width: "75%", margin: "auto"}}>
             <p>
-            Group and collaborative environments have struggled to coordinate and 
-            credit the contributions done by the individuals of the group. Our goal is to deliver 
-            a web application that can bring together the functionality of a project task manager 
-            where users can communicate, collaborate, and track their project. Additionally, 
-            generating an analytical report of the contributions of each group member that can be 
-            viewed after the completion of the project.
+            At Goh we would like to provide a utility that can aid students in completing projects. 
+            Thus, Goh strives to optimize and assist groups in coordinating, planning, and executing projects. 
             </p>
             <img src={logo}></img>
             
