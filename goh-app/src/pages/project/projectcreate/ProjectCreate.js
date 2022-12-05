@@ -85,7 +85,7 @@ export default function ProjectCreate() {
                   columns={5}
                   sx={{width: '90%', margin: 'auto' }}>
                 <Grid item xs={5}  sx={{display: 'flex', justifyContent: 'flex-start'}} className={styles['heading']}><h1> All Projects</h1></Grid>
-                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'flex-start'}}>
+                <Grid item xs={1}  sx={{display: 'flex', justifyContent: 'flex-start'}}>
                     <Button variant="outlined" className={styles['project-grid-button']} onClick={handleClickOpen}>
                         <AddIcon fontSize="large"/>
                     </Button>
