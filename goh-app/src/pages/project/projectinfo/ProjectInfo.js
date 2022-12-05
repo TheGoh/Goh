@@ -481,7 +481,7 @@ export default function Project() {
                     <Grid container columns={4} sx={{width: '95%', margin: 'auto', marginTop: '20px', paddingBottom: '20px'}} className={styles['info']}>
                         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start', margin: '0px'}}><h1>{projectDtl.projName} Board</h1></Grid>
                         <Grid item xs={2}></Grid>
-                        <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start'}}><h3>{projectDtl.projDescr}</h3></Grid>
+                        <Grid item xs={2} sx={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}><h3>{projectDtl.projDescr}</h3></Grid>
                         <Grid item xs={2}></Grid>
 
                         {/* Progress Bar */}
