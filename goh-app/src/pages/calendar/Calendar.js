@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
 import * as React from 'react';
 
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -11,8 +12,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import { firedb } from '../../firebase/config';
-import { collection, query, where, getDocs, onSnapshot , orderBy} from 'firebase/firestore'
+import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import dayjs from 'dayjs';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import { styled } from '@mui/material/styles';
@@ -56,32 +58,6 @@ export default function Calendar() {
     const [dueDateList, setDueDateList] = useState([]);
 
     useEffect(() => {
-        //const ref = query(collection(firedb, "projects"),where("ownerid","==",user.uid));
-        // let taskList = [];
-        // let dateList = [];
-        // onSnapshot(ref, (snapshot) => {
-        //     snapshot.docs.forEach(doc => {
-        //         const monthStart = new Date(dayjs().startOf('month').format('MM/DD/YYYY'));
-        //         const monthEnd = new Date(dayjs().endOf('month').format('MM/DD/YYYY'));
-        //         const taskRef = query(collection(firedb,"projects/"+ doc.id + "/tasks"),where("dueDateTime",">=", monthStart),where("dueDateTime","<=", monthEnd));
-        //         onSnapshot(taskRef,(snapshot) => {
-        //             snapshot.docs.forEach(tk => {
-        //                 const data = tk.data();
-        //                 if(!(taskList.some((item) => item.taskId == data.taskId))){
-        //                     taskList.push(data);
-        //                 }
-        //                 if(!(dateList).some((item) => item === data.dueDate)){
-        //                     dateList.push(data.dueDate);
-        //                 }
-        //                 setDueDateList(dateList);
-        //                 setCurrentMonthTasks(taskList);
-        //             })
-        //         })
-        //     });
-
-        // } , (error) => {
-        //     setError(error.message)
-        // });
         if (userDetail) {
             let taskList = [];
             let dateList = [];
@@ -163,6 +139,7 @@ export default function Calendar() {
                                 <TableCell>Task Name</TableCell>
                                 <TableCell>Task Description</TableCell>
                                 <TableCell align="right">Due Date</TableCell>
+                                <TableCell align="right">Task Page</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -177,7 +154,14 @@ export default function Calendar() {
                                     <TableCell component="th" scope="row">
                                         {row.taskDescr}
                                     </TableCell>
-                                    <TableCell align="right">{row.dueDate}</TableCell>
+                                    <TableCell align="right">
+                                        {row.dueDate}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button component={Link} 
+                                                to={`/project/taskinfo/${row.projId}/${row.taskId}`}
+                                        >GO</Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
