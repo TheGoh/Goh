@@ -39,7 +39,7 @@ export default function Signup() {
           
           <Box sx={{ width:'50%'}} className={styles['intro']}>
             <img src={logo}></img>
-            <Grid container sx={{margin: 'auto', width: '100%', marginTop: '210px'}} columns={3}>
+            <Grid container sx={{margin: 'auto', width: '100%', marginTop: '235px'}} columns={3}>
               <Grid item xs={1}></Grid> <Grid item xs={1}></Grid>
               <Grid item className={styles['links']} xs={1}>
                 <Link to="/login" className={styles['links']}>Already have an account?</Link>
